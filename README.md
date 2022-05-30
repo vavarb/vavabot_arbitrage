@@ -119,7 +119,7 @@ Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, 
   Save and close.
 
 
-    Or you can open Nautilus or Nemo GUI. 
+    ```Or you can open Nautilus or Nemo GUI. 
 
     <CTRL + L>  
     Type: admin //
@@ -128,7 +128,7 @@ Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, 
          
     Open etc/gdm3/custom.conf file and Uncommenting: ```WaylandEnable=false```.
 
-    After, open etc/environment file and add ```QT_QPA_PLATFORM=xcb```
+    After, open etc/environment file and add ```QT_QPA_PLATFORM=xcb``` ```
   
 
   5. From https://forum.qt.io/topic/93247/qt-qpa-plugin-could-not-load-the-qt-platform-plugin-xcb-in-even-though-it-was-found/17
