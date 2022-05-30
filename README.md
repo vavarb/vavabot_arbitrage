@@ -111,7 +111,10 @@ Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, 
   gedit environment
   ```
 
-  Add: ```QT_QPA_PLATFORM=xcb```
+  Add: 
+  ```
+  QT_QPA_PLATFORM=xcb
+  ```
 
   Save and close.
 
