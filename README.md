@@ -118,7 +118,7 @@ Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, 
 
   Save and close.
 
-  - Or, you can use Nautilus or Nemo GUI. 
+  - Or, you can open Nautilus or Nemo GUI. 
   
     <CTRL + L>
     ```
