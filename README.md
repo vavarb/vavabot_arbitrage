@@ -72,7 +72,7 @@ Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, 
   Confirm new root password
 
   4. Disbled Wayland. 
-  
+
   From https://stackoverflow.com/questions/69828508/warning-ignoring-xdg-session-type-wayland-on-gnome-use-qt-qpa-platform-wayland#:~:text=The%20same%20Warning%3A%20Ignoring%20XDG_SESSION_TYPE,figure%20to%20a%20pdf%20file.
   
   ```
@@ -118,14 +118,16 @@ Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, 
 
   Save and close.
 
-  - Or, you can open Nautilus or Nemo GUI. 
+
+    (Or you can open Nautilus or Nemo GUI. 
   
     <CTRL + L>
-    ```
-    admin //
-    ```
+    Type: admin //
+    Type: root password
+    
     Open etc/gdm3/custom.conf file and Uncommenting: ```WaylandEnable=false```.
-    After, open etc/environment file and add ```QT_QPA_PLATFORM=xcb```
+    After, open etc/environment file and add ```QT_QPA_PLATFORM=xcb```)
+  
 
   5. From https://forum.qt.io/topic/93247/qt-qpa-plugin-could-not-load-the-qt-platform-plugin-xcb-in-even-though-it-was-found/17
 
