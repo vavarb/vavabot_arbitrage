@@ -14,6 +14,9 @@ vavarb@yahoo.com
 This is a simple bot for futures arbitrage trades. It was developed in python and designed to be executed only on the Deribit Exchange.
   https://www.deribit.com/
 
+<img src = 'https://github.com/vavarb/vavabot_arbitrage/blob/7b8af14d9c9c42de3f74eee2e4cb370d7c790077/img/img1.PNG'>
+<img src = 'https://github.com/vavarb/vavabot_arbitrage/blob/7b8af14d9c9c42de3f74eee2e4cb370d7c790077/img/img2.PNG'>
+
 ## Getting Started
 - This project was devoloped:
   - OS: Windows 10.
