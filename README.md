@@ -70,7 +70,7 @@ Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, 
   Type new root password
 
   Confirm new root password
-- 
+
   4. Disbled Wayland. 
   
   From https://stackoverflow.com/questions/69828508/warning-ignoring-xdg-session-type-wayland-on-gnome-use-qt-qpa-platform-wayland#:~:text=The%20same%20Warning%3A%20Ignoring%20XDG_SESSION_TYPE,figure%20to%20a%20pdf%20file.
