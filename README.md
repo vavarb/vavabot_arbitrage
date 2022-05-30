@@ -123,11 +123,8 @@ Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, 
 
     <CTRL + L>  
     Type: admin //
-
-    Type: root password
-         
+    Type: root password         
     Open etc/gdm3/custom.conf file and Uncommenting: ```WaylandEnable=false```.
-
     After, open etc/environment file and add ```QT_QPA_PLATFORM=xcb```
   ```
   
