@@ -118,7 +118,7 @@ Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, 
 
   Save and close.
 
-  5. From pa-plugin-could-not-load-the-qt-platform-plugin-xcb-in-even-though-it-was-found/17
+  5. From https://forum.qt.io/topic/93247/qt-qpa-plugin-could-not-load-the-qt-platform-plugin-xcb-in-even-though-it-was-found/17
 
   ```
   sudo apt-get install libxcb-xinerama0
