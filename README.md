@@ -32,7 +32,7 @@ This is a simple bot for futures arbitrage trades. It was developed in python an
 ### Installation :arrow_forward:
   1. Clone the repo:
 ```
-git clone https://github.com/vavarb/vavabot_delta_hedge.git
+git clone https://github.com/vavarb/vavabot_arbitrage.git
 ```
   2. Run vavabot_hedge.py file
 
