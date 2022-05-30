@@ -48,7 +48,7 @@ This application failed to start because no Qt platform plugin could be initiali
 Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, vnc, xcb.
 
 - You can try:
-  1. Open Terminal: <CTRL + ALT + T>
+  1. OPEN TERMINAL: <CTRL + ALT + T>
   2. From https://howtoinstall.co/pt/xcb
 
   ```
@@ -71,7 +71,7 @@ Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, 
 
   Confirm new root password
 
-  4. Disbled Wayland. 
+  4. DISBLED WAYLAND. 
 
   From https://stackoverflow.com/questions/69828508/warning-ignoring-xdg-session-type-wayland-on-gnome-use-qt-qpa-platform-wayland#:~:text=The%20same%20Warning%3A%20Ignoring%20XDG_SESSION_TYPE,figure%20to%20a%20pdf%20file.
   
@@ -135,8 +135,8 @@ Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, 
   sudo apt-get install libxcb-xinerama0
   ```
 
-  6. Restart Linux Ububntu
-  7. Check whether you are on Wayland or Xorg using:
+  6. RESTART LINUX.
+  7. CHECK WHETHER YOU ARE ON WAYLAND OR XORG USING:
   ```
   echo $XDG_SESSION_TYPE
   ```
