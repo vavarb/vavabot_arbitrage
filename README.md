@@ -126,7 +126,6 @@ Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, 
 
   6. Restart Linux Ububntu
   7. Check whether you are on Wayland or Xorg using:
-
   ```
   echo $XDG_SESSION_TYPE
   ```
