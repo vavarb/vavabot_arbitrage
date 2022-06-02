@@ -1,5 +1,0 @@
-Total Amount (USD): 2000
-Positions with same size in: USD
-Difference in USD > 100
-Difference in USD < 1
-Loss in USD: -5000
