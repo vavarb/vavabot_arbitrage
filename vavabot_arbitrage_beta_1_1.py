@@ -988,13 +988,13 @@ def run_arbitrage(ui):
                     o2 = str(round(c2['estimated_liquidation_price'], 2))
                 ui.lineEdit_8.setText(o2)
 
-                ui.lineEdit_12.setText(str(c2['lineEdit_12']))
-                p2 = str(c2['lineEdit_33'])
+                ui.lineEdit_12.setText(str(info['msg']['lineEdit_12']))
+                p2 = str(info['msg']['lineEdit_33'])
                 ui.lineEdit_33.setText(p2)
 
-                ui.lineEdit_34.setText(str(c2['lineEdit_34']))
-                ui.lineEdit_35.setText(str(c2['lineEdit_35']))
-                ui.lineEdit_36.setText(str(c2['lineEdit_36']))
+                ui.lineEdit_34.setText(str(info['msg']['lineEdit_34']))
+                ui.lineEdit_35.setText(str(info['msg']['lineEdit_35']))
+                ui.lineEdit_36.setText(str(info['msg']['lineEdit_36']))
 
         else:
             pass
@@ -1002,17 +1002,17 @@ def run_arbitrage(ui):
     def lists_monitor():
         import time
         from lists import list_monitor_log, list_monitor_print_log
-        from connection_spread import connect
+        from connection_arbitrage import connect
 
         counter = 0
         len_log_a = 0
         led1 = led_color()
 
         if led1 == 'green':
-            info = {'object_singal': 'led_connection', 'led_color': 'green'}
+            info = {'object_signal': 'led_connection', 'led_color': 'green'}
             sinal.ui_singal1.emit(info)
         elif led1 == 'red':
-            info = {'object_singal': 'led_connection', 'led_color': 'red'}
+            info = {'object_signal': 'led_connection', 'led_color': 'red'}
             sinal.ui_singal1.emit(info)
         else:
             connect.logwriter('*** ERROR - lists_monitor() Error Code:: 922 ***')
@@ -1041,11 +1041,11 @@ def run_arbitrage(ui):
                 if led1 != led_color():
                     if led_color() == 'green':
                         led1 = led_color()
-                        info = {'object_singal': 'led_connection', 'led_color': 'green'}
+                        info = {'object_signal': 'led_connection', 'led_color': 'green'}
                         sinal.ui_singal1.emit(info)
                     elif led_color() == 'red':
                         led1 = led_color()
-                        info = {'object_singal': 'led_connection', 'led_color': 'red'}
+                        info = {'object_signal': 'led_connection', 'led_color': 'red'}
                         sinal.ui_singal1.emit(info)
                     else:
                         connect.logwriter('*** ERROR - lists_monitor() Error Code:: 956 ***')
@@ -1066,7 +1066,7 @@ def run_arbitrage(ui):
                 else:
                     pass
             except Exception as er:
-                from connection_spread import connect
+                from connection_arbitrage import connect
                 connect.logwriter(str(er) + ' Error Code:: 975')
                 msg5 = str('*** ERROR - lists_monitor() Error Code:: 976: ' + str(er) + ' ***')
                 info = {'object_signal': 'textedit_monitor_append', 'msg': msg5}

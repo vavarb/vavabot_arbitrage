@@ -4,7 +4,5 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="jdk" jdkName="Python 3.10 (venv) (3)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="vavabot_options_spread" />
-    <orderEntry type="module" module-name="vavabot_beta_arbitrage_test_1.0" />
   </component>
 </module>

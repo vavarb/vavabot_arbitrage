@@ -3,8 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/vavabot_arbitrage.iml" filepath="$PROJECT_DIR$/.idea/vavabot_arbitrage.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../vavabot_beta_arbitrage_test_1.0/.idea/vavabot_beta_arbitrage_test_1.0.iml" filepath="$PROJECT_DIR$/../vavabot_beta_arbitrage_test_1.0/.idea/vavabot_beta_arbitrage_test_1.0.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../vavabot_options_spread/.idea/vavabot_options_spread.iml" filepath="$PROJECT_DIR$/../vavabot_options_spread/.idea/vavabot_options_spread.iml" />
     </modules>
   </component>
 </project>
