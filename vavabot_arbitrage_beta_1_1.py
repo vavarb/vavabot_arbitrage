@@ -883,7 +883,7 @@ def config(ui):
 
 
 def run_arbitrage(ui):
-    from lists import list_monitor_log, list_monitor_print_log
+    from lists import list_monitor_log
 
     def ui_signal1(info):
         object_signal = info['object_signal']
