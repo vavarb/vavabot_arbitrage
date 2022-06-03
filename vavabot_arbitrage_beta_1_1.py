@@ -911,7 +911,49 @@ def run_arbitrage(ui):
         elif object_signal == 'lineEdit_58':
             ui.lineEdit_58.setText(str(info['msg']))
         elif object_signal == 'btc_index_and_greeks_structure_monitor_print':
-            pass
+            b = str(info['msg']['lineEdit_24_btc_index'])
+            ui.lineEdit_24_btc_index.setText(b)
+
+            instrument1_name_for_monitor = str(info['msg']['lineEdit'])
+            ui.lineEdit.setText(str(instrument1_name_for_monitor))
+
+            c = info['msg']['c']
+            d = str(round(c['mark_price'], 2))
+            ui.lineEdit_25.setText(d)
+
+            g = str(c['direction'])
+            ui.lineEdit_5.setText(g)
+
+            h = str(round(c['average_price'], 2))
+            ui.lineEdit_4.setText(h)
+
+            j = str(round(c['size'], 2))
+            ui.lineEdit_24.setText(j)
+
+            k = str(round(c['size_currency'], 4))
+            ui.lineEdit_26.setText(k)
+
+            m = str(round(c['total_profit_loss'], 4))
+            ui.lineEdit_27.setText(m)
+
+            n = str(round(c['leverage'], 2))
+            ui.lineEdit_2.setText(n)
+
+            if str(c['estimated_liquidation_price']) == 'None':
+                o = 'None'
+            else:
+                o = str(round(c['estimated_liquidation_price'], 2))
+            ui.lineEdit_3.setText(o)
+
+            ui.lineEdit_11.setText(str(info['msg']['lineEdit_11']))
+
+            ui.lineEdit_12.setText(str(info['msg']['lineEdit_12']))
+
+            ui.lineEdit_33.setText(str(info['msg']['lineEdit_33']))
+
+            ui.lineEdit_34.setText(str(info['msg']['lineEdit_34']))
+            ui.lineEdit_35.setText(str(info['msg']['lineEdit_35']))
+            ui.lineEdit_36.setText(str(info['msg']['lineEdit_36']))
         else:
             pass
 
@@ -1106,45 +1148,12 @@ def run_arbitrage(ui):
             a = connect.index_price('btc_usd')
             b = str(round(a['index_price'], 2))
 
-            ui.lineEdit_24_btc_index.setText(b)
-            time.sleep(0.3)
-
             instrument1_name_for_monitor = str(ConfigAndInstrumentsSaved().instrument_name_construction_from_file(
                 instrument_number=1))
             instrument2_name_for_monitor = str(ConfigAndInstrumentsSaved().instrument_name_construction_from_file(
                 instrument_number=2))
 
-            ui.lineEdit.setText(str(instrument1_name_for_monitor))
-
             c = connect.get_position(instrument_name=str(instrument1_name_for_monitor))
-            time.sleep(0.3)
-
-            d = str(round(c['mark_price'], 2))
-            ui.lineEdit_25.setText(d)
-
-            g = str(c['direction'])
-            ui.lineEdit_5.setText(g)
-
-            h = str(round(c['average_price'], 2))
-            ui.lineEdit_4.setText(h)
-
-            j = str(round(c['size'], 2))
-            ui.lineEdit_24.setText(j)
-
-            k = str(round(c['size_currency'], 4))
-            ui.lineEdit_26.setText(k)
-
-            m = str(round(c['total_profit_loss'], 4))
-            ui.lineEdit_27.setText(m)
-
-            n = str(round(c['leverage'], 2))
-            ui.lineEdit_2.setText(n)
-
-            if str(c['estimated_liquidation_price']) == 'None':
-                o = 'None'
-            else:
-                o = str(round(c['estimated_liquidation_price'], 2))
-            ui.lineEdit_3.setText(o)
 
             p_ = annualized_premium(instrument_name=str(instrument1_name_for_monitor))
             p = str(p_)
@@ -1188,8 +1197,6 @@ def run_arbitrage(ui):
 
                 p2_ = annualized_premium(instrument_name=str(instrument2_name_for_monitor))
                 p2 = str(p2_)
-                ui.lineEdit_12.setText(str(instrument2_name_for_monitor) + ' An.Premium (%)')
-                ui.lineEdit_33.setText(p2)
 
                 if p2 == 'No bid/ask offer' or c['mark_price'] == 0.0 or c2['mark_price'] == 0.0:
                     q = str(round((c2['mark_price'] - c['mark_price']), 2))
@@ -1203,14 +1210,12 @@ def run_arbitrage(ui):
                     q = str(round((c2['mark_price'] - c['mark_price']), 2))
                     r = str(round(((c2['mark_price'] - c['mark_price']) * 100 / c['mark_price']), 2))
                     s = str(round(float(p2_) - float(p_), 2))
-                ui.lineEdit_34.setText(q)
-                ui.lineEdit_35.setText(r)
-                ui.lineEdit_36.setText(s)
+
                 msg5 = {
                     'lineEdit_24_btc_index': b,
                     'lineEdit': str(instrument1_name_for_monitor),
                     'c': c,
-                    'lineEdit_11': str(str(instrument1_name_for_monitor) + ' An.Premium (%)')
+                    'lineEdit_11': str(str(instrument1_name_for_monitor) + ' An.Premium (%)'),
                     'lineEdit_32': str(p_),
                     'lineEdit_6': str(instrument2_name_for_monitor),
                     'c2': c2,
@@ -1220,8 +1225,12 @@ def run_arbitrage(ui):
                     'lineEdit_35': r,
                     'lineEdit_36': s
                 }
-                info5 = {'object_signal': 'btc_index_and_greeks_structure_monitor_print', 'msg': msg5}
+                info5 = {
+                    'object_signal': 'btc_index_and_greeks_structure_monitor_print',
+                    'msg': msg5
+                }
                 sinal.ui_singal1.emit(info5)
+
         except Exception as er:
             list_monitor_log.append(
                 '********** btc_index_and_greeks_structure_monitor_print ' + str(er) +
