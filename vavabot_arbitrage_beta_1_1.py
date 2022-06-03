@@ -13,6 +13,18 @@ global list_monitor_log
 global what_instrument
 
 
+# Classe de Sinais.
+class Sinais(QtCore.QObject):
+    # Elementos.
+    ui_singal1 = QtCore.pyqtSignal(dict)
+
+    def __init__(self):
+        QtCore.QObject.__init__(self)
+
+
+sinal = Sinais()  # Instância da Classe Sinais.
+
+
 class CredentialsSaved:
     def __init__(self):
         self.self = self
@@ -873,48 +885,102 @@ def config(ui):
 def run_arbitrage(ui):
     from lists import list_monitor_log, list_monitor_print_log
 
-    def led_connection():
-        green_icon = "./green_led_icon.png"
-        red_icon = "./red_led_icon.png"
-        while True:
-            led1 = led_color()
-            time.sleep(1)
-            if led1 == 'green':
+    def ui_signal1(info):
+        object_signal = info['object_signal']
+
+        if object_signal == 'led_connection':
+            led_color1 = str(info['led_color'])
+            if led_color1 == 'green':
+                green_icon = "./green_led_icon.png"
                 ui.label_29.setPixmap(QtGui.QPixmap(green_icon))
-            elif led1 == 'red':
+            elif led_color1 == 'red':
+                red_icon = "./red_led_icon.png"
                 ui.label_29.setPixmap(QtGui.QPixmap(red_icon))
+            else:
+                pass
+        elif object_signal == 'textedit_monitor_append':
+            msg1 = str(info['msg'])
+            ui.textEdit_monitor.append(msg1)
+        elif object_signal == 'pushbutton_2_click_signal':
+            ui.textEdit_monitor.clear()
+        else:
+            pass
 
     def lists_monitor():
-        len_log_a = len(list_monitor_log)
+        import time
+        from lists import list_monitor_log, list_monitor_print_log
+        from connection_spread import connect
+
         counter = 0
+        len_log_a = 0
+        led1 = led_color()
+
+        if led1 == 'green':
+            info = {'object_singal': 'led_connection', 'led_color': 'green'}
+            sinal.ui_singal1.emit(info)
+        elif led1 == 'red':
+            info = {'object_singal': 'led_connection', 'led_color': 'red'}
+            sinal.ui_singal1.emit(info)
+        else:
+            connect.logwriter('*** ERROR - lists_monitor() Error Code:: 922 ***')
+            msg2 = str('*** ERROR - lists_monitor() Error Code:: 923 ***')
+            info = {'object_signal': 'textedit_monitor_append', 'msg': msg2}
+            sinal.ui_singal1.emit(info)
+
         while True:
-            len_log_b = len(list_monitor_log)
-            if len_log_a == len_log_b:
-                time.sleep(0.001)
-                pass
-            elif len_log_a != len_log_b:
-                list_monitor_print_log.append(list_monitor_log[len_log_a:])
-                del (list_monitor_log[:len_log_a])
-                for i in range(len(list_monitor_print_log)):
-                    ui.textEdit_monitor.append(str(list_monitor_print_log[i]))
-                    del (list_monitor_print_log[i])
-                len_log_a = len(list_monitor_log)
-                time.sleep(0.001)
-            else:
-                ui.textEdit_monitor.append('***** ERROR print in Monitor')
-                pass
+            try:
+                len_log_b = len(list_monitor_log)
+                if len_log_a != len_log_b:
+                    list_monitor_print_log.append(list_monitor_log[len_log_a:])
+                    del (list_monitor_log[:len_log_a])
+                    for i in range(len(list_monitor_print_log)):
+                        msg3 = str(list_monitor_print_log[i])
+                        del (list_monitor_print_log[i])
+                        info = {'object_signal': 'textedit_monitor_append', 'msg': msg3}
+                        sinal.ui_singal1.emit(info)
+                    len_log_a = len(list_monitor_log)
+                    time.sleep(0.0001)
+                    pass
+                else:
+                    time.sleep(0.0001)
+                    pass
 
-            counter = counter + 1
-            if counter >= 10000:
-                counter = 0
-                ui.pushButton_2.click()
-                time.sleep(0.5)
-                pass
-            else:
-                pass
+                if led1 != led_color():
+                    if led_color() == 'green':
+                        led1 = led_color()
+                        info = {'object_singal': 'led_connection', 'led_color': 'green'}
+                        sinal.ui_singal1.emit(info)
+                    elif led_color() == 'red':
+                        led1 = led_color()
+                        info = {'object_singal': 'led_connection', 'led_color': 'red'}
+                        sinal.ui_singal1.emit(info)
+                    else:
+                        connect.logwriter('*** ERROR - lists_monitor() Error Code:: 956 ***')
+                        msg4 = str('*** ERROR - lists_monitor() Error Code:: 957 ***')
+                        info = {'object_signal': 'textedit_monitor_append', 'msg': msg4}
+                        sinal.ui_singal1.emit(info)
+                        pass
+                else:
+                    pass
 
-    def clear_monitor():
-        ui.textEdit_monitor.clear()
+                counter = counter + 1
+                if counter >= 100000:
+                    counter = 0
+                    info = {'object_signal': 'pushbutton_2_click_signal', 'msg': ''}
+                    sinal.ui_singal1.emit(info)
+                    time.sleep(0.5)
+                    pass
+                else:
+                    pass
+            except Exception as er:
+                from connection_spread import connect
+                connect.logwriter(str(er) + ' Error Code:: 975')
+                msg5 = str('*** ERROR - lists_monitor() Error Code:: 976: ' + str(er) + ' ***')
+                info = {'object_signal': 'textedit_monitor_append', 'msg': msg5}
+                sinal.ui_singal1.emit(info)
+                time.sleep(5)
+            finally:
+                pass
 
     def autoscroll_monitor():
         if ui.checkBox_autoScrollBar.isChecked() is True:
@@ -2386,10 +2452,9 @@ def run_arbitrage(ui):
         else:
             pass  # cancel clicked
 
+    sinal.ui_singal1.connect(ui_signal1)
     monitor_thread = threading.Thread(daemon=True, target=lists_monitor)
     monitor_thread.start()
-    led_thread = threading.Thread(daemon=True, target=led_connection)
-    led_thread.start()
     ui.pushButton_start_print_loglog.hide()
     ui.pushButton_2.hide()
     ui.textEdit_monitor.textChanged.connect(autoscroll_monitor)
@@ -2397,7 +2462,6 @@ def run_arbitrage(ui):
     monitor_index_and_summary_thread.start()
     ui.pushButton_start_trading.clicked.connect(start_arbitrage_strategy_and_message)
     ui.pushButton_stop_arbitrage.clicked.connect(strategy_off)
-    ui.pushButton_2.clicked.connect(clear_monitor)
 
 
 if __name__ == "__main__":
