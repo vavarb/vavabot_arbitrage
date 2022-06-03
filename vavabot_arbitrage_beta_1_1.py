@@ -910,6 +910,8 @@ def run_arbitrage(ui):
                 ui.textEdit_monitor.verticalScrollBar()
         elif object_signal == 'lineEdit_58':
             ui.lineEdit_58.setText(str(info['msg']))
+        elif object_signal == 'btc_index_and_greeks_structure_monitor_print':
+            pass
         else:
             pass
 
@@ -1148,10 +1150,12 @@ def run_arbitrage(ui):
             p = str(p_)
             ui.lineEdit_11.setText(str(instrument1_name_for_monitor) + ' An.Premium (%)')
             ui.lineEdit_32.setText(p)
+
             if p_ == 'No bid/ask offer':
                 pass
             else:
                 ui.lineEdit_6.setText(str(instrument2_name_for_monitor))
+
                 c2 = connect.get_position(instrument_name=str(instrument2_name_for_monitor))
                 time.sleep(0.3)
 
@@ -1186,6 +1190,7 @@ def run_arbitrage(ui):
                 p2 = str(p2_)
                 ui.lineEdit_12.setText(str(instrument2_name_for_monitor) + ' An.Premium (%)')
                 ui.lineEdit_33.setText(p2)
+
                 if p2 == 'No bid/ask offer' or c['mark_price'] == 0.0 or c2['mark_price'] == 0.0:
                     q = str(round((c2['mark_price'] - c['mark_price']), 2))
                     r = 'None'
@@ -1201,7 +1206,22 @@ def run_arbitrage(ui):
                 ui.lineEdit_34.setText(q)
                 ui.lineEdit_35.setText(r)
                 ui.lineEdit_36.setText(s)
-
+                msg5 = {
+                    'lineEdit_24_btc_index': b,
+                    'lineEdit': str(instrument1_name_for_monitor),
+                    'c': c,
+                    'lineEdit_11': str(str(instrument1_name_for_monitor) + ' An.Premium (%)')
+                    'lineEdit_32': str(p_),
+                    'lineEdit_6': str(instrument2_name_for_monitor),
+                    'c2': c2,
+                    'lineEdit_12': str(str(instrument2_name_for_monitor) + ' An.Premium (%)'),
+                    'lineEdit_33': p2,
+                    'lineEdit_34': q,
+                    'lineEdit_35': r,
+                    'lineEdit_36': s
+                }
+                info5 = {'object_signal': 'btc_index_and_greeks_structure_monitor_print', 'msg': msg5}
+                sinal.ui_singal1.emit(info5)
         except Exception as er:
             list_monitor_log.append(
                 '********** btc_index_and_greeks_structure_monitor_print ' + str(er) +
@@ -1221,7 +1241,7 @@ def run_arbitrage(ui):
 
         while index_greeks_print_on_off == 'on':
 
-            btc_index_and_greeks_structure_monitor_print()
+            btc_index_and_greeks_structure_monitor_print()  # Já tem signal
 
             for item in range(10, -1, -1):
                 info = {'object_signal': 'lineEdit_58', 'msg': str(item)}
