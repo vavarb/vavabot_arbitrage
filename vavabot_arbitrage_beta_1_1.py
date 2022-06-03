@@ -908,6 +908,8 @@ def run_arbitrage(ui):
                 ui.textEdit_monitor.verticalScrollBar().setValue(999999)
             else:
                 ui.textEdit_monitor.verticalScrollBar()
+        elif object_signal == 'lineEdit_58':
+            ui.lineEdit_58.setText(str(info['msg']))
         else:
             pass
 
@@ -1213,15 +1215,17 @@ def run_arbitrage(ui):
         red_icon = "./red_led_icon.png"
         ui.label_32.setPixmap(QtGui.QPixmap(red_icon))
 
+        ui.pushButton_stop_arbitrage.setEnabled(False)
+        ui.pushButton.setEnabled(False)
+        ui.pushButton.setText('Chronometer\nEnabled')
+
         while index_greeks_print_on_off == 'on':
-            ui.pushButton_stop_arbitrage.setEnabled(False)
-            ui.pushButton.setEnabled(False)
-            ui.pushButton.setText('Chronometer\nEnabled')
 
             btc_index_and_greeks_structure_monitor_print()
 
             for item in range(10, -1, -1):
-                ui.lineEdit_58.setText(str(item))
+                info = {'object_signal': 'lineEdit_58', 'msg': str(item)}
+                sinal.ui_singal1.emit(info)
                 time.sleep(1)
 
         thread_arbitrage_strategy()
