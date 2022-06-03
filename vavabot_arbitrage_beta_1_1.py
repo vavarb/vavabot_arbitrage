@@ -225,6 +225,7 @@ class Deribit:
 
         self._auth(client_id=client_id, wss_url=wss_url, client_secret=client_secret)
 
+    # noinspection PyMethodMayBeStatic
     def logwriter(self, msg):
         from lists import list_monitor_log
         out = datetime.now().strftime("\n[%Y%m%d,%H:%M:%S] ") + str(msg)
@@ -1727,7 +1728,7 @@ def run_arbitrage(ui):
                 if (float(profit_loss_percentage) + (float(profit_loss_percentage) * 0.1 / 100)) > \
                         float(set_exit_position_value_):
                     connect.cancel_all()
-                    # instrument_buy_or_sell1 reverse because is exit
+                    # instrument_buy_or_sell1 reverse because it is exiting
                     buy_or_sell_first_order(instrument_name2=instrument_name_2,
                                             instrument_amount=instrument_amount_order,
                                             instrument_direction2=instrument_buy_or_sell1,
@@ -1751,7 +1752,7 @@ def run_arbitrage(ui):
                 if (instrument_price2 - instrument_price1) * 100 / instrument_price1 > \
                         float(set_exit_position_value_):
                     connect.cancel_all()
-                    # instrument_buy_or_sell1 reverse because is exit
+                    # instrument_buy_or_sell1 reverse because it is exiting
                     buy_or_sell_first_order(instrument_name2=instrument_name_2,
                                             instrument_amount=instrument_amount_order,
                                             instrument_direction2=instrument_buy_or_sell1,
@@ -1773,7 +1774,7 @@ def run_arbitrage(ui):
                 if (instrument_price2 - instrument_price1) * 100 / instrument_price1 < \
                         float(set_exit_position_value_):
                     connect.cancel_all()
-                    # instrument_buy_or_sell1 reverse because is exit
+                    # instrument_buy_or_sell1 reverse because it is exiting
                     buy_or_sell_first_order(instrument_name2=instrument_name_2,
                                             instrument_amount=instrument_amount_order,
                                             instrument_direction2=instrument_buy_or_sell1,
@@ -1798,7 +1799,7 @@ def run_arbitrage(ui):
             if set_exit_position_bigger_lower_ == '>':
                 if abs(instrument_price2) - abs(instrument_price1) > float(set_exit_position_value_):
                     connect.cancel_all()
-                    # instrument_buy_or_sell1 reverse because is exit
+                    # instrument_buy_or_sell1 reverse because it is exiting
                     buy_or_sell_first_order(instrument_name2=instrument_name_2,
                                             instrument_amount=instrument_amount_order,
                                             instrument_direction2=instrument_buy_or_sell1,
@@ -1819,7 +1820,7 @@ def run_arbitrage(ui):
             elif set_exit_position_bigger_lower_ == '<':
                 if abs(instrument_price2) - abs(instrument_price1) < float(set_exit_position_value_):
                     connect.cancel_all()
-                    # instrument_buy_or_sell1 reverse because is exit
+                    # instrument_buy_or_sell1 reverse because it is exiting
                     buy_or_sell_first_order(instrument_name2=instrument_name_2,
                                             instrument_amount=instrument_amount_order,
                                             instrument_direction2=instrument_buy_or_sell1,
@@ -1846,7 +1847,7 @@ def run_arbitrage(ui):
                 annualized_premium2 = float(annualized_premium(instrument_name=instrument_name_2))
                 if annualized_premium2 - annualized_premium1 > float(set_exit_position_value_):
                     connect.cancel_all()
-                    # instrument_buy_or_sell1 reverse because is exit
+                    # instrument_buy_or_sell1 reverse because it is exiting
                     buy_or_sell_first_order(instrument_name2=instrument_name_2,
                                             instrument_amount=instrument_amount_order,
                                             instrument_direction2=instrument_buy_or_sell1,
@@ -1869,8 +1870,8 @@ def run_arbitrage(ui):
                 annualized_premium2 = float(annualized_premium(instrument_name=instrument_name_2))
                 if annualized_premium2 - annualized_premium1 < float(set_exit_position_value_):
                     connect.cancel_all()
-                    # instrument_buy_or_sell1 reverse because is exit
-                    # instrument_buy_or_sell1 reverse because is exit
+                    # instrument_buy_or_sell1 reverse because it is exiting
+                    # instrument_buy_or_sell1 reverse because it is exiting
                     buy_or_sell_first_order(instrument_name2=instrument_name_2,
                                             instrument_amount=instrument_amount_order,
                                             instrument_direction2=instrument_buy_or_sell1,
@@ -2092,7 +2093,7 @@ def run_arbitrage(ui):
                         list_monitor_log.append('*** ' + instrument_name_2 + ' direction OK ***')
                         pass
 
-                    # Strategy stop loss
+                    # Stop loss Strategy
                     if abs(instrument_position_currency1) + abs(instrument_position_currency2) > 0:
                         stop_loss(set_stop_loss_in_=set_stop_loss_in_,
                                   set_stop_loss_value_=set_stop_loss_value_,
@@ -2105,21 +2106,20 @@ def run_arbitrage(ui):
 
                     # check_instrument_position_bigger_amount
                     if abs(instrument_position_currency1) + abs(instrument_position_currency2) > 0:
-                        check_instrument_position_bigger_amount(instrument_direction1=instrument_buy_or_sell1,
-                                                                instrument_position1=instrument_position1,
-                                                                instrument_position2=instrument_position2,
-                                                                total_amount=total_amount,
-                                                                instrument_name1=instrument_name_1,
-                                                                instrument_name2=instrument_name_2,
-                                                                instrument_amount2_usd=instrument_amount2_usd,
-                                                                pwssiuobte=pwssiuobte,
-                                                                instrument_position_currency1=
-                                                                instrument_position_currency1,
-                                                                instrument_position_currency2=
-                                                                instrument_position_currency2,
-                                                                index_price_instrument1=index_price_instrument1,
-                                                                index_price_instrument2=index_price_instrument2
-                                                                )
+                        check_instrument_position_bigger_amount(
+                            instrument_direction1=instrument_buy_or_sell1,
+                            instrument_position1=instrument_position1,
+                            instrument_position2=instrument_position2,
+                            total_amount=total_amount,
+                            instrument_name1=instrument_name_1,
+                            instrument_name2=instrument_name_2,
+                            instrument_amount2_usd=instrument_amount2_usd,
+                            pwssiuobte=pwssiuobte,
+                            instrument_position_currency1=instrument_position_currency1,
+                            instrument_position_currency2=instrument_position_currency2,
+                            index_price_instrument1=index_price_instrument1,
+                            index_price_instrument2=index_price_instrument2
+                        )
                     else:
                         list_monitor_log.append(
                             '*** Total instruments positions not bigger total amount configured *** ')
@@ -2214,13 +2214,13 @@ def run_arbitrage(ui):
                     instrument_position_currency1 = float(summary_instrument1['size_currency'])
                     instrument_position_currency2 = float(summary_instrument2['size_currency'])
 
-                    # instrument_buy_or_sell1 reverse because is exit
+                    # instrument_buy_or_sell1 reverse because it is exiting
                     instrument_price1 = float(best_bid_ask_price(instrument_name=instrument_name_1,
                                                                  instrument_direction=instrument_buy_or_sell2))
                     instrument_price2 = float(best_bid_ask_price(instrument_name=instrument_name_2,
                                                                  instrument_direction=instrument_buy_or_sell1))
 
-                    # instrument_buy_or_sell1 reverse because is exit
+                    # instrument_buy_or_sell1 reverse because it is exiting
                     instrument_amount_order1 = float(best_bid_ask_amount(instrument_name=instrument_name_1,
                                                                          instrument_direction=instrument_buy_or_sell2))
                     instrument_amount_order2 = float(best_bid_ask_amount(instrument_name=instrument_name_1,
