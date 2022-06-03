@@ -903,6 +903,11 @@ def run_arbitrage(ui):
             ui.textEdit_monitor.append(msg1)
         elif object_signal == 'pushbutton_2_click_signal':
             ui.textEdit_monitor.clear()
+        elif object_signal == 'checkBox_autoScrollBar':
+            if info['msg'] is True:
+                ui.textEdit_monitor.verticalScrollBar().setValue(999999)
+            else:
+                ui.textEdit_monitor.verticalScrollBar()
         else:
             pass
 
@@ -984,9 +989,11 @@ def run_arbitrage(ui):
 
     def autoscroll_monitor():
         if ui.checkBox_autoScrollBar.isChecked() is True:
-            ui.textEdit_monitor.verticalScrollBar().setValue(999999)
+            info = {'object_signal': 'checkBox_autoScrollBar', 'msg': True}
+            sinal.ui_singal1.emit(info)
         else:
-            ui.textEdit_monitor.verticalScrollBar()
+            info = {'object_signal': 'checkBox_autoScrollBar', 'msg': False}
+            sinal.ui_singal1.emit(info)
 
     def btc_index_and_greeks_structure_monitor_print_while_arbitrage():
         from connection_arbitrage import connect
