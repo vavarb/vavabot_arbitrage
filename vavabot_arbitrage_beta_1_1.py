@@ -898,18 +898,23 @@ def run_arbitrage(ui):
                 ui.label_29.setPixmap(QtGui.QPixmap(red_icon))
             else:
                 pass
+
         elif object_signal == 'textedit_monitor_append':
             msg1 = str(info['msg'])
             ui.textEdit_monitor.append(msg1)
+
         elif object_signal == 'pushbutton_2_click_signal':
             ui.textEdit_monitor.clear()
+
         elif object_signal == 'checkBox_autoScrollBar':
             if info['msg'] is True:
                 ui.textEdit_monitor.verticalScrollBar().setValue(999999)
             else:
                 ui.textEdit_monitor.verticalScrollBar()
+
         elif object_signal == 'lineEdit_58':
             ui.lineEdit_58.setText(str(info['msg']))
+
         elif object_signal == 'btc_index_and_greeks_structure_monitor_print':
             b = str(info['msg']['lineEdit_24_btc_index'])
             ui.lineEdit_24_btc_index.setText(b)
@@ -918,6 +923,7 @@ def run_arbitrage(ui):
             ui.lineEdit.setText(str(instrument1_name_for_monitor))
 
             c = info['msg']['c']
+
             d = str(round(c['mark_price'], 2))
             ui.lineEdit_25.setText(d)
 
@@ -946,14 +952,50 @@ def run_arbitrage(ui):
             ui.lineEdit_3.setText(o)
 
             ui.lineEdit_11.setText(str(info['msg']['lineEdit_11']))
+            ui.lineEdit_32.setText(str(info['msg']['lineEdit_32']))
 
-            ui.lineEdit_12.setText(str(info['msg']['lineEdit_12']))
+            if str(info['msg']['lineEdit_32']) == 'No bid/ask offer':
+                pass
+            else:
+                ui.lineEdit_6.setText(str(info['msg']['lineEdit_6']))
 
-            ui.lineEdit_33.setText(str(info['msg']['lineEdit_33']))
+                c2 = info['msg']['c2']
 
-            ui.lineEdit_34.setText(str(info['msg']['lineEdit_34']))
-            ui.lineEdit_35.setText(str(info['msg']['lineEdit_35']))
-            ui.lineEdit_36.setText(str(info['msg']['lineEdit_36']))
+                d2 = str(round(c2['mark_price'], 2))
+                ui.lineEdit_30.setText(d2)
+
+                g2 = str(c2['direction'])
+                ui.lineEdit_10.setText(g2)
+
+                h2 = str(round(c2['average_price'], 2))
+                ui.lineEdit_9.setText(h2)
+
+                j2 = str(round(c2['size'], 2))
+                ui.lineEdit_28.setText(j2)
+
+                k2 = str(round(c2['size_currency'], 4))
+                ui.lineEdit_29.setText(k2)
+
+                m2 = str(round(c2['total_profit_loss'], 4))
+                ui.lineEdit_31.setText(m2)
+
+                n2 = str(round(c2['leverage'], 2))
+                ui.lineEdit_7.setText(n2)
+
+                if str(c2['estimated_liquidation_price']) == 'None':
+                    o2 = 'None'
+                else:
+                    o2 = str(round(c2['estimated_liquidation_price'], 2))
+                ui.lineEdit_8.setText(o2)
+
+                ui.lineEdit_12.setText(str(c2['lineEdit_12']))
+                p2 = str(c2['lineEdit_33'])
+                ui.lineEdit_33.setText(p2)
+
+                ui.lineEdit_34.setText(str(c2['lineEdit_34']))
+                ui.lineEdit_35.setText(str(c2['lineEdit_35']))
+                ui.lineEdit_36.setText(str(c2['lineEdit_36']))
+
         else:
             pass
 
@@ -1156,44 +1198,30 @@ def run_arbitrage(ui):
             c = connect.get_position(instrument_name=str(instrument1_name_for_monitor))
 
             p_ = annualized_premium(instrument_name=str(instrument1_name_for_monitor))
-            p = str(p_)
-            ui.lineEdit_11.setText(str(instrument1_name_for_monitor) + ' An.Premium (%)')
-            ui.lineEdit_32.setText(p)
 
             if p_ == 'No bid/ask offer':
+                msg5 = {
+                    'lineEdit_24_btc_index': b,
+                    'lineEdit': str(instrument1_name_for_monitor),
+                    'c': c,
+                    'lineEdit_11': str(str(instrument1_name_for_monitor) + ' An.Premium (%)'),
+                    'lineEdit_32': str(p_),
+                    'lineEdit_6': '',
+                    'c2': '',
+                    'lineEdit_12': '',
+                    'lineEdit_33': '',
+                    'lineEdit_34': '',
+                    'lineEdit_35': '',
+                    'lineEdit_36': ''
+                }
+                info5 = {
+                    'object_signal': 'btc_index_and_greeks_structure_monitor_print',
+                    'msg': msg5
+                }
+                sinal.ui_singal1.emit(info5)
                 pass
             else:
-                ui.lineEdit_6.setText(str(instrument2_name_for_monitor))
-
                 c2 = connect.get_position(instrument_name=str(instrument2_name_for_monitor))
-                time.sleep(0.3)
-
-                d2 = str(round(c2['mark_price'], 2))
-                ui.lineEdit_30.setText(d2)
-
-                g2 = str(c2['direction'])
-                ui.lineEdit_10.setText(g2)
-
-                h2 = str(round(c2['average_price'], 2))
-                ui.lineEdit_9.setText(h2)
-
-                j2 = str(round(c2['size'], 2))
-                ui.lineEdit_28.setText(j2)
-
-                k2 = str(round(c2['size_currency'], 4))
-                ui.lineEdit_29.setText(k2)
-
-                m2 = str(round(c2['total_profit_loss'], 4))
-                ui.lineEdit_31.setText(m2)
-
-                n2 = str(round(c2['leverage'], 2))
-                ui.lineEdit_7.setText(n2)
-
-                if str(c2['estimated_liquidation_price']) == 'None':
-                    o2 = 'None'
-                else:
-                    o2 = str(round(c2['estimated_liquidation_price'], 2))
-                ui.lineEdit_8.setText(o2)
 
                 p2_ = annualized_premium(instrument_name=str(instrument2_name_for_monitor))
                 p2 = str(p2_)
