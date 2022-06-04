@@ -995,7 +995,38 @@ def run_arbitrage(ui):
                 ui.lineEdit_34.setText(str(info['msg']['lineEdit_34']))
                 ui.lineEdit_35.setText(str(info['msg']['lineEdit_35']))
                 ui.lineEdit_36.setText(str(info['msg']['lineEdit_36']))
+        elif object_signal == 'setup_arbitrage_strategy_started':
+            ui.pushButton_stop_arbitrage.setEnabled(True)
+            ui.lineEdit_api_key_new.setEnabled(False)
+            ui.lineEdit_api_secret_new.setEnabled(False)
+            ui.pushButton_submit_new_credintals.setEnabled(False)
+            ui.radioButton_testnet_true.setEnabled(False)
+            ui.radioButton_2_testnet_false.setEnabled(False)
+            ui.pushButton_submit_new_instruments.setEnabled(False)
+            ui.pushButton_submit_new_instruments_2.setEnabled(False)
+            ui.pushButton.setText('Arbitrage\nStarted')
+            ui.pushButton.setEnabled(False)
+            ui.pushButton_start_trading.setEnabled(False)
+            ui.lineEdit_58.hide()
 
+            green_icon = "./green_led_icon.png"
+            ui.label_32.setPixmap(QtGui.QPixmap(green_icon))
+        elif object_signal == 'setup_arbitrage_strategy_stopped':
+            ui.pushButton_stop_arbitrage.setEnabled(False)
+            ui.lineEdit_api_key_new.setEnabled(True)
+            ui.lineEdit_api_secret_new.setEnabled(True)
+            ui.pushButton_submit_new_credintals.setEnabled(True)
+            ui.radioButton_testnet_true.setEnabled(True)
+            ui.radioButton_2_testnet_false.setEnabled(True)
+            ui.pushButton_submit_new_instruments.setEnabled(True)
+            ui.pushButton_submit_new_instruments_2.setEnabled(True)
+            ui.pushButton.setText('Chronometer\nEnabled')
+            ui.pushButton.setEnabled(False)
+            ui.pushButton_start_trading.setEnabled(True)
+            ui.lineEdit_58.show()
+
+            red_icon = "./red_led_icon.png"
+            ui.label_32.setPixmap(QtGui.QPixmap(red_icon))
         else:
             pass
 
@@ -2083,21 +2114,11 @@ def run_arbitrage(ui):
         global what_instrument
         from lists import list_monitor_log
 
-        ui.pushButton_stop_arbitrage.setEnabled(True)
-        ui.lineEdit_api_key_new.setEnabled(False)
-        ui.lineEdit_api_secret_new.setEnabled(False)
-        ui.pushButton_submit_new_credintals.setEnabled(False)
-        ui.radioButton_testnet_true.setEnabled(False)
-        ui.radioButton_2_testnet_false.setEnabled(False)
-        ui.pushButton_submit_new_instruments.setEnabled(False)
-        ui.pushButton_submit_new_instruments_2.setEnabled(False)
-        ui.pushButton.setText('Arbitrage\nStarted')
-        ui.pushButton.setEnabled(False)
-        ui.pushButton_start_trading.setEnabled(False)
-        ui.lineEdit_58.hide()
-
-        green_icon = "./green_led_icon.png"
-        ui.label_32.setPixmap(QtGui.QPixmap(green_icon))
+        info = {
+            'object_signal': 'setup_arbitrage_strategy_started',
+            'msg': ''
+        }
+        sinal.ui_singal1.emit(info)
 
         strategy_on_off = 'on'
 
@@ -2546,21 +2567,11 @@ def run_arbitrage(ui):
             finally:
                 pass
 
-        ui.pushButton_stop_arbitrage.setEnabled(False)
-        ui.lineEdit_api_key_new.setEnabled(True)
-        ui.lineEdit_api_secret_new.setEnabled(True)
-        ui.pushButton_submit_new_credintals.setEnabled(True)
-        ui.radioButton_testnet_true.setEnabled(True)
-        ui.radioButton_2_testnet_false.setEnabled(True)
-        ui.pushButton_submit_new_instruments.setEnabled(True)
-        ui.pushButton_submit_new_instruments_2.setEnabled(True)
-        ui.pushButton.setText('Chronometer\nEnabled')
-        ui.pushButton.setEnabled(False)
-        ui.pushButton_start_trading.setEnabled(True)
-        ui.lineEdit_58.show()
-
-        red_icon = "./red_led_icon.png"
-        ui.label_32.setPixmap(QtGui.QPixmap(red_icon))
+        info = {
+            'object_signal': 'setup_arbitrage_strategy_stopped',
+            'msg': ''
+        }
+        sinal.ui_singal1.emit(info)
 
         list_monitor_log.append('***** Arbitrage Stopped *****')
         time.sleep(5)
