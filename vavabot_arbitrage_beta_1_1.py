@@ -2466,7 +2466,8 @@ def run_arbitrage(ui):
                                                     instrument_direction1=instrument_buy_or_sell1)
                         pass
 
-                    btc_index_and_greeks_structure_monitor_print_while_arbitrage()
+                    btc_index_and_greeks_structure_monitor_print()
+                    # btc_index_and_greeks_structure_monitor_print_while_arbitrage()
 
             except Exception as er:
                 list_monitor_log.append(str(er))
