@@ -1330,9 +1330,7 @@ def run_arbitrage(ui):
         thread_arbitrage_strategy()
 
     def number_multiple_10_and_round_0_digits(number=None):
-        a3 = number % 10
-        b3 = float(number - a3)
-        return round(b3, 0)
+        return round(float(number - (number % 10)), 0)
 
     def buy_or_sell_first_order(instrument_name2, instrument_amount, instrument_direction2, instrument_name1,
                                 instrument_price1, instrument_price2):
