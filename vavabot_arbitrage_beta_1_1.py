@@ -1321,7 +1321,10 @@ def run_arbitrage(ui):
             btc_index_and_greeks_structure_monitor_print()  # Já tem signal
 
             for item in range(10, -1, -1):
-                sinal.ui_signal1.emit({'object_signal': 'lineEdit_58', 'msg': str(item)})
+                sinal.ui_signal1.emit({
+                    'object_signal': 'lineEdit_58',
+                    'msg': str(item)
+                })
                 time.sleep(1)
 
         thread_arbitrage_strategy()
