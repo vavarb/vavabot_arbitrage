@@ -1311,19 +1311,17 @@ def run_arbitrage(ui):
         global index_greeks_print_on_off
         index_greeks_print_on_off = 'on'
 
-        info = {
+        sinal.ui_signal1.emit({
             'object_signal': 'setup_gui_for_print_index_and_summary',
             'msg': ''
-        }
-        sinal.ui_signal1.emit(info)
+        })
 
         while index_greeks_print_on_off == 'on':
 
             btc_index_and_greeks_structure_monitor_print()  # Já tem signal
 
             for item in range(10, -1, -1):
-                info = {'object_signal': 'lineEdit_58', 'msg': str(item)}
-                sinal.ui_signal1.emit(info)
+                sinal.ui_signal1.emit({'object_signal': 'lineEdit_58', 'msg': str(item)})
                 time.sleep(1)
 
         thread_arbitrage_strategy()
