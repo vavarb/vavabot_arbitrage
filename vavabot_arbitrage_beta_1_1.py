@@ -16,7 +16,7 @@ global what_instrument
 # Classe de Sinais.
 class Sinais(QtCore.QObject):
     # Elementos.
-    ui_singal1 = QtCore.pyqtSignal(dict)
+    ui_signal1 = QtCore.pyqtSignal(dict)
 
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -995,6 +995,7 @@ def run_arbitrage(ui):
                 ui.lineEdit_34.setText(str(info['msg']['lineEdit_34']))
                 ui.lineEdit_35.setText(str(info['msg']['lineEdit_35']))
                 ui.lineEdit_36.setText(str(info['msg']['lineEdit_36']))
+
         elif object_signal == 'setup_arbitrage_strategy_started':
             ui.pushButton_stop_arbitrage.setEnabled(True)
             ui.lineEdit_api_key_new.setEnabled(False)
@@ -1011,6 +1012,7 @@ def run_arbitrage(ui):
 
             green_icon = "./green_led_icon.png"
             ui.label_32.setPixmap(QtGui.QPixmap(green_icon))
+
         elif object_signal == 'setup_arbitrage_strategy_stopped':
             ui.pushButton_stop_arbitrage.setEnabled(False)
             ui.lineEdit_api_key_new.setEnabled(True)
@@ -1027,6 +1029,15 @@ def run_arbitrage(ui):
 
             red_icon = "./red_led_icon.png"
             ui.label_32.setPixmap(QtGui.QPixmap(red_icon))
+
+        elif object_signal == 'setup_gui_for_print_index_and_summary':
+            red_icon = "./red_led_icon.png"
+            ui.label_32.setPixmap(QtGui.QPixmap(red_icon))
+
+            ui.pushButton_stop_arbitrage.setEnabled(False)
+            ui.pushButton.setEnabled(False)
+            ui.pushButton.setText('Chronometer\nEnabled')
+
         else:
             pass
 
@@ -1041,15 +1052,15 @@ def run_arbitrage(ui):
 
         if led1 == 'green':
             info = {'object_signal': 'led_connection', 'led_color': 'green'}
-            sinal.ui_singal1.emit(info)
+            sinal.ui_signal1.emit(info)
         elif led1 == 'red':
             info = {'object_signal': 'led_connection', 'led_color': 'red'}
-            sinal.ui_singal1.emit(info)
+            sinal.ui_signal1.emit(info)
         else:
             connect.logwriter('*** ERROR - lists_monitor() Error Code:: 922 ***')
             msg2 = str('*** ERROR - lists_monitor() Error Code:: 923 ***')
             info = {'object_signal': 'textedit_monitor_append', 'msg': msg2}
-            sinal.ui_singal1.emit(info)
+            sinal.ui_signal1.emit(info)
 
         while True:
             try:
@@ -1061,7 +1072,7 @@ def run_arbitrage(ui):
                         msg3 = str(list_monitor_print_log[i])
                         del (list_monitor_print_log[i])
                         info = {'object_signal': 'textedit_monitor_append', 'msg': msg3}
-                        sinal.ui_singal1.emit(info)
+                        sinal.ui_signal1.emit(info)
                     len_log_a = len(list_monitor_log)
                     time.sleep(0.0001)
                     pass
@@ -1073,16 +1084,16 @@ def run_arbitrage(ui):
                     if led_color() == 'green':
                         led1 = led_color()
                         info = {'object_signal': 'led_connection', 'led_color': 'green'}
-                        sinal.ui_singal1.emit(info)
+                        sinal.ui_signal1.emit(info)
                     elif led_color() == 'red':
                         led1 = led_color()
                         info = {'object_signal': 'led_connection', 'led_color': 'red'}
-                        sinal.ui_singal1.emit(info)
+                        sinal.ui_signal1.emit(info)
                     else:
                         connect.logwriter('*** ERROR - lists_monitor() Error Code:: 956 ***')
                         msg4 = str('*** ERROR - lists_monitor() Error Code:: 957 ***')
                         info = {'object_signal': 'textedit_monitor_append', 'msg': msg4}
-                        sinal.ui_singal1.emit(info)
+                        sinal.ui_signal1.emit(info)
                         pass
                 else:
                     pass
@@ -1091,7 +1102,7 @@ def run_arbitrage(ui):
                 if counter >= 100000:
                     counter = 0
                     info = {'object_signal': 'pushbutton_2_click_signal', 'msg': ''}
-                    sinal.ui_singal1.emit(info)
+                    sinal.ui_signal1.emit(info)
                     time.sleep(0.5)
                     pass
                 else:
@@ -1101,7 +1112,7 @@ def run_arbitrage(ui):
                 connect.logwriter(str(er) + ' Error Code:: 975')
                 msg5 = str('*** ERROR - lists_monitor() Error Code:: 976: ' + str(er) + ' ***')
                 info = {'object_signal': 'textedit_monitor_append', 'msg': msg5}
-                sinal.ui_singal1.emit(info)
+                sinal.ui_signal1.emit(info)
                 time.sleep(5)
             finally:
                 pass
@@ -1109,10 +1120,10 @@ def run_arbitrage(ui):
     def autoscroll_monitor():
         if ui.checkBox_autoScrollBar.isChecked() is True:
             info = {'object_signal': 'checkBox_autoScrollBar', 'msg': True}
-            sinal.ui_singal1.emit(info)
+            sinal.ui_signal1.emit(info)
         else:
             info = {'object_signal': 'checkBox_autoScrollBar', 'msg': False}
-            sinal.ui_singal1.emit(info)
+            sinal.ui_signal1.emit(info)
 
     def btc_index_and_greeks_structure_monitor_print_while_arbitrage():
         from connection_arbitrage import connect
@@ -1249,7 +1260,7 @@ def run_arbitrage(ui):
                     'object_signal': 'btc_index_and_greeks_structure_monitor_print',
                     'msg': msg5
                 }
-                sinal.ui_singal1.emit(info5)
+                sinal.ui_signal1.emit(info5)
                 pass
             else:
                 c2 = connect.get_position(instrument_name=str(instrument2_name_for_monitor))
@@ -1288,7 +1299,7 @@ def run_arbitrage(ui):
                     'object_signal': 'btc_index_and_greeks_structure_monitor_print',
                     'msg': msg5
                 }
-                sinal.ui_singal1.emit(info5)
+                sinal.ui_signal1.emit(info5)
 
         except Exception as er:
             list_monitor_log.append(
@@ -1300,12 +1311,11 @@ def run_arbitrage(ui):
         global index_greeks_print_on_off
         index_greeks_print_on_off = 'on'
 
-        red_icon = "./red_led_icon.png"
-        ui.label_32.setPixmap(QtGui.QPixmap(red_icon))
-
-        ui.pushButton_stop_arbitrage.setEnabled(False)
-        ui.pushButton.setEnabled(False)
-        ui.pushButton.setText('Chronometer\nEnabled')
+        info = {
+            'object_signal': 'setup_gui_for_print_index_and_summary',
+            'msg': ''
+        }
+        sinal.ui_signal1.emit(info)
 
         while index_greeks_print_on_off == 'on':
 
@@ -1313,7 +1323,7 @@ def run_arbitrage(ui):
 
             for item in range(10, -1, -1):
                 info = {'object_signal': 'lineEdit_58', 'msg': str(item)}
-                sinal.ui_singal1.emit(info)
+                sinal.ui_signal1.emit(info)
                 time.sleep(1)
 
         thread_arbitrage_strategy()
@@ -2118,7 +2128,7 @@ def run_arbitrage(ui):
             'object_signal': 'setup_arbitrage_strategy_started',
             'msg': ''
         }
-        sinal.ui_singal1.emit(info)
+        sinal.ui_signal1.emit(info)
 
         strategy_on_off = 'on'
 
@@ -2518,7 +2528,7 @@ def run_arbitrage(ui):
                             'object_signal': 'btc_index_and_greeks_structure_monitor_print',
                             'msg': msg5
                         }
-                        sinal.ui_singal1.emit(info5)
+                        sinal.ui_signal1.emit(info5)
                         pass
                     else:
                         c2 = summary_instrument2
@@ -2558,7 +2568,7 @@ def run_arbitrage(ui):
                             'object_signal': 'btc_index_and_greeks_structure_monitor_print',
                             'msg': msg5
                         }
-                        sinal.ui_singal1.emit(info5)
+                        sinal.ui_signal1.emit(info5)
 
             except Exception as er:
                 list_monitor_log.append(str(er))
@@ -2571,7 +2581,7 @@ def run_arbitrage(ui):
             'object_signal': 'setup_arbitrage_strategy_stopped',
             'msg': ''
         }
-        sinal.ui_singal1.emit(info)
+        sinal.ui_signal1.emit(info)
 
         list_monitor_log.append('***** Arbitrage Stopped *****')
         time.sleep(5)
@@ -2602,7 +2612,7 @@ def run_arbitrage(ui):
         else:
             pass  # cancel clicked
 
-    sinal.ui_singal1.connect(ui_signal1)
+    sinal.ui_signal1.connect(ui_signal1)
     monitor_thread = threading.Thread(daemon=True, target=lists_monitor)
     monitor_thread.start()
     ui.pushButton_start_print_loglog.hide()
