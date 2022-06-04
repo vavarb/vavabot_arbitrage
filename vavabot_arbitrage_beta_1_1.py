@@ -1705,6 +1705,7 @@ def run_arbitrage(ui):
                        instrument_name_1, instrument_position1, instrument_position2, instrument_position_currency1,
                        instrument_position_currency2, pwssiuobte, instrument_buy_or_sell1, total_amount,
                        instrument_amount2_usd):
+
         if (abs(instrument_position1) < abs(total_amount) / 2 - 10 and
             abs(instrument_position2) < abs(instrument_amount2_usd) - 10) and \
                 (abs(instrument_position1) + abs(instrument_position2) < abs(total_amount)):
