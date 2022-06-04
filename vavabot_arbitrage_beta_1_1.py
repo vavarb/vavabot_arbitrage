@@ -2466,8 +2466,78 @@ def run_arbitrage(ui):
                                                     instrument_direction1=instrument_buy_or_sell1)
                         pass
 
-                    btc_index_and_greeks_structure_monitor_print()
+                    # btc_index_and_greeks_structure_monitor_print()
                     # btc_index_and_greeks_structure_monitor_print_while_arbitrage()
+                    a = connect.index_price('btc_usd')
+                    b = str(round(a['index_price'], 2))
+
+                    instrument1_name_for_monitor = instrument_name_1
+                    instrument2_name_for_monitor = instrument_name_2
+
+                    c = summary_instrument1
+
+                    p_ = annualized_premium(instrument_name=str(instrument1_name_for_monitor))
+
+                    if p_ == 'No bid/ask offer':
+                        msg5 = {
+                            'lineEdit_24_btc_index': b,
+                            'lineEdit': str(instrument1_name_for_monitor),
+                            'c': c,
+                            'lineEdit_11': str(str(instrument1_name_for_monitor) + ' An.Premium (%)'),
+                            'lineEdit_32': str(p_),
+                            'lineEdit_6': '',
+                            'c2': '',
+                            'lineEdit_12': '',
+                            'lineEdit_33': '',
+                            'lineEdit_34': '',
+                            'lineEdit_35': '',
+                            'lineEdit_36': ''
+                        }
+                        info5 = {
+                            'object_signal': 'btc_index_and_greeks_structure_monitor_print',
+                            'msg': msg5
+                        }
+                        sinal.ui_singal1.emit(info5)
+                        pass
+                    else:
+                        c2 = summary_instrument2
+
+                        p2_ = annualized_premium(instrument_name=str(instrument2_name_for_monitor))
+                        p2 = str(p2_)
+
+                        if p2 == 'No bid/ask offer' or c['mark_price'] == 0.0 or c2['mark_price'] == 0.0:
+                            q = str(round((c2['mark_price'] - c['mark_price']), 2))
+                            r = 'None'
+                            s = 'None'
+                            list_monitor_log.append(
+                                '********** Mark Price is Zero OR No bid/ask offer **********  Mark Price: '
+                                + str(instrument1_name_for_monitor) + ' = ' + str(c['mark_price']) + '     '
+                                + str(instrument2_name_for_monitor) + ' = ' + str(c2['mark_price']))
+                            pass
+                        else:
+                            q = str(round((c2['mark_price'] - c['mark_price']), 2))
+                            r = str(round(((c2['mark_price'] - c['mark_price']) * 100 / c['mark_price']), 2))
+                            s = str(round(float(p2_) - float(p_), 2))
+
+                        msg5 = {
+                            'lineEdit_24_btc_index': b,
+                            'lineEdit': str(instrument1_name_for_monitor),
+                            'c': c,
+                            'lineEdit_11': str(str(instrument1_name_for_monitor) + ' An.Premium (%)'),
+                            'lineEdit_32': str(p_),
+                            'lineEdit_6': str(instrument2_name_for_monitor),
+                            'c2': c2,
+                            'lineEdit_12': str(str(instrument2_name_for_monitor) + ' An.Premium (%)'),
+                            'lineEdit_33': p2,
+                            'lineEdit_34': q,
+                            'lineEdit_35': r,
+                            'lineEdit_36': s
+                        }
+                        info5 = {
+                            'object_signal': 'btc_index_and_greeks_structure_monitor_print',
+                            'msg': msg5
+                        }
+                        sinal.ui_singal1.emit(info5)
 
             except Exception as er:
                 list_monitor_log.append(str(er))
