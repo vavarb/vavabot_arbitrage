@@ -2127,6 +2127,7 @@ def run_arbitrage(ui):
         info = {
             'object_signal': 'setup_arbitrage_strategy_started',
             'msg': ''
+                   ''
         }
         sinal.ui_signal1.emit(info)
 
@@ -2498,7 +2499,6 @@ def run_arbitrage(ui):
                         pass
 
                     # btc_index_and_greeks_structure_monitor_print()
-                    # btc_index_and_greeks_structure_monitor_print_while_arbitrage()
                     a = connect.index_price('btc_usd')
                     b = str(round(a['index_price'], 2))
 
