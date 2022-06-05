@@ -2126,7 +2126,7 @@ def run_arbitrage(ui):
 
         info = {
             'object_signal': 'setup_arbitrage_strategy_started',
-            'msg': ''
+            'msg': ' '
         }
         sinal.ui_signal1.emit(info)
 
