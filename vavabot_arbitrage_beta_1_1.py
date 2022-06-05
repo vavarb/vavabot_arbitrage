@@ -1282,8 +1282,8 @@ def run_arbitrage(ui):
                     s = str(round(float(p2_) - float(p_), 2))
 
                 msg5 = {
-                    'lineEdit_24_btc_index': b,
-                    'lineEdit': str(instrument1_name_for_monitor),
+                    'lineEdit_24_btc_index': b,  # btc index price
+                    'lineEdit': str(instrument1_name_for_monitor),  # Instrument name
                     'c': c,
                     'lineEdit_11': str(str(instrument1_name_for_monitor) + ' An.Premium (%)'),
                     'lineEdit_32': str(p_),
