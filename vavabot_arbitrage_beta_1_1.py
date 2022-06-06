@@ -1631,7 +1631,7 @@ def run_arbitrage(ui):
             return False
 
     def stop_loss(set_stop_loss_in_, set_stop_loss_value_, instrument_price1, instrument_price2,
-                  instrument_name_1, instrument_name_2, get_position_instrument1, get_position_instrument2):
+                  get_position_instrument1, get_position_instrument2):
         from connection_arbitrage import connect
         from lists import list_monitor_log
 
@@ -1684,9 +1684,9 @@ def run_arbitrage(ui):
             return False
 
     def strategy_entry(instrument_name_1, instrument_name_2,
-                  summary_instrument1, summary_instrument2,
-                  best_bid_ask_price_in_usd_instrument1, best_bid_ask_price_in_usd_instrument2,
-                  set_entry_position_in_, set_entry_position_bigger_lower_, set_entry_position_value_):
+                       summary_instrument1, summary_instrument2,
+                       best_bid_ask_price_in_usd_instrument1, best_bid_ask_price_in_usd_instrument2,
+                       set_entry_position_in_, set_entry_position_bigger_lower_, set_entry_position_value_):
         from lists import list_monitor_log
         from connection_arbitrage import connect
 
@@ -2017,8 +2017,6 @@ def run_arbitrage(ui):
                         set_stop_loss_value_=set_stop_loss_value_,
                         instrument_price1=best_bid_ask_price1,
                         instrument_price2=best_bid_ask_price2,
-                        instrument_name_1=instrument_name_1,
-                        instrument_name_2=instrument_name_2,
                         get_position_instrument1=summary_instrument1,
                         get_position_instrument2=summary_instrument2
                     )
