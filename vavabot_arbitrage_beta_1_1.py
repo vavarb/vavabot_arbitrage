@@ -1468,7 +1468,7 @@ def run_arbitrage(ui):
             profit_loss_in_usd_instrument2 = 0
 
         profit_loss_in_usd_total = float(profit_loss_in_usd_instrument1) + \
-                                   float(profit_loss_in_usd_instrument2)
+            float(profit_loss_in_usd_instrument2)
 
         instrument_price1 = float(best_bid_ask_price_in_usd_instrument1)
         instrument_price2 = float(best_bid_ask_price_in_usd_instrument2)
@@ -1728,7 +1728,7 @@ def run_arbitrage(ui):
             profit_loss_in_usd_instrument2 = 0
 
         profit_loss_in_usd_total = float(profit_loss_in_usd_instrument1) + \
-                                   float(profit_loss_in_usd_instrument2)
+            float(profit_loss_in_usd_instrument2)
 
         instrument_price1 = float(best_bid_ask_price_in_usd_instrument1)
         instrument_price2 = float(best_bid_ask_price_in_usd_instrument2)
@@ -1739,8 +1739,8 @@ def run_arbitrage(ui):
                 abs(instrument_price2) - abs(instrument_price1)) * 100 / abs(instrument_price1)
             if set_entry_position_bigger_lower_ == '>':
                 if difference_instrument2_instrument1_percentage > float(set_entry_position_value_):
-                    list_monitor_log.append('*** Opened position:' +  str(instrument_name_2) +
-                                            ' > ' + str(set_entry_position_value_) + '% '+
+                    list_monitor_log.append('*** Opened position:' + str(instrument_name_2) +
+                                            ' > ' + str(set_entry_position_value_) + '% ' +
                                             str(instrument_name_1) + '. ' +
                                             str(difference_instrument2_instrument1_percentage) + '%')
                     return True
@@ -1768,10 +1768,12 @@ def run_arbitrage(ui):
             else:
                 list_monitor_log.append('***** ERROR in Trade Opening Setup Check - Error Code 2480 *****')
                 list_monitor_log.append('set_entry_position_in_' +
-                    str(set_entry_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
+                                        str(set_entry_position_in_) + ': ' +
+                                        str(difference_instrument2_instrument1_percentage) + '%')
                 connect.logwriter('***** ERROR in Trade Opening Setup Check - Error Code 2483 *****')
                 connect.logwriter('set_entry_position_in_: ' +
-                    str(set_entry_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
+                                  str(set_entry_position_in_) + ': ' +
+                                  str(difference_instrument2_instrument1_percentage) + '%')
                 return False
 
         # Entry position in USD
@@ -1911,7 +1913,6 @@ def run_arbitrage(ui):
         instrument_amount2_usd_before_trade = instrument_amount1_usd_before_trade
 
         positions_with_same_size_in_usd_or_currency = ConfigAndInstrumentsSaved().positions_with_same_size_in()
-        pwssiuobte = positions_with_same_size_in_usd_or_currency
 
         set_entry_position_in_ = ConfigAndInstrumentsSaved().set_entry_position_in()
         set_entry_position_bigger_lower_ = ConfigAndInstrumentsSaved().set_entry_position_bigger_lower()
@@ -2021,18 +2022,17 @@ def run_arbitrage(ui):
                         get_position_instrument2=summary_instrument2
                     )
                     if stop_loss_for_arbitrage_strategy is False:
-                        stop_gain_conditions_trade = stop_gain(instrument_name_1=instrument_name_1,
-                                                               instrument_name_2=instrument_name_2,
-                                                               summary_instrument1=summary_instrument1,
-                                                               summary_instrument2=summary_instrument2,
-                                                               best_bid_ask_price_in_usd_instrument1=
-                                                               best_bid_ask_price1,
-                                                               best_bid_ask_price_in_usd_instrument2=
-                                                               best_bid_ask_price2,
-                                                               set_exit_position_in_=set_exit_position_in_,
-                                                               set_exit_position_bigger_lower_=
-                                                               set_exit_position_bigger_lower_,
-                                                               set_exit_position_value_=set_exit_position_value_)
+                        stop_gain_conditions_trade = stop_gain(
+                            instrument_name_1=instrument_name_1,
+                            instrument_name_2=instrument_name_2,
+                            summary_instrument1=summary_instrument1,
+                            summary_instrument2=summary_instrument2,
+                            best_bid_ask_price_in_usd_instrument1=best_bid_ask_price1,
+                            best_bid_ask_price_in_usd_instrument2=best_bid_ask_price2,
+                            set_exit_position_in_=set_exit_position_in_,
+                            set_exit_position_bigger_lower_=set_exit_position_bigger_lower_,
+                            set_exit_position_value_=set_exit_position_value_
+                        )
                     else:
                         stop_gain_conditions_trade = False
                 else:
@@ -2058,16 +2058,17 @@ def run_arbitrage(ui):
                             (abs(total_amount) / 2) - abs(instrument_position2)) > 10 and \
                         number_multiple_10_and_round_0_digits(
                             abs(total_amount) - (abs(instrument_position1) + abs(instrument_position2))) > 10:
-                    open_conditions_trade = strategy_entry(instrument_name_1=instrument_name_1,
-                                                           instrument_name_2=instrument_name_2,
-                                                           summary_instrument1=summary_instrument1,
-                                                           summary_instrument2=summary_instrument2,
-                                                           best_bid_ask_price_in_usd_instrument1=best_bid_ask_price1,
-                                                           best_bid_ask_price_in_usd_instrument2=best_bid_ask_price2,
-                                                           set_entry_position_in_=set_entry_position_in_,
-                                                           set_entry_position_bigger_lower_=
-                                                           set_entry_position_bigger_lower_,
-                                                           set_entry_position_value_=set_entry_position_value_)
+                    open_conditions_trade = strategy_entry(
+                        instrument_name_1=instrument_name_1,
+                        instrument_name_2=instrument_name_2,
+                        summary_instrument1=summary_instrument1,
+                        summary_instrument2=summary_instrument2,
+                        best_bid_ask_price_in_usd_instrument1=best_bid_ask_price1,
+                        best_bid_ask_price_in_usd_instrument2=best_bid_ask_price2,
+                        set_entry_position_in_=set_entry_position_in_,
+                        set_entry_position_bigger_lower_=set_entry_position_bigger_lower_,
+                        set_entry_position_value_=set_entry_position_value_
+                    )
                 else:
                     open_conditions_trade = False
                 # open_conditions_trade - the end **********************************************************************
