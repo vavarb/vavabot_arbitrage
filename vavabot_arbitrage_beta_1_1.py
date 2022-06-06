@@ -1394,11 +1394,11 @@ def run_arbitrage(ui):
 
     def check_instruments_positions(instrument_name1, instrument_position1,
                                     instrument_position2, instrument_position_currency1, instrument_position_currency2,
-                                    positions_with_same_size_in_usd_or_btc_eth, instrument_direction1
+                                    positions_with_same_size_in_usd_or_currency, instrument_direction1
                                     ):
         from connection_arbitrage import connect
 
-        if positions_with_same_size_in_usd_or_btc_eth == 'USD':
+        if positions_with_same_size_in_usd_or_currency == 'USD':
             list_monitor_log.append('*** start check size instruments positions in USD ***')
             if number_multiple_10_and_round_0_digits(
                     abs((int(abs(instrument_position1))) -
@@ -1423,7 +1423,7 @@ def run_arbitrage(ui):
                     pass
             else:
                 pass
-        elif positions_with_same_size_in_usd_or_btc_eth == 'BTC/ETH':
+        elif positions_with_same_size_in_usd_or_currency == 'BTC/ETH':
             list_monitor_log.append('*** start check size instruments positions in BTC/ETH ***')
             if abs(abs(instrument_position_currency1) - abs(instrument_position_currency2)) > 0:
                 if instrument_direction1 == 'buy':
@@ -1535,7 +1535,7 @@ def run_arbitrage(ui):
                                                 ):
         from connection_arbitrage import connect
         list_monitor_log.append('*** Check instruments positions bigger amount configured ***')
-        # pwssiuobte = positions_with_same_size_in_usd_or_btc_eth
+        # pwssiuobte = positions_with_same_size_in_usd_or_currency
         if ((abs(instrument_position1) > ((total_amount / 2) + 10) or
                 abs(instrument_position2) > instrument_amount2_usd + 10 or
                 abs(instrument_position1) + abs(instrument_position2) > total_amount) and pwssiuobte == 'USD') or \
@@ -1656,6 +1656,8 @@ def run_arbitrage(ui):
             currency = 'BTC'
         elif 'ETH' in instrument_name:
             currency = 'ETH'
+        elif 'SOL' in instrument_name:
+            currency = 'SOL'
         else:
             pass
 
@@ -1672,7 +1674,7 @@ def run_arbitrage(ui):
         from connection_arbitrage import connect
         # % (mid future price / index price - 1) * 525600 / min till expiration
 
-        if instrument_name == 'BTC-PERPETUAL' or instrument_name == 'ETH-PERPETUAL':
+        if 'PERPETUAL' in str(instrument_name):
             return 0
         else:
             book_summary_instrument = connect.get_book_summary_by_instrument(instrument_name=instrument_name)
@@ -1684,12 +1686,15 @@ def run_arbitrage(ui):
             elif 'ETH' in instrument_name:
                 index_price = float(connect.index_price(currency='eth_usd')['index_price'])
                 pass
+            elif 'SOL' in instrument_name:
+                index_price = float(connect.index_price(currency='sol_usd')['index_price'])
             else:
                 pass
 
             # no bid/ask offer
             if book_summary_instrument[0]['mid_price'] is None:
-                list_monitor_log.append('********** ' + str(instrument_name) + ' No bid/ask offer **********')
+                list_monitor_log.append('********** ' + str(instrument_name) +
+                                        ' No bid/ask offer in annualized_premium **********')
                 return 'No bid/ask offer'
             else:
                 mid_price_future = float(book_summary_instrument[0]['mid_price'])
@@ -1732,7 +1737,7 @@ def run_arbitrage(ui):
                                                     instrument_position2=instrument_position2,
                                                     instrument_position_currency1=instrument_position_currency1,
                                                     instrument_position_currency2=instrument_position_currency2,
-                                                    positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                    positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                     instrument_direction1=instrument_buy_or_sell1)
                     else:
                         pass
@@ -1758,7 +1763,7 @@ def run_arbitrage(ui):
                                                     instrument_position2=instrument_position2,
                                                     instrument_position_currency1=instrument_position_currency1,
                                                     instrument_position_currency2=instrument_position_currency2,
-                                                    positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                    positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                     instrument_direction1=instrument_buy_or_sell1)
                     else:
                         pass
@@ -1790,7 +1795,7 @@ def run_arbitrage(ui):
                                                     instrument_position2=instrument_position2,
                                                     instrument_position_currency1=instrument_position_currency1,
                                                     instrument_position_currency2=instrument_position_currency2,
-                                                    positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                    positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                     instrument_direction1=instrument_buy_or_sell1)
                     else:
                         pass
@@ -1815,7 +1820,7 @@ def run_arbitrage(ui):
                                                     instrument_position2=instrument_position2,
                                                     instrument_position_currency1=instrument_position_currency1,
                                                     instrument_position_currency2=instrument_position_currency2,
-                                                    positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                    positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                     instrument_direction1=instrument_buy_or_sell1)
                     else:
                         pass
@@ -1849,7 +1854,7 @@ def run_arbitrage(ui):
                                                     instrument_position2=instrument_position2,
                                                     instrument_position_currency1=instrument_position_currency1,
                                                     instrument_position_currency2=instrument_position_currency2,
-                                                    positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                    positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                     instrument_direction1=instrument_buy_or_sell1)
                     else:
                         pass
@@ -1876,7 +1881,7 @@ def run_arbitrage(ui):
                                                     instrument_position2=instrument_position2,
                                                     instrument_position_currency1=instrument_position_currency1,
                                                     instrument_position_currency2=instrument_position_currency2,
-                                                    positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                    positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                     instrument_direction1=instrument_buy_or_sell1)
                     else:
                         pass
@@ -1917,7 +1922,7 @@ def run_arbitrage(ui):
                                                 instrument_position2=instrument_position2,
                                                 instrument_position_currency1=instrument_position_currency1,
                                                 instrument_position_currency2=instrument_position_currency2,
-                                                positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                 instrument_direction1=instrument_buy_or_sell1)
                 else:
                     pass
@@ -1941,7 +1946,7 @@ def run_arbitrage(ui):
                                                 instrument_position2=instrument_position2,
                                                 instrument_position_currency1=instrument_position_currency1,
                                                 instrument_position_currency2=instrument_position_currency2,
-                                                positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                 instrument_direction1=instrument_buy_or_sell1)
                 else:
                     pass
@@ -1963,7 +1968,7 @@ def run_arbitrage(ui):
                                                 instrument_position2=instrument_position2,
                                                 instrument_position_currency1=instrument_position_currency1,
                                                 instrument_position_currency2=instrument_position_currency2,
-                                                positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                 instrument_direction1=instrument_buy_or_sell1)
                 else:
                     pass
@@ -1988,7 +1993,7 @@ def run_arbitrage(ui):
                                                 instrument_position2=instrument_position2,
                                                 instrument_position_currency1=instrument_position_currency1,
                                                 instrument_position_currency2=instrument_position_currency2,
-                                                positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                 instrument_direction1=instrument_buy_or_sell1)
                 else:
                     pass
@@ -2009,7 +2014,7 @@ def run_arbitrage(ui):
                                                 instrument_position2=instrument_position2,
                                                 instrument_position_currency1=instrument_position_currency1,
                                                 instrument_position_currency2=instrument_position_currency2,
-                                                positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                 instrument_direction1=instrument_buy_or_sell1)
                 else:
                     pass
@@ -2036,7 +2041,7 @@ def run_arbitrage(ui):
                                                 instrument_position2=instrument_position2,
                                                 instrument_position_currency1=instrument_position_currency1,
                                                 instrument_position_currency2=instrument_position_currency2,
-                                                positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                 instrument_direction1=instrument_buy_or_sell1)
                 else:
                     pass
@@ -2060,7 +2065,7 @@ def run_arbitrage(ui):
                                                 instrument_position2=instrument_position2,
                                                 instrument_position_currency1=instrument_position_currency1,
                                                 instrument_position_currency2=instrument_position_currency2,
-                                                positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                 instrument_direction1=instrument_buy_or_sell1)
                 else:
                     pass
@@ -2069,7 +2074,7 @@ def run_arbitrage(ui):
         else:
             pass
 
-    def stop_loss(set_stop_loss_in_, set_stop_loss_value_, instrument_price1, instrument_price2,
+    def stop_loss1(set_stop_loss_in_, set_stop_loss_value_, instrument_price1, instrument_price2,
                   instrument_name_1, instrument_name_2):
         from connection_arbitrage import connect
         from lists import list_monitor_log
@@ -2118,18 +2123,526 @@ def run_arbitrage(ui):
         else:
             pass
 
+    def stop_gain(instrument_name_1, instrument_name_2,
+                  summary_instrument1, summary_instrument2,
+                  best_bid_ask_price_in_usd_instrument1, best_bid_ask_price_in_usd_instrument2,
+                  set_exit_position_in_, set_exit_position_bigger_lower_, set_exit_position_value_):
+        from lists import list_monitor_log
+        from connection_arbitrage import connect
+
+        list_monitor_log.append('*** Stop Gain Check ***')
+        list_monitor_log.append('Stop Gains selected in: ' +
+                                str(set_exit_position_in_) +
+                                ' ' +
+                                str(set_exit_position_bigger_lower_) +
+                                ' ' +
+                                str(set_exit_position_value_)
+                                )
+        # Args
+        average_price_position_instrument1 = float(summary_instrument1['average_price'])
+        average_price_position_instrument2 = float(summary_instrument2['average_price'])
+
+        instrument_position1 = float(summary_instrument1['size'])
+        instrument_position2 = float(summary_instrument2['size'])
+
+        if summary_instrument1['direction'] == 'buy':
+            profit_loss_in_usd_instrument1 = \
+                (float(best_bid_ask_price_in_usd_instrument1) - float(average_price_position_instrument1)) * \
+                instrument_position1
+        elif summary_instrument1['direction'] == 'sell':
+            profit_loss_in_usd_instrument1 = \
+                (float(average_price_position_instrument1) - float(best_bid_ask_price_in_usd_instrument1)) * \
+                instrument_position1
+        else:
+            profit_loss_in_usd_instrument1 = 0
+
+        if summary_instrument2['direction'] == 'buy':
+            profit_loss_in_usd_instrument2 = \
+                (float(best_bid_ask_price_in_usd_instrument2) - float(average_price_position_instrument2)) * \
+                instrument_position2
+        elif summary_instrument2['direction'] == 'sell':
+            profit_loss_in_usd_instrument2 = \
+                (float(average_price_position_instrument2) - float(best_bid_ask_price_in_usd_instrument2)) * \
+                instrument_position2
+        else:
+            profit_loss_in_usd_instrument2 = 0
+
+        profit_loss_in_usd_total = float(profit_loss_in_usd_instrument1) + \
+                                   float(profit_loss_in_usd_instrument2)
+
+        instrument_price1 = float(best_bid_ask_price_in_usd_instrument1)
+        instrument_price2 = float(best_bid_ask_price_in_usd_instrument2)
+
+        # strategy exit position in Profit_
+        if set_exit_position_in_ == 'Profit_%':
+            profit_loss_percentage = profit_loss_in_usd_total * 100 / (
+                    abs(instrument_position1) + abs(instrument_position2))
+            if set_exit_position_bigger_lower_ == '>':
+                if float(profit_loss_percentage) > float(set_exit_position_value_):
+                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
+                    return True
+                else:
+                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
+                    return False
+            elif set_exit_position_bigger_lower_ == '<':
+                if float(profit_loss_percentage) < float(set_exit_position_value_):
+                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
+                    return True
+                else:
+                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
+                    return False
+            else:
+                list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2192 ***')
+                list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
+                connect.logwriter('***** ERROR in Stop Gain check - Error Code 2195 ***')
+                connect.logwriter(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
+                return False
+
+        # strategy exit position in Difference_%
+        elif set_exit_position_in_ == 'Difference_%':
+            difference_instrument2_instrument1_percentage = (
+                abs(instrument_price2) - abs(instrument_price1)) * 100 / abs(instrument_price1)
+            if set_exit_position_bigger_lower_ == '>':
+                if difference_instrument2_instrument1_percentage > \
+                        float(set_exit_position_value_):
+                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(
+                        str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
+                    return True
+                else:
+                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(
+                        str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
+                    return False
+            if set_exit_position_bigger_lower_ == '<':
+                if difference_instrument2_instrument1_percentage < \
+                        float(set_exit_position_value_):
+                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(
+                        str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
+                    return True
+                else:
+                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(
+                        str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
+                    return False
+            else:
+                list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2230 ***')
+                list_monitor_log.append(
+                    str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
+                connect.logwriter('***** ERROR in Stop Gain check - Error Code 2232 ***')
+                connect.logwriter(
+                    str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
+                return False
+
+        # strategy exit position in Difference_USD
+        elif set_exit_position_in_ == 'Difference_USD':
+            instrument2_intrument1_difference_in_usd = abs(instrument_price2) - abs(instrument_price1)
+            if set_exit_position_bigger_lower_ == '>':
+                if instrument2_intrument1_difference_in_usd > float(set_exit_position_value_):
+                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(
+                        str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
+                    return True
+                else:
+                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(
+                        str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
+                    return False
+            elif set_exit_position_bigger_lower_ == '<':
+                if instrument2_intrument1_difference_in_usd < float(set_exit_position_value_):
+                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(
+                        str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
+                    return True
+                else:
+                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(
+                        str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
+                    return False
+            else:
+                list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2264 ***')
+                list_monitor_log.append(
+                    str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
+                connect.logwriter('***** ERROR in Stop Gain check - Error Code 2267 ***')
+                connect.logwriter(
+                    str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
+                return False
+
+        # strategy exit position in Difference_Premium
+        elif set_exit_position_in_ == 'Difference_Premium':
+            annualized_premium1 = annualized_premium(instrument_name=instrument_name_1)
+            annualized_premium2 = annualized_premium(instrument_name=instrument_name_2)
+            if annualized_premium1 == 'No bid/ask offer' or annualized_premium2 == 'No bid/ask offer':
+                list_monitor_log.append('***** Stop Gain no check - No bid/ask offer *****')
+                connect.logwriter('***** Stop Gain no check - No bid/ask offer *****')
+                return False
+            else:
+                instrument2_instrument1_annualized_premium = float(annualized_premium2) - float(annualized_premium1)
+                if set_exit_position_bigger_lower_ == '>':
+                    if instrument2_instrument1_annualized_premium > float(set_exit_position_value_):
+                        list_monitor_log.append('*** Stop Gain checked ***')
+                        list_monitor_log.append(
+                            str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
+                        list_monitor_log.append(
+                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %')
+                        list_monitor_log.append(
+                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %')
+                        return True
+                    else:
+                        list_monitor_log.append('*** Stop Gain checked ***')
+                        list_monitor_log.append(
+                            str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
+                        list_monitor_log.append(
+                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %')
+                        list_monitor_log.append(
+                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %')
+                        return False
+                elif set_exit_position_bigger_lower_ == '<':
+                    if instrument2_instrument1_annualized_premium < float(set_exit_position_value_):
+                        list_monitor_log.append('*** Stop Gain checked ***')
+                        list_monitor_log.append(
+                            str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
+                        list_monitor_log.append(
+                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %')
+                        list_monitor_log.append(
+                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %')
+                        return True
+                    else:
+                        list_monitor_log.append('*** Stop Gain checked ***')
+                        list_monitor_log.append(
+                            str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
+                        list_monitor_log.append(
+                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %')
+                        list_monitor_log.append(
+                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %')
+                        return False
+                else:
+                    list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2326 ***')
+                    list_monitor_log.append(
+                        str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
+                    connect.logwriter('***** ERROR in Stop Gain check - Error Code 2329 ***')
+                    connect.logwriter(
+                        str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
+                    return False
+        else:
+            list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2334 ***** ' + str(
+                set_exit_position_in_) + ' ' + str(set_exit_position_value_))
+            connect.logwriter('***** ERROR in Stop Gain check - Error Code 2336 ***** ' + str(
+                set_exit_position_in_) + ' ' + str(set_exit_position_value_))
+            return False
+
+    def stop_loss(set_stop_loss_in_, set_stop_loss_value_, instrument_price1, instrument_price2,
+                  instrument_name_1, instrument_name_2, get_position_instrument1, get_position_instrument2):
+        from connection_arbitrage import connect
+        from lists import list_monitor_log
+
+        list_monitor_log.append('*** Check Stop Loss: ' + str(set_stop_loss_in_) + ': ' + str(set_stop_loss_value_) +
+                                ' ***')
+        # args modified
+        summary_instrument1 = get_position_instrument1
+        summary_instrument2 = get_position_instrument2
+
+        instrument_total_profit_loss_in_currency1 = float(summary_instrument1['total_profit_loss'])
+        instrument_total_profit_loss_in_currency2 = float(summary_instrument2['total_profit_loss'])
+
+        if set_stop_loss_in_ == 'USD:':
+            if (instrument_total_profit_loss_in_currency1 * float(instrument_price1)) + \
+                    (instrument_total_profit_loss_in_currency2 * instrument_price2) < float(set_stop_loss_value_):
+                connect.cancel_all()
+                connect.close_position(instrument_name=instrument_name_1)
+                connect.close_position(instrument_name=instrument_name_2)
+                connect.logwriter('***** Stop Loss has been executed - All positions have been CLOSED *****')
+                list_monitor_log('***** Stop Loss has been executed - All positions have been CLOSED *****')
+                return True
+            else:
+                list_monitor_log.append('*** Stop Loss Checked ***')
+                return False
+
+        elif set_stop_loss_in_ == 'BTC/ETH:':
+            if instrument_total_profit_loss_in_currency1 + instrument_total_profit_loss_in_currency2 < \
+                    float(set_stop_loss_value_):
+                connect.cancel_all()
+                connect.close_position(instrument_name=instrument_name_1)
+                connect.close_position(instrument_name=instrument_name_2)
+                connect.logwriter('***** Stop Loss has been executed - All positions have been CLOSED *****')
+                list_monitor_log('***** Stop Loss has been executed - All positions have been CLOSED *****')
+                return True
+            else:
+                list_monitor_log.append('*** Stop Loss Checked ***')
+                return False
+
+        elif set_stop_loss_in_ == '%:':
+            instrument_position_currency1 = float(summary_instrument1['size_currency'])
+            instrument_position_currency2 = float(summary_instrument2['size_currency'])
+            percentage_stop_loss = (
+                instrument_total_profit_loss_in_currency1 + instrument_total_profit_loss_in_currency2) * 100 / (
+                        abs(instrument_position_currency1) + abs(instrument_position_currency2))
+
+            if percentage_stop_loss < float(set_stop_loss_value_):
+                connect.cancel_all()
+                connect.close_position(instrument_name=instrument_name_1)
+                connect.close_position(instrument_name=instrument_name_2)
+                connect.logwriter('***** Stop Loss has been executed - All positions have been CLOSED *****')
+                list_monitor_log('***** Stop Loss has been executed - All positions have been CLOSED *****')
+                return True
+            else:
+                list_monitor_log.append('*** Stop Loss Checked ***')
+                return False
+        else:
+            connect.logwriter('********** ERROR - Stop Loss has NOT been Checked - Error Code 2176 **********')
+            list_monitor_log.append('********** ERROR - Stop Loss has NOT been Checked - Error Code 2176 **********')
+            return False
+
     def arbitrage_strategy():
         global index_greeks_print_on_off
         global strategy_on_off
         global what_instrument
         from lists import list_monitor_log
 
-        info = {
+        sinal.ui_signal1.emit({
             'object_signal': 'setup_arbitrage_strategy_started',
             'msg': ''
-                   ''
+        })
+
+        strategy_on_off = 'on'
+
+        # Args statics
+        instrument_name_1 = str(
+            ConfigAndInstrumentsSaved().instrument_name_construction_from_file(instrument_number=1)
+        )
+        instrument_buy_or_sell1 = str(
+            ConfigAndInstrumentsSaved().instrument_buy_or_sell(instrument_number=1)
+        )
+
+        instrument_name_2 = str(
+            ConfigAndInstrumentsSaved().instrument_name_construction_from_file(instrument_number=2)
+        )
+        instrument_buy_or_sell2 = str(
+            ConfigAndInstrumentsSaved().instrument_buy_or_sell(instrument_number=2)
+        )
+
+        total_amount = float(
+            ConfigAndInstrumentsSaved().total_amount_saved()
+        )
+
+        instrument_amount1_usd_before_trade = int(
+            number_multiple_10_and_round_0_digits(number=total_amount / 2)
+        )
+        instrument_amount2_usd_before_trade = instrument_amount1_usd_before_trade
+
+        positions_with_same_size_in_usd_or_currency = ConfigAndInstrumentsSaved().positions_with_same_size_in()
+        pwssiuobte = positions_with_same_size_in_usd_or_currency
+
+        set_entry_position_in_ = ConfigAndInstrumentsSaved().set_entry_position_in()
+        set_entry_position_bigger_lower_ = ConfigAndInstrumentsSaved().set_entry_position_bigger_lower()
+        set_entry_position_value_ = float(ConfigAndInstrumentsSaved().set_entry_position_value())
+
+        set_exit_position_in_ = ConfigAndInstrumentsSaved().set_exit_position_in()
+        set_exit_position_bigger_lower_ = ConfigAndInstrumentsSaved().set_exit_position_bigger_lower()
+        set_exit_position_value_ = ConfigAndInstrumentsSaved().set_exit_position_value()
+
+        set_stop_loss_in_ = str(ConfigAndInstrumentsSaved().set_stop_loss_in())
+        set_stop_loss_value_ = float(ConfigAndInstrumentsSaved().set_stop_loss_value())
+
+        stop_loss_counter = 0
+
+        # Strategy arbitrage
+        list_monitor_log.append('***** Arbitrage Started *****')
+        while strategy_on_off == 'on':
+            from lists import list_monitor_log
+            try:
+                from connection_arbitrage import connect
+
+                # Args modifically
+
+                summary_instrument1 = connect.get_position(instrument_name=instrument_name_1)
+                summary_instrument2 = connect.get_position(instrument_name=instrument_name_2)
+
+                instrument_position1 = float(summary_instrument1['size'])
+                instrument_position2 = float(summary_instrument2['size'])
+
+                instrument_position_currency1: float = float(summary_instrument1['size_currency'])
+                instrument_position_currency2 = float(summary_instrument2['size_currency'])
+
+                order_book_instrument1 = connect.get_order_book(instrument_name=instrument_name_1)
+                order_book_instrument2 = connect.get_order_book(instrument_name=instrument_name_2)
+
+                # Args modifically - smaller_amount_dic and instrument_price1 and instrument_price2 - start
+                smaller_amount_dic = dict()
+                smaller_amount_dic.clear()
+                smaller_amount_dic[
+                    'abs(instrument_amount1_usd_before_trade) - abs(instrument_position1)'] = \
+                    number_multiple_10_and_round_0_digits(
+                        abs(instrument_amount1_usd_before_trade) - abs(instrument_position1)
+                    )
+                smaller_amount_dic[
+                    'abs(instrument_amount2_usd_before_trade) - abs(instrument_position2)'] = \
+                    number_multiple_10_and_round_0_digits(
+                        abs(instrument_amount2_usd_before_trade) - abs(instrument_position2)
+                    )
+
+                if instrument_buy_or_sell1 == 'buy' and order_book_instrument1['best_ask_amount'] != 0:
+                    best_bid_ask_amount1 = float(order_book_instrument1['best_ask_amount'])
+                    best_bid_ask_price1 = float(order_book_instrument1['best_ask_price'])
+                elif instrument_buy_or_sell1 == 'sell' and order_book_instrument1['best_ask_amount'] != 0:
+                    best_bid_ask_amount1 = float(order_book_instrument1['best_bid_amount'])
+                    best_bid_ask_price1 = float(order_book_instrument1['best_bid_price'])
+                else:
+                    best_bid_ask_amount1 = 0
+                    best_bid_ask_price1 = 0
+
+                if instrument_buy_or_sell2 == 'buy' and order_book_instrument1['best_ask_amount'] != 0:
+                    best_bid_ask_amount2 = float(order_book_instrument2['best_ask_amount'])
+                    best_bid_ask_price2 = float(order_book_instrument2['best_ask_price'])
+                elif instrument_buy_or_sell2 == 'sell' and order_book_instrument1['best_ask_amount'] != 0:
+                    best_bid_ask_amount2 = float(order_book_instrument2['best_bid_amount'])
+                    best_bid_ask_price2 = float(order_book_instrument2['best_bid_price'])
+                else:
+                    best_bid_ask_amount2 = 0
+                    best_bid_ask_price2 = 0
+
+                smaller_amount_dic['best_bid_ask_amount1']: number_multiple_10_and_round_0_digits(
+                    abs(float(best_bid_ask_amount1))
+                )
+                smaller_amount_dic['best_bid_ask_amount2']: number_multiple_10_and_round_0_digits(
+                    abs(float(best_bid_ask_amount2))
+                )                
+
+                if len(smaller_amount_dic) > 0:
+                    smaller_amount_name = min(smaller_amount_dic, key=smaller_amount_dic.get)  # name
+                    smaller_amount = smaller_amount_dic.get(smaller_amount_name, 0)  # Valor
+                else:
+                    smaller_amount = 0  # valor
+                # Args modifically - smaller_amount_dic and instrument_price1 and instrument_price2 - the end **********
+
+                # there_are_bid_ask_offer - start **********************************************************************
+                if number_multiple_10_and_round_0_digits(best_bid_ask_amount1) >= 10 and \
+                        number_multiple_10_and_round_0_digits(best_bid_ask_amount1) >= 10:
+                    there_are_bid_ask_offer = True
+                else:
+                    there_are_bid_ask_offer = False
+                    list_monitor_log.append('****** There are NOT bid or ask offer *****')
+                    list_monitor_log.append(
+                        instrument_name_1 + ': ' + str(best_bid_ask_amount1) + ' bid/ask amount')
+                    list_monitor_log.append(
+                        instrument_name_2 + ': ' + str(best_bid_ask_amount2) + ' bid/ask amount')
+                    time.sleep(3)
+                # there_are_bid_ask_offer - the end ********************************************************************
+
+                # stop_loss and stop_gain_conditions_trade - start *****************************************************
+                if abs(instrument_position1) >= 10 and abs(instrument_position2) >= 10 and \
+                        there_are_bid_ask_offer is True:
+                    stop_loss_for_arbitrage_strategy = stop_loss(
+                        set_stop_loss_in_=set_stop_loss_in_,
+                        set_stop_loss_value_=set_stop_loss_value_,
+                        instrument_price1=best_bid_ask_price1,
+                        instrument_price2=best_bid_ask_price2,
+                        instrument_name_1=instrument_name_1,
+                        instrument_name_2=instrument_name_2,
+                        get_position_instrument1=summary_instrument1,
+                        get_position_instrument2=summary_instrument2
+                    )
+                    if stop_loss_for_arbitrage_strategy is False:
+                        stop_gain_conditions_trade = stop_gain(instrument_name_1=instrument_name_1,
+                                                               instrument_name_2=instrument_name_2,
+                                                               summary_instrument1=summary_instrument1,
+                                                               summary_instrument2=summary_instrument2,
+                                                               best_bid_ask_price_in_usd_instrument1=
+                                                               best_bid_ask_price1,
+                                                               best_bid_ask_price_in_usd_instrument2=
+                                                               best_bid_ask_price2,
+                                                               set_exit_position_in_=set_exit_position_in_,
+                                                               set_exit_position_bigger_lower_=
+                                                               set_exit_position_bigger_lower_,
+                                                               set_exit_position_value_=set_exit_position_value_)
+                    else:
+                        stop_gain_conditions_trade = False
+                else:
+                    stop_loss_for_arbitrage_strategy = False
+                    stop_gain_conditions_trade = False
+
+                    # stop_loss_counter - start ************************************************************************
+                if stop_loss_for_arbitrage_strategy is True:
+                    stop_loss_counter = stop_loss_counter + 1
+                else:
+                    pass
+                    # stop_loss_counter - the end **********************************************************************
+                # stop_loss_conditions_trade and stop_gain_conditions_trade - the end **********************************
+                
+                # open_conditions_trade - start ************************************************************************
+                # open_conditions_trade - the end **********************************************************************
+
+                # open_trade - start ***********************************************************************************
+                if open_conditions_trade is True and \
+                        stop_gain_conditions_trade is False and \
+                        stop_loss_for_arbitrage_strategy is False and \
+                        stop_loss_counter < 2 and \
+                        there_are_bid_ask_offer is True and \
+                        positions_with_same_size_in_usd_or_currency == 'USD' and \
+                        number_multiple_10_and_round_0_digits(
+                            abs(instrument_amount1_usd_before_trade) - abs(instrument_position1)) >= 10 >= abs(
+                            abs(instrument_position1) - abs(instrument_position2)) and \
+                        number_multiple_10_and_round_0_digits(abs(
+                            instrument_amount2_usd_before_trade) - abs(instrument_position2)) >= 10 and \
+                        number_multiple_10_and_round_0_digits(abs(instrument_amount1_usd_before_trade)) - \
+                        number_multiple_10_and_round_0_digits(abs(instrument_position1)) >= 10 and \
+                        number_multiple_10_and_round_0_digits(abs(instrument_amount2_usd_before_trade)) - \
+                        number_multiple_10_and_round_0_digits(abs(instrument_position2)) >= 10 and \
+                        number_multiple_10_and_round_0_digits(smaller_amount) >= 10:
+
+                    instrument1_amount_order_usd = abs(smaller_amount)
+                    instrument2_amount_order_usd = instrument1_amount_order_usd
+
+                    # send_orders_open_trade - start *******************************************************************
+                    # send_orders_open_trade - the end *****************************************************************
+
+                    # check_postion1_same_postirion2_in_usd - start ****************************************************
+                    # check_postion1_same_postirion2_in_usd - the end **************************************************
+
+                elif positions_with_same_size_in_usd_or_currency == 'USD' and \
+                        abs(abs(instrument_position1) - abs(instrument_position2)) >= 10:
+                    # check_postion1_same_postirion2_in_usd - start ****************************************************
+                    # check_postion1_same_postirion2_in_usd - the end **************************************************
+                    pass
+
+                else:
+                    pass
+                # open_trade - the end *********************************************************************************
+
+            except Exception as er:
+                list_monitor_log.append(str(er))
+                time.sleep(40)
+                pass
+            finally:
+                pass
+
+        info = {
+            'object_signal': 'setup_arbitrage_strategy_stopped',
+            'msg': ''
         }
         sinal.ui_signal1.emit(info)
+
+        list_monitor_log.append('***** Arbitrage Stopped *****')
+        time.sleep(5)
+
+        index_greeks_print_on_off = 'on'
+        print_index_and_summary()
+
+    def arbitrage_strategy1():
+        global index_greeks_print_on_off
+        global strategy_on_off
+        global what_instrument
+        from lists import list_monitor_log
+
+        sinal.ui_signal1.emit({
+            'object_signal': 'setup_arbitrage_strategy_started',
+            'msg': ''
+        })
 
         strategy_on_off = 'on'
 
@@ -2148,8 +2661,8 @@ def run_arbitrage(ui):
 
         instrument_amount1_usd = int(number_multiple_10_and_round_0_digits(number=total_amount / 2))
 
-        positions_with_same_size_in_usd_or_btc_eth = ConfigAndInstrumentsSaved().positions_with_same_size_in()
-        pwssiuobte = positions_with_same_size_in_usd_or_btc_eth
+        positions_with_same_size_in_usd_or_currency = ConfigAndInstrumentsSaved().positions_with_same_size_in()
+        pwssiuobte = positions_with_same_size_in_usd_or_currency
 
         set_entry_position_in_ = ConfigAndInstrumentsSaved().set_entry_position_in()
         set_entry_position_bigger_lower_ = ConfigAndInstrumentsSaved().set_entry_position_bigger_lower()
@@ -2202,13 +2715,14 @@ def run_arbitrage(ui):
                                                                          instrument_direction=instrument_buy_or_sell2))
 
                     instrument_amount2_usd = float
-                    if positions_with_same_size_in_usd_or_btc_eth == 'BTC/ETH':
+
+                    if positions_with_same_size_in_usd_or_currency == 'BTC/ETH':
                         instrument_amount2_usd = int(
                             number_multiple_10_and_round_0_digits(
                                 number=instrument_amount1_usd / instrument_price1 * instrument_price2
                             )
                         )
-                    elif positions_with_same_size_in_usd_or_btc_eth == 'USD':
+                    elif positions_with_same_size_in_usd_or_currency == 'USD':
                         instrument_amount2_usd = instrument_amount1_usd
                     else:
                         pass
@@ -2292,7 +2806,7 @@ def run_arbitrage(ui):
                         pass
 
                     # Check size position different
-                    if positions_with_same_size_in_usd_or_btc_eth == 'BTC/ETH':
+                    if positions_with_same_size_in_usd_or_currency == 'BTC/ETH':
                         if abs(instrument_position_currency1) > abs(abs(instrument_position_currency2) +
                                                                     (10 / abs(instrument_price2)))\
                                 or abs(instrument_position_currency2) > abs(abs(instrument_position_currency1) +
@@ -2302,11 +2816,11 @@ def run_arbitrage(ui):
                                                         instrument_position2=instrument_position2,
                                                         instrument_position_currency1=instrument_position_currency1,
                                                         instrument_position_currency2=instrument_position_currency2,
-                                                        positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                        positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                         instrument_direction1=instrument_buy_or_sell1)
                         else:
                             pass
-                    elif positions_with_same_size_in_usd_or_btc_eth == 'USD':
+                    elif positions_with_same_size_in_usd_or_currency == 'USD':
                         if abs(instrument_position1) > abs(instrument_position2) + 10 or \
                                 abs(instrument_position2) > abs(instrument_position1) + 10:
                             check_instruments_positions(instrument_name1=instrument_name_1,
@@ -2314,7 +2828,7 @@ def run_arbitrage(ui):
                                                         instrument_position2=instrument_position2,
                                                         instrument_position_currency1=instrument_position_currency1,
                                                         instrument_position_currency2=instrument_position_currency2,
-                                                        positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                        positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                         instrument_direction1=instrument_buy_or_sell1)
                         else:
                             pass
@@ -2343,7 +2857,7 @@ def run_arbitrage(ui):
                                                     instrument_position2=instrument_position2,
                                                     instrument_position_currency1=instrument_position_currency1,
                                                     instrument_position_currency2=instrument_position_currency2,
-                                                    positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                    positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                     instrument_direction1=instrument_buy_or_sell1)
                     else:
                         list_monitor_log.append('*** Check Strategy entry position ***')
@@ -2392,12 +2906,12 @@ def run_arbitrage(ui):
                     instrument_amount_order2 = float(best_bid_ask_amount(instrument_name=instrument_name_1,
                                                                          instrument_direction=instrument_buy_or_sell2))
                     ''''
-                    if positions_with_same_size_in_usd_or_btc_eth == 'BTC/ETH':
+                    if positions_with_same_size_in_usd_or_currency == 'BTC/ETH':
                         instrument_amount2_usd = int(
                             number_multiple_10_and_round_0_digits(
                                 number=(instrument_amount1_usd / float(summary_instrument1['mark_price']) *
                                         float(summary_instrument2['mark_price']))))
-                    elif positions_with_same_size_in_usd_or_btc_eth == 'USD':
+                    elif positions_with_same_size_in_usd_or_currency == 'USD':
                         instrument_amount2_usd = instrument_amount1_usd
                     else:
                         break
@@ -2494,7 +3008,7 @@ def run_arbitrage(ui):
                                                     instrument_position2=instrument_position2,
                                                     instrument_position_currency1=instrument_position_currency1,
                                                     instrument_position_currency2=instrument_position_currency2,
-                                                    positions_with_same_size_in_usd_or_btc_eth=pwssiuobte,
+                                                    positions_with_same_size_in_usd_or_currency=pwssiuobte,
                                                     instrument_direction1=instrument_buy_or_sell1)
                         pass
 
