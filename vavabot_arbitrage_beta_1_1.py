@@ -1125,6 +1125,7 @@ def run_arbitrage(ui):
             info = {'object_signal': 'checkBox_autoScrollBar', 'msg': False}
             sinal.ui_signal1.emit(info)
 
+    '''
     def btc_index_and_greeks_structure_monitor_print_while_arbitrage():
         from connection_arbitrage import connect
         a = connect.index_price('btc_usd')
@@ -1224,6 +1225,7 @@ def run_arbitrage(ui):
                 r = str(round(((c2['mark_price'] - c['mark_price']) * 100 / c['mark_price']), 2))
             ui.lineEdit_34.setText(q)
             ui.lineEdit_35.setText(r)
+    '''
 
     def btc_index_and_greeks_structure_monitor_print():
         from lists import list_monitor_log
@@ -1703,6 +1705,7 @@ def run_arbitrage(ui):
                 min_till_expiration = (timestamp_expiration - int(timestamp_now)) / 60000
                 return round(float(((mid_price_future / index_price - 1) * 525600 / min_till_expiration) * 100), 2)
 
+    '''
     def strategy_entry1(set_entry_position_in_, set_entry_position_bigger_lower_, instrument_price2,
                        instrument_price1, set_entry_position_value_,
                        instrument_name_2, instrument_amount_order, instrument_buy_or_sell2,
@@ -2122,6 +2125,7 @@ def run_arbitrage(ui):
                 pass
         else:
             pass
+    '''
 
     def stop_gain(instrument_name_1, instrument_name_2,
                   summary_instrument1, summary_instrument2,
@@ -2179,7 +2183,7 @@ def run_arbitrage(ui):
                     abs(instrument_position1) + abs(instrument_position2))
             if set_exit_position_bigger_lower_ == '>':
                 if float(profit_loss_percentage) > float(set_exit_position_value_):
-                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append('*** Stopped position gain ***')
                     list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
                     return True
                 else:
@@ -2188,7 +2192,7 @@ def run_arbitrage(ui):
                     return False
             elif set_exit_position_bigger_lower_ == '<':
                 if float(profit_loss_percentage) < float(set_exit_position_value_):
-                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append('*** Stopped position gain ***')
                     list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
                     return True
                 else:
@@ -2196,9 +2200,9 @@ def run_arbitrage(ui):
                     list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
                     return False
             else:
-                list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2192 ***')
+                list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2199 ***')
                 list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
-                connect.logwriter('***** ERROR in Stop Gain check - Error Code 2195 ***')
+                connect.logwriter('***** ERROR in Stop Gain check - Error Code 2201 ***')
                 connect.logwriter(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
                 return False
 
@@ -2209,7 +2213,7 @@ def run_arbitrage(ui):
             if set_exit_position_bigger_lower_ == '>':
                 if difference_instrument2_instrument1_percentage > \
                         float(set_exit_position_value_):
-                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append('*** Stopped position gain ***')
                     list_monitor_log.append(
                         str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
                     return True
@@ -2221,7 +2225,7 @@ def run_arbitrage(ui):
             elif set_exit_position_bigger_lower_ == '<':
                 if difference_instrument2_instrument1_percentage < \
                         float(set_exit_position_value_):
-                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append('*** Stopped position gain ***')
                     list_monitor_log.append(
                         str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
                     return True
@@ -2231,10 +2235,10 @@ def run_arbitrage(ui):
                         str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
                     return False
             else:
-                list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2230 ***')
+                list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 22324 ***')
                 list_monitor_log.append(
                     str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
-                connect.logwriter('***** ERROR in Stop Gain check - Error Code 2232 ***')
+                connect.logwriter('***** ERROR in Stop Gain check - Error Code 2237 ***')
                 connect.logwriter(
                     str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
                 return False
@@ -2244,7 +2248,7 @@ def run_arbitrage(ui):
             instrument2_intrument1_difference_in_usd = abs(instrument_price2) - abs(instrument_price1)
             if set_exit_position_bigger_lower_ == '>':
                 if instrument2_intrument1_difference_in_usd > float(set_exit_position_value_):
-                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append('*** Stopped position gain ***')
                     list_monitor_log.append(
                         str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
                     return True
@@ -2255,7 +2259,7 @@ def run_arbitrage(ui):
                     return False
             elif set_exit_position_bigger_lower_ == '<':
                 if instrument2_intrument1_difference_in_usd < float(set_exit_position_value_):
-                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append('*** Stopped position gain ***')
                     list_monitor_log.append(
                         str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
                     return True
@@ -2265,10 +2269,10 @@ def run_arbitrage(ui):
                         str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
                     return False
             else:
-                list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2264 ***')
+                list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2268 ***')
                 list_monitor_log.append(
                     str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
-                connect.logwriter('***** ERROR in Stop Gain check - Error Code 2267 ***')
+                connect.logwriter('***** ERROR in Stop Gain check - Error Code 2271 ***')
                 connect.logwriter(
                     str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
                 return False
@@ -2285,13 +2289,10 @@ def run_arbitrage(ui):
                 instrument2_instrument1_annualized_premium = float(annualized_premium2) - float(annualized_premium1)
                 if set_exit_position_bigger_lower_ == '>':
                     if instrument2_instrument1_annualized_premium > float(set_exit_position_value_):
-                        list_monitor_log.append('*** Stop Gain checked ***')
-                        list_monitor_log.append(
-                            str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
-                        list_monitor_log.append(
-                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %')
-                        list_monitor_log.append(
-                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %')
+                        list_monitor_log.append('*** Stopped position gain: ' + str(instrument_name_2) +
+                                                ' > ' + str(set_exit_position_value_) + 'AP Difference ' +
+                                                str(instrument_name_1) + '. ' +
+                                                str(instrument2_instrument1_annualized_premium))
                         return True
                     else:
                         list_monitor_log.append('*** Stop Gain checked ***')
@@ -2304,13 +2305,10 @@ def run_arbitrage(ui):
                         return False
                 elif set_exit_position_bigger_lower_ == '<':
                     if instrument2_instrument1_annualized_premium < float(set_exit_position_value_):
-                        list_monitor_log.append('*** Stop Gain checked ***')
-                        list_monitor_log.append(
-                            str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
-                        list_monitor_log.append(
-                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %')
-                        list_monitor_log.append(
-                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %')
+                        list_monitor_log.append('*** Stopped position gain: ' + str(instrument_name_2) +
+                                                ' < ' + str(set_exit_position_value_) + 'AP Difference ' +
+                                                str(instrument_name_1) + '. ' +
+                                                str(instrument2_instrument1_annualized_premium))
                         return True
                     else:
                         list_monitor_log.append('*** Stop Gain checked ***')
@@ -2322,17 +2320,17 @@ def run_arbitrage(ui):
                             str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %')
                         return False
                 else:
-                    list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2326 ***')
+                    list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2319 ***')
                     list_monitor_log.append(
                         str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
-                    connect.logwriter('***** ERROR in Stop Gain check - Error Code 2329 ***')
+                    connect.logwriter('***** ERROR in Stop Gain check - Error Code 2322 ***')
                     connect.logwriter(
                         str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
                     return False
         else:
-            list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2334 ***** ' + str(
+            list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2327 ***** ' + str(
                 set_exit_position_in_) + ' ' + str(set_exit_position_value_))
-            connect.logwriter('***** ERROR in Stop Gain check - Error Code 2336 ***** ' + str(
+            connect.logwriter('***** ERROR in Stop Gain check - Error Code 2329 ***** ' + str(
                 set_exit_position_in_) + ' ' + str(set_exit_position_value_))
             return False
 
@@ -2353,11 +2351,8 @@ def run_arbitrage(ui):
         if set_stop_loss_in_ == 'USD:':
             if (instrument_total_profit_loss_in_currency1 * float(instrument_price1)) + \
                     (instrument_total_profit_loss_in_currency2 * instrument_price2) < float(set_stop_loss_value_):
-                connect.cancel_all()
-                connect.close_position(instrument_name=instrument_name_1)
-                connect.close_position(instrument_name=instrument_name_2)
-                connect.logwriter('***** Stop Loss has been executed - All positions have been CLOSED *****')
-                list_monitor_log('***** Stop Loss has been executed - All positions have been CLOSED *****')
+                connect.logwriter('***** Stop Loss has been executed *****')
+                list_monitor_log('***** Stop Loss has been executed *****')
                 return True
             else:
                 list_monitor_log.append('*** Stop Loss Checked ***')
@@ -2366,11 +2361,8 @@ def run_arbitrage(ui):
         elif set_stop_loss_in_ == 'BTC/ETH:':
             if instrument_total_profit_loss_in_currency1 + instrument_total_profit_loss_in_currency2 < \
                     float(set_stop_loss_value_):
-                connect.cancel_all()
-                connect.close_position(instrument_name=instrument_name_1)
-                connect.close_position(instrument_name=instrument_name_2)
-                connect.logwriter('***** Stop Loss has been executed - All positions have been CLOSED *****')
-                list_monitor_log('***** Stop Loss has been executed - All positions have been CLOSED *****')
+                connect.logwriter('***** Stop Loss has been executed *****')
+                list_monitor_log('***** Stop Loss has been executed *****')
                 return True
             else:
                 list_monitor_log.append('*** Stop Loss Checked ***')
@@ -2384,18 +2376,15 @@ def run_arbitrage(ui):
                         abs(instrument_position_currency1) + abs(instrument_position_currency2))
 
             if percentage_stop_loss < float(set_stop_loss_value_):
-                connect.cancel_all()
-                connect.close_position(instrument_name=instrument_name_1)
-                connect.close_position(instrument_name=instrument_name_2)
-                connect.logwriter('***** Stop Loss has been executed - All positions have been CLOSED *****')
-                list_monitor_log('***** Stop Loss has been executed - All positions have been CLOSED *****')
+                connect.logwriter('***** Stop Loss has been executed *****')
+                list_monitor_log('***** Stop Loss has been executed *****')
                 return True
             else:
                 list_monitor_log.append('*** Stop Loss Checked ***')
                 return False
         else:
-            connect.logwriter('********** ERROR - Stop Loss has NOT been Checked - Error Code 2176 **********')
-            list_monitor_log.append('********** ERROR - Stop Loss has NOT been Checked - Error Code 2176 **********')
+            connect.logwriter('********** ERROR - Stop Loss has NOT been Checked - Error Code 2382 **********')
+            list_monitor_log.append('********** ERROR - Stop Loss has NOT been Checked - Error Code 2383 **********')
             return False
 
     def strategy_entry(instrument_name_1, instrument_name_2,
@@ -2543,13 +2532,10 @@ def run_arbitrage(ui):
                 instrument2_instrument1_annualized_premium = float(annualized_premium2) - float(annualized_premium1)
                 if set_entry_position_bigger_lower_ == '>':
                     if instrument2_instrument1_annualized_premium > float(set_entry_position_value_):
-                        list_monitor_log.append('*** Trade Opening Setup Checked ***')
-                        list_monitor_log.append(
-                            str(set_entry_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
-                        list_monitor_log.append(
-                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %')
-                        list_monitor_log.append(
-                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %')
+                        list_monitor_log.append('*** Opened position:' + str(instrument_name_2) +
+                                                ' > ' + str(set_entry_position_value_) + 'AP Difference ' +
+                                                str(instrument_name_1) + '. ' +
+                                                str(instrument2_instrument1_annualized_premium))
                         return True
                     else:
                         list_monitor_log.append('*** Trade Opening Setup Checked ***')
@@ -2562,13 +2548,10 @@ def run_arbitrage(ui):
                         return False
                 elif set_entry_position_bigger_lower_ == '<':
                     if instrument2_instrument1_annualized_premium > float(set_entry_position_value_):
-                        list_monitor_log.append('*** Trade Opening Setup Checked ***')
-                        list_monitor_log.append(
-                            str(set_entry_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
-                        list_monitor_log.append(
-                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %')
-                        list_monitor_log.append(
-                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %')
+                        list_monitor_log.append('*** Opened position:' + str(instrument_name_2) +
+                                                ' < ' + str(set_entry_position_value_) + 'AP Difference ' +
+                                                str(instrument_name_1) + '. ' +
+                                                str(instrument2_instrument1_annualized_premium))
                         return True
                     else:
                         list_monitor_log.append('*** Trade Opening Setup Checked ***')
@@ -2782,7 +2765,16 @@ def run_arbitrage(ui):
                             (abs(total_amount) / 2) - abs(instrument_position2)) > 10 and \
                         number_multiple_10_and_round_0_digits(
                             abs(total_amount) - (abs(instrument_position1) + abs(instrument_position2))) > 10:
-                    open_conditions_trade =
+                    open_conditions_trade = strategy_entry(instrument_name_1=instrument_name_1,
+                                                           instrument_name_2=instrument_name_2,
+                                                           summary_instrument1=summary_instrument1,
+                                                           summary_instrument2=summary_instrument2,
+                                                           best_bid_ask_price_in_usd_instrument1=best_bid_ask_price1,
+                                                           best_bid_ask_price_in_usd_instrument2=best_bid_ask_price2,
+                                                           set_entry_position_in_=set_entry_position_in_,
+                                                           set_entry_position_bigger_lower_=
+                                                           set_entry_position_bigger_lower_,
+                                                           set_entry_position_value_=set_entry_position_value_)
                 else:
                     open_conditions_trade = False
                 # open_conditions_trade - the end **********************************************************************
