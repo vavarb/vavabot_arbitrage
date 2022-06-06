@@ -1703,7 +1703,7 @@ def run_arbitrage(ui):
                 min_till_expiration = (timestamp_expiration - int(timestamp_now)) / 60000
                 return round(float(((mid_price_future / index_price - 1) * 525600 / min_till_expiration) * 100), 2)
 
-    def strategy_entry(set_entry_position_in_, set_entry_position_bigger_lower_, instrument_price2,
+    def strategy_entry1(set_entry_position_in_, set_entry_position_bigger_lower_, instrument_price2,
                        instrument_price1, set_entry_position_value_,
                        instrument_name_2, instrument_amount_order, instrument_buy_or_sell2,
                        instrument_name_1, instrument_position1, instrument_position2, instrument_position_currency1,
@@ -1892,11 +1892,11 @@ def run_arbitrage(ui):
         else:
             pass
 
-    def strategy_exit(set_exit_position_in_, set_exit_position_bigger_lower_, instrument_total_profit_loss_in_btc1,
-                      instrument_total_profit_loss_in_btc2, instrument_position_currency1,
-                      instrument_position_currency2, set_exit_position_value_, instrument_name_2,
-                      instrument_amount_order, instrument_buy_or_sell1, instrument_name_1, instrument_position1,
-                      instrument_position2, pwssiuobte, instrument_price2, instrument_price1):
+    def strategy_exit1(set_exit_position_in_, set_exit_position_bigger_lower_, instrument_total_profit_loss_in_btc1,
+                       instrument_total_profit_loss_in_btc2, instrument_position_currency1,
+                       instrument_position_currency2, set_exit_position_value_, instrument_name_2,
+                       instrument_amount_order, instrument_buy_or_sell1, instrument_name_1, instrument_position1,
+                       instrument_position2, pwssiuobte, instrument_price2, instrument_price1):
         # strategy exit position in Profit_
         if set_exit_position_in_ == 'Profit_%':
             if set_exit_position_bigger_lower_ == '>':
@@ -2075,7 +2075,7 @@ def run_arbitrage(ui):
             pass
 
     def stop_loss1(set_stop_loss_in_, set_stop_loss_value_, instrument_price1, instrument_price2,
-                  instrument_name_1, instrument_name_2):
+                   instrument_name_1, instrument_name_2):
         from connection_arbitrage import connect
         from lists import list_monitor_log
 
@@ -2398,6 +2398,195 @@ def run_arbitrage(ui):
             list_monitor_log.append('********** ERROR - Stop Loss has NOT been Checked - Error Code 2176 **********')
             return False
 
+    def strategy_entry(set_entry_position_in_, set_entry_position_bigger_lower_, instrument_price2,
+                       instrument_price1, set_entry_position_value_,
+                       instrument_name_2, instrument_amount_order, instrument_buy_or_sell2,
+                       instrument_name_1, instrument_position1, instrument_position2, instrument_position_currency1,
+                       instrument_position_currency2, pwssiuobte, instrument_buy_or_sell1, total_amount,
+                       instrument_amount2_usd):
+
+        if (abs(instrument_position1) < abs(total_amount) / 2 - 10 and
+            abs(instrument_position2) < abs(instrument_amount2_usd) - 10) and \
+                (abs(instrument_position1) + abs(instrument_position2) < abs(total_amount)):
+            # Entry position in %
+            if set_entry_position_in_ == '%':
+                if set_entry_position_bigger_lower_ == '>':
+                    list_monitor_log.append('*** Entry position configured: Instrument 1 > '
+                                            + str(set_entry_position_value_) +
+                                            '% Instrument 2')
+                    if (instrument_price2 - instrument_price1) * 100 / instrument_price1 > \
+                            set_entry_position_value_:
+                        list_monitor_log.append('*** Entry position: Instrument 1 > ' + str(set_entry_position_value_) +
+                                                '% Instrument 2')
+                        connect.cancel_all()
+                        buy_or_sell_first_order(instrument_name2=instrument_name_2,
+                                                instrument_amount=instrument_amount_order,
+                                                instrument_direction2=instrument_buy_or_sell2,
+                                                instrument_name1=instrument_name_1,
+                                                instrument_price1=instrument_price1,
+                                                instrument_price2=instrument_price2)
+                        time.sleep(3)
+                        connect.cancel_all()
+                        check_instruments_positions(instrument_name1=instrument_name_1,
+                                                    instrument_position1=instrument_position1,
+                                                    instrument_position2=instrument_position2,
+                                                    instrument_position_currency1=instrument_position_currency1,
+                                                    instrument_position_currency2=instrument_position_currency2,
+                                                    positions_with_same_size_in_usd_or_currency=pwssiuobte,
+                                                    instrument_direction1=instrument_buy_or_sell1)
+                    else:
+                        pass
+                elif set_entry_position_bigger_lower_ == '<':
+                    list_monitor_log.append('*** Entry position configured: Instrument 1 < '
+                                            + str(set_entry_position_value_) +
+                                            '% Instrument 2')
+                    if (instrument_price2 - instrument_price1) * 100 / instrument_price1 < \
+                            set_entry_position_value_:
+                        list_monitor_log.append('*** Entry position: Instrument 1 < ' + str(set_entry_position_value_) +
+                                                '% Instrument 2')
+                        connect.cancel_all()
+                        buy_or_sell_first_order(instrument_name2=instrument_name_2,
+                                                instrument_amount=instrument_amount_order,
+                                                instrument_direction2=instrument_buy_or_sell2,
+                                                instrument_name1=instrument_name_1,
+                                                instrument_price1=instrument_price1,
+                                                instrument_price2=instrument_price2)
+                        time.sleep(3)
+                        connect.cancel_all()
+                        check_instruments_positions(instrument_name1=instrument_name_1,
+                                                    instrument_position1=instrument_position1,
+                                                    instrument_position2=instrument_position2,
+                                                    instrument_position_currency1=instrument_position_currency1,
+                                                    instrument_position_currency2=instrument_position_currency2,
+                                                    positions_with_same_size_in_usd_or_currency=pwssiuobte,
+                                                    instrument_direction1=instrument_buy_or_sell1)
+                    else:
+                        pass
+                else:
+                    pass
+            else:
+                pass
+
+            # Entry position in USD
+            if set_entry_position_in_ == 'USD':
+                if set_entry_position_bigger_lower_ == '>':
+                    list_monitor_log.append('*** Entry position configured: Instrument 1 > '
+                                            + str(set_entry_position_value_) +
+                                            'USD Instrument 2')
+                    if instrument_price2 - instrument_price1 > set_entry_position_value_:
+                        list_monitor_log.append('*** Entry position: Instrument 1 > ' + str(set_entry_position_value_) +
+                                                'USD Instrument 2')
+                        connect.cancel_all()
+                        buy_or_sell_first_order(instrument_name2=instrument_name_2,
+                                                instrument_amount=instrument_amount_order,
+                                                instrument_direction2=instrument_buy_or_sell2,
+                                                instrument_name1=instrument_name_1,
+                                                instrument_price1=instrument_price1,
+                                                instrument_price2=instrument_price2)
+                        time.sleep(3)
+                        connect.cancel_all()
+                        check_instruments_positions(instrument_name1=instrument_name_1,
+                                                    instrument_position1=instrument_position1,
+                                                    instrument_position2=instrument_position2,
+                                                    instrument_position_currency1=instrument_position_currency1,
+                                                    instrument_position_currency2=instrument_position_currency2,
+                                                    positions_with_same_size_in_usd_or_currency=pwssiuobte,
+                                                    instrument_direction1=instrument_buy_or_sell1)
+                    else:
+                        pass
+                elif set_entry_position_bigger_lower_ == '<':
+                    list_monitor_log.append('***** Entry position configured: Instrument 1 < '
+                                            + str(set_entry_position_value_) +
+                                            'USD Instrument 2 *****')
+                    if instrument_price2 - instrument_price1 < set_entry_position_value_:
+                        list_monitor_log.append('*** Entry position: Instrument 1 < ' + str(set_entry_position_value_) +
+                                                'USD Instrument 2 ***')
+                        connect.cancel_all()
+                        buy_or_sell_first_order(instrument_name2=instrument_name_2,
+                                                instrument_amount=instrument_amount_order,
+                                                instrument_direction2=instrument_buy_or_sell2,
+                                                instrument_name1=instrument_name_1,
+                                                instrument_price1=instrument_price1,
+                                                instrument_price2=instrument_price2)
+                        time.sleep(3)
+                        connect.cancel_all()
+                        check_instruments_positions(instrument_name1=instrument_name_1,
+                                                    instrument_position1=instrument_position1,
+                                                    instrument_position2=instrument_position2,
+                                                    instrument_position_currency1=instrument_position_currency1,
+                                                    instrument_position_currency2=instrument_position_currency2,
+                                                    positions_with_same_size_in_usd_or_currency=pwssiuobte,
+                                                    instrument_direction1=instrument_buy_or_sell1)
+                    else:
+                        pass
+                else:
+                    pass
+            else:
+                pass
+
+            # Entry position in Premium(Annualized)
+            if set_entry_position_in_ == 'Premium(Annualized)':
+                list_monitor_log.append('***** Entry position configured: Annualized Premium *****')
+                if set_entry_position_bigger_lower_ == '>':
+                    list_monitor_log.append('*** Entry position configured: Annualized Premium Instrument 1 > ' +
+                                            str(set_entry_position_value_) + ' Instrument 2 ***')
+                    annualized_premium1 = float(annualized_premium(instrument_name=instrument_name_1))
+                    annualized_premium2 = float(annualized_premium(instrument_name=instrument_name_2))
+                    if annualized_premium2 - annualized_premium1 > set_entry_position_value_:
+                        list_monitor_log.append('*** Entry position: Annualized Premium Instrument 1 > ' +
+                                                str(set_entry_position_value_) + ' Instrument 2 ***')
+                        connect.cancel_all()
+                        buy_or_sell_first_order(instrument_name2=instrument_name_2,
+                                                instrument_amount=instrument_amount_order,
+                                                instrument_direction2=instrument_buy_or_sell2,
+                                                instrument_name1=instrument_name_1,
+                                                instrument_price1=instrument_price1,
+                                                instrument_price2=instrument_price2)
+                        time.sleep(3)
+                        connect.cancel_all()
+                        check_instruments_positions(instrument_name1=instrument_name_1,
+                                                    instrument_position1=instrument_position1,
+                                                    instrument_position2=instrument_position2,
+                                                    instrument_position_currency1=instrument_position_currency1,
+                                                    instrument_position_currency2=instrument_position_currency2,
+                                                    positions_with_same_size_in_usd_or_currency=pwssiuobte,
+                                                    instrument_direction1=instrument_buy_or_sell1)
+                    else:
+                        pass
+                elif set_entry_position_bigger_lower_ == '<':
+                    list_monitor_log.append('*** Entry position configured: Annualized Premium Instrument 1 < ' +
+                                            str(set_entry_position_value_) + ' Instrument 2 ***')
+                    annualized_premium1 = annualized_premium(instrument_name=instrument_name_1)
+                    annualized_premium2 = annualized_premium(instrument_name=instrument_name_2)
+                    if annualized_premium2 - annualized_premium1 < set_entry_position_value_:
+                        list_monitor_log.append(
+                            '*** Entry position: Annualized Premium Instrument 2 < ' + str(set_entry_position_value_) +
+                            ' Instrument 2 ***')
+                        connect.cancel_all()
+                        buy_or_sell_first_order(instrument_name2=instrument_name_2,
+                                                instrument_amount=instrument_amount_order,
+                                                instrument_direction2=instrument_buy_or_sell2,
+                                                instrument_name1=instrument_name_1,
+                                                instrument_price1=instrument_price1,
+                                                instrument_price2=instrument_price2)
+                        time.sleep(3)
+                        connect.cancel_all()
+                        check_instruments_positions(instrument_name1=instrument_name_1,
+                                                    instrument_position1=instrument_position1,
+                                                    instrument_position2=instrument_position2,
+                                                    instrument_position_currency1=instrument_position_currency1,
+                                                    instrument_position_currency2=instrument_position_currency2,
+                                                    positions_with_same_size_in_usd_or_currency=pwssiuobte,
+                                                    instrument_direction1=instrument_buy_or_sell1)
+                    else:
+                        pass
+                else:
+                    pass
+            else:
+                pass
+        else:
+            pass
+
     def arbitrage_strategy():
         global index_greeks_print_on_off
         global strategy_on_off
@@ -2522,7 +2711,7 @@ def run_arbitrage(ui):
 
                 # there_are_bid_ask_offer - start **********************************************************************
                 if number_multiple_10_and_round_0_digits(best_bid_ask_amount1) >= 10 and \
-                        number_multiple_10_and_round_0_digits(best_bid_ask_amount1) >= 10:
+                        number_multiple_10_and_round_0_digits(best_bid_ask_amount2) >= 10:
                     there_are_bid_ask_offer = True
                 else:
                     there_are_bid_ask_offer = False
@@ -2575,6 +2764,19 @@ def run_arbitrage(ui):
                 # stop_loss_conditions_trade and stop_gain_conditions_trade - the end **********************************
                 
                 # open_conditions_trade - start ************************************************************************
+                if there_are_bid_ask_offer is True and \
+                        stop_gain_conditions_trade is False and \
+                        stop_loss_counter < 2 and \
+                        stop_loss_for_arbitrage_strategy is False and \
+                        number_multiple_10_and_round_0_digits(
+                            (abs(total_amount) / 2) - abs(instrument_position1)) > 10 and \
+                        number_multiple_10_and_round_0_digits(
+                            (abs(total_amount) / 2) - abs(instrument_position2)) > 10 and \
+                        number_multiple_10_and_round_0_digits(
+                            abs(total_amount) - (abs(instrument_position1) + abs(instrument_position2))) > 10:
+                    open_conditions_trade =
+                else:
+                    open_conditions_trade = False
                 # open_conditions_trade - the end **********************************************************************
 
                 # open_trade - start ***********************************************************************************
