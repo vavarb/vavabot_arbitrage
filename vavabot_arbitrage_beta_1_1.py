@@ -1564,11 +1564,11 @@ def run_arbitrage(ui):
         if summary_instrument2['direction'] == 'buy':
             profit_loss_in_usd_instrument2 = \
                 (float(best_bid_ask_price_in_usd_instrument2) - float(average_price_position_instrument2)) * \
-                str(instrument_position2)
+                abs(instrument_position2)
         elif summary_instrument2['direction'] == 'sell':
             profit_loss_in_usd_instrument2 = \
                 (float(average_price_position_instrument2) - float(best_bid_ask_price_in_usd_instrument2)) * \
-                str(instrument_position2)
+                abs(instrument_position2)
         else:
             profit_loss_in_usd_instrument2 = 0
 
@@ -1792,11 +1792,11 @@ def run_arbitrage(ui):
         if summary_instrument2['direction'] == 'buy':
             profit_loss_in_usd_instrument2 = \
                 (float(best_bid_ask_price_in_usd_instrument2) - float(average_price_position_instrument2)) * \
-                str(instrument_position2_currency)
+                abs(instrument_position2_currency)
         elif summary_instrument2['direction'] == 'sell':
             profit_loss_in_usd_instrument2 = \
                 (float(average_price_position_instrument2) - float(best_bid_ask_price_in_usd_instrument2)) * \
-                str(instrument_position2_currency)
+                abs(instrument_position2_currency)
         else:
             profit_loss_in_usd_instrument2 = 0
 
