@@ -1248,7 +1248,7 @@ def run_arbitrage(ui):
         instrument_position1 = float(summary_instrument1['size'])
         instrument_position2 = float(summary_instrument2['size'])
 
-        instrument_position_currency1: float = float(summary_instrument1['size_currency'])
+        instrument_position_currency1 = float(summary_instrument1['size_currency'])
         instrument_position_currency2 = float(summary_instrument2['size_currency'])
 
         order_book_instrument1 = connect.get_order_book(instrument_name=instrument_name_1)
@@ -1274,7 +1274,7 @@ def run_arbitrage(ui):
                     abs(instrument_position2) - abs(instrument_position1)
                 ))
         else:
-            if instrument_position1 > instrument_position2 and instrument_buy_or_sell1 == 'buy' and \
+            if abs(instrument_position1) > abs(instrument_position2) and instrument_buy_or_sell1 == 'buy' and \
                     order_book_instrument1['best_bid_amount'] != 0:
                 difference_instrument1_instrument2_for_dict = number_multiple_10_and_round_0_digits(
                     abs(abs(instrument_position_currency1) - abs(instrument_position_currency2) *
@@ -1282,7 +1282,7 @@ def run_arbitrage(ui):
                 smaller_amount_dic['difference_instrument1_instrument2_for_dict'] = \
                     difference_instrument1_instrument2_for_dict
 
-            elif instrument_position1 > instrument_position2 and instrument_buy_or_sell1 == 'sell' and \
+            elif abs(instrument_position1) > abs(instrument_position2) and instrument_buy_or_sell1 == 'sell' and \
                     order_book_instrument1['best_ask_amount'] != 0:
                 difference_instrument1_instrument2_for_dict = number_multiple_10_and_round_0_digits(
                     abs(abs(instrument_position_currency1) - abs(instrument_position_currency2) *
@@ -1290,7 +1290,7 @@ def run_arbitrage(ui):
                 smaller_amount_dic['difference_instrument1_instrument2_for_dict'] = \
                     difference_instrument1_instrument2_for_dict
 
-            elif instrument_position1 < instrument_position2 and instrument_buy_or_sell2 == 'buy' and \
+            elif abs(instrument_position1) < abs(instrument_position2) and instrument_buy_or_sell2 == 'buy' and \
                     order_book_instrument2['best_bid_amount'] != 0:
                 difference_instrument1_instrument2_for_dict = number_multiple_10_and_round_0_digits(
                     abs(abs(instrument_position_currency1) - abs(instrument_position_currency2) *
@@ -1298,7 +1298,7 @@ def run_arbitrage(ui):
                 smaller_amount_dic['difference_instrument1_instrument2_for_dict'] = \
                     difference_instrument1_instrument2_for_dict
 
-            elif instrument_position1 < instrument_position2 and instrument_buy_or_sell2 == 'sell' and \
+            elif abs(instrument_position1) < abs(instrument_position2) and instrument_buy_or_sell2 == 'sell' and \
                     order_book_instrument2['best_ask_amount'] != 0:
                 difference_instrument1_instrument2_for_dict = number_multiple_10_and_round_0_digits(
                     abs(abs(instrument_position_currency1) - abs(instrument_position_currency2) *
@@ -1553,22 +1553,22 @@ def run_arbitrage(ui):
         if summary_instrument1['direction'] == 'buy':
             profit_loss_in_usd_instrument1 = \
                 (float(best_bid_ask_price_in_usd_instrument1) - float(average_price_position_instrument1)) * \
-                instrument_position1
+                abs(instrument_position1)
         elif summary_instrument1['direction'] == 'sell':
             profit_loss_in_usd_instrument1 = \
                 (float(average_price_position_instrument1) - float(best_bid_ask_price_in_usd_instrument1)) * \
-                instrument_position1
+                abs(instrument_position1)
         else:
             profit_loss_in_usd_instrument1 = 0
 
         if summary_instrument2['direction'] == 'buy':
             profit_loss_in_usd_instrument2 = \
                 (float(best_bid_ask_price_in_usd_instrument2) - float(average_price_position_instrument2)) * \
-                instrument_position2
+                str(instrument_position2)
         elif summary_instrument2['direction'] == 'sell':
             profit_loss_in_usd_instrument2 = \
                 (float(average_price_position_instrument2) - float(best_bid_ask_price_in_usd_instrument2)) * \
-                instrument_position2
+                str(instrument_position2)
         else:
             profit_loss_in_usd_instrument2 = 0
 
@@ -1735,23 +1735,92 @@ def run_arbitrage(ui):
                 set_exit_position_in_) + ' ' + str(set_exit_position_value_))
             return False
 
-    def stop_loss(set_stop_loss_in_, set_stop_loss_value_, instrument_price1, instrument_price2,
-                  get_position_instrument1, get_position_instrument2):
+    def stop_loss(set_stop_loss_in_, set_stop_loss_value_,
+                  order_book_instrument1, order_book_instrument2,
+                  summary_instrument1, summary_instrument2):
         from connection_arbitrage import connect
         from lists import list_monitor_log
 
-        list_monitor_log.append('*** Check Stop Loss: ' + str(set_stop_loss_in_) + ': ' + str(set_stop_loss_value_) +
-                                ' ***')
-        # args modified
-        summary_instrument1 = get_position_instrument1
-        summary_instrument2 = get_position_instrument2
+        list_monitor_log.append('*** Stop Loss Check ***')
+        list_monitor_log.append('Stop Loss selected in: ' +
+                                str(set_stop_loss_in_) +
+                                ' ' +
+                                str(set_stop_loss_value_)
+                                )
+        # Args
 
-        instrument_total_profit_loss_in_currency1 = float(summary_instrument1['total_profit_loss'])
-        instrument_total_profit_loss_in_currency2 = float(summary_instrument2['total_profit_loss'])
+        average_price_position_instrument1 = float(summary_instrument1['average_price'])
+        average_price_position_instrument2 = float(summary_instrument2['average_price'])
+
+        instrument_position1 = float(summary_instrument1['size'])
+        instrument_position2 = float(summary_instrument2['size'])
+
+        instrument_position1_currency = float(summary_instrument1['size_currency'])
+        instrument_position2_currency = float(summary_instrument2['size_currency'])
+
+        instrument_buy_or_sell1 = summary_instrument1['direction']
+        instrument_buy_or_sell2 = summary_instrument2['direction']
+
+        if instrument_buy_or_sell1 == 'buy' and order_book_instrument1['best_bid_amount'] != 0:
+            best_bid_ask_price1 = float(order_book_instrument1['best_bid_price'])
+        elif instrument_buy_or_sell1 == 'sell' and order_book_instrument1['best_ask_amount'] != 0:
+            best_bid_ask_price1 = float(order_book_instrument1['best_ask_price'])
+        else:
+            best_bid_ask_price1 = 0
+
+        if instrument_buy_or_sell2 == 'buy' and order_book_instrument1['best_bid_amount'] != 0:
+            best_bid_ask_price2 = float(order_book_instrument2['best_bid_price'])
+        elif instrument_buy_or_sell2 == 'sell' and order_book_instrument1['best_ask_amount'] != 0:
+            best_bid_ask_price2 = float(order_book_instrument2['best_ask_price'])
+        else:
+            best_bid_ask_price2 = 0
+
+        best_bid_ask_price_in_usd_instrument1 = best_bid_ask_price1
+        best_bid_ask_price_in_usd_instrument2 = best_bid_ask_price2
+
+        if summary_instrument1['direction'] == 'buy':
+            profit_loss_in_usd_instrument1 = \
+                (float(best_bid_ask_price_in_usd_instrument1) - float(average_price_position_instrument1)) * \
+                abs(instrument_position1_currency)
+        elif summary_instrument1['direction'] == 'sell':
+            profit_loss_in_usd_instrument1 = \
+                (float(average_price_position_instrument1) - float(best_bid_ask_price_in_usd_instrument1)) * \
+                abs(instrument_position1_currency)
+        else:
+            profit_loss_in_usd_instrument1 = 0
+
+        if summary_instrument2['direction'] == 'buy':
+            profit_loss_in_usd_instrument2 = \
+                (float(best_bid_ask_price_in_usd_instrument2) - float(average_price_position_instrument2)) * \
+                str(instrument_position2_currency)
+        elif summary_instrument2['direction'] == 'sell':
+            profit_loss_in_usd_instrument2 = \
+                (float(average_price_position_instrument2) - float(best_bid_ask_price_in_usd_instrument2)) * \
+                str(instrument_position2_currency)
+        else:
+            profit_loss_in_usd_instrument2 = 0
+
+        profit_loss_in_usd_total = float(profit_loss_in_usd_instrument1) + float(profit_loss_in_usd_instrument2)
+
+        instrument_price1 = float(best_bid_ask_price_in_usd_instrument1)
+        instrument_price2 = float(best_bid_ask_price_in_usd_instrument2)
+
+        if instrument_price1 == 0 or instrument_price2 == 0:
+            list_monitor_log.append('*** No Bid/Ask Offer into Stop Loss Check ***')
+            list_monitor_log.append('instrument_price1: ' +
+                                    str(instrument_price1) +
+                                    'instrument_price2: ' +
+                                    str(instrument_price2))
+            list_monitor_log.append('***** Stop Loss has NOT been Checked *****')
+            return False
+        else:
+            instrument_total_profit_loss_in_currency1 = float(profit_loss_in_usd_instrument1) / instrument_price1
+            instrument_total_profit_loss_in_currency2 = float(profit_loss_in_usd_instrument2) / instrument_price2
+            instrument_total_profit_loss_in_currency = instrument_total_profit_loss_in_currency1 + \
+                instrument_total_profit_loss_in_currency2
 
         if set_stop_loss_in_ == 'USD':
-            if (instrument_total_profit_loss_in_currency1 * float(instrument_price1)) + \
-                    (instrument_total_profit_loss_in_currency2 * instrument_price2) < float(set_stop_loss_value_):
+            if profit_loss_in_usd_total < float(set_stop_loss_value_):
                 connect.logwriter('***** Stop Loss has been executed *****')
                 list_monitor_log('***** Stop Loss has been executed *****')
                 return True
@@ -1760,8 +1829,7 @@ def run_arbitrage(ui):
                 return False
 
         elif set_stop_loss_in_ == 'BTC/ETH':
-            if instrument_total_profit_loss_in_currency1 + instrument_total_profit_loss_in_currency2 < \
-                    float(set_stop_loss_value_):
+            if instrument_total_profit_loss_in_currency < float(set_stop_loss_value_):
                 connect.logwriter('***** Stop Loss has been executed *****')
                 list_monitor_log('***** Stop Loss has been executed *****')
                 return True
@@ -1770,11 +1838,8 @@ def run_arbitrage(ui):
                 return False
 
         elif set_stop_loss_in_ == '%':
-            instrument_position_currency1 = float(summary_instrument1['size_currency'])
-            instrument_position_currency2 = float(summary_instrument2['size_currency'])
-            percentage_stop_loss = (
-                instrument_total_profit_loss_in_currency1 + instrument_total_profit_loss_in_currency2) * 100 / (
-                        abs(instrument_position_currency1) + abs(instrument_position_currency2))
+            percentage_stop_loss = profit_loss_in_usd_total * 100 / (abs(
+                instrument_position1) + abs(instrument_position2))
 
             if percentage_stop_loss < float(set_stop_loss_value_):
                 connect.logwriter('***** Stop Loss has been executed *****')
@@ -2016,7 +2081,7 @@ def run_arbitrage(ui):
                 instrument_position1 = float(summary_instrument1['size'])
                 instrument_position2 = float(summary_instrument2['size'])
 
-                instrument_position_currency1: float = float(summary_instrument1['size_currency'])
+                instrument_position_currency1 = float(summary_instrument1['size_currency'])
                 instrument_position_currency2 = float(summary_instrument2['size_currency'])
 
                 order_book_instrument1 = connect.get_order_book(instrument_name=instrument_name_1)
@@ -2087,14 +2152,13 @@ def run_arbitrage(ui):
                 # stop_loss and stop_gain_conditions_trade - start *****************************************************
                 if abs(instrument_position1) >= 10 and abs(instrument_position2) >= 10 and \
                         there_are_bid_ask_offer is True:
-                    stop_loss_for_arbitrage_strategy = stop_loss(
-                        set_stop_loss_in_=set_stop_loss_in_,
-                        set_stop_loss_value_=set_stop_loss_value_,
-                        instrument_price1=best_bid_ask_price1,
-                        instrument_price2=best_bid_ask_price2,
-                        get_position_instrument1=summary_instrument1,
-                        get_position_instrument2=summary_instrument2
-                    )
+                    stop_loss_for_arbitrage_strategy = stop_loss(set_stop_loss_in_=set_stop_loss_in_,
+                                                                 set_stop_loss_value_=set_stop_loss_value_,
+                                                                 order_book_instrument1=order_book_instrument1,
+                                                                 order_book_instrument2=order_book_instrument2,
+                                                                 summary_instrument1=summary_instrument1,
+                                                                 summary_instrument2=summary_instrument2)
+
                     if stop_loss_for_arbitrage_strategy is False:
                         stop_gain_conditions_trade = stop_gain(
                             instrument_name_1=instrument_name_1,
@@ -2131,22 +2195,22 @@ def run_arbitrage(ui):
                         smaller_amount_dic['abs(instrument_position2)'] = \
                             number_multiple_10_and_round_0_digits(abs(instrument_position2))
 
-                        if instrument_buy_or_sell1 == 'buy' and order_book_instrument1['best_ask_amount'] != 0:
-                            best_bid_ask_amount1 = float(order_book_instrument1['best_ask_amount'])
-                            best_bid_ask_price1 = float(order_book_instrument1['best_ask_price'])
-                        elif instrument_buy_or_sell1 == 'sell' and order_book_instrument1['best_bid_amount'] != 0:
+                        if instrument_buy_or_sell1 == 'buy' and order_book_instrument1['best_bid_amount'] != 0:
                             best_bid_ask_amount1 = float(order_book_instrument1['best_bid_amount'])
                             best_bid_ask_price1 = float(order_book_instrument1['best_bid_price'])
+                        elif instrument_buy_or_sell1 == 'sell' and order_book_instrument1['best_ask_amount'] != 0:
+                            best_bid_ask_amount1 = float(order_book_instrument1['best_ask_amount'])
+                            best_bid_ask_price1 = float(order_book_instrument1['best_ask_price'])
                         else:
                             best_bid_ask_amount1 = 0
                             best_bid_ask_price1 = 0
 
-                        if instrument_buy_or_sell2 == 'buy' and order_book_instrument1['best_ask_amount'] != 0:
-                            best_bid_ask_amount2 = float(order_book_instrument2['best_ask_amount'])
-                            best_bid_ask_price2 = float(order_book_instrument2['best_ask_price'])
-                        elif instrument_buy_or_sell2 == 'sell' and order_book_instrument1['best_bid_amount'] != 0:
+                        if instrument_buy_or_sell2 == 'buy' and order_book_instrument1['best_bid_amount'] != 0:
                             best_bid_ask_amount2 = float(order_book_instrument2['best_bid_amount'])
                             best_bid_ask_price2 = float(order_book_instrument2['best_bid_price'])
+                        elif instrument_buy_or_sell2 == 'sell' and order_book_instrument1['best_ask_amount'] != 0:
+                            best_bid_ask_amount2 = float(order_book_instrument2['best_ask_amount'])
+                            best_bid_ask_price2 = float(order_book_instrument2['best_ask_price'])
                         else:
                             best_bid_ask_amount2 = 0
                             best_bid_ask_price2 = 0
