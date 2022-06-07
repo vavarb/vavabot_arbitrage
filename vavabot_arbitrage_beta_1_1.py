@@ -2093,7 +2093,9 @@ def run_arbitrage(ui):
 
                         smaller_amount_for_stop_orders = number_multiple_10_and_round_0_digits(
                             smaller_amount_for_stop_orders)
-                        if smaller_amount_for_stop_orders >= 10:
+                        if smaller_amount_for_stop_orders >= 10 and \
+                                best_bid_ask_price1 != 0 and \
+                                best_bid_ask_price2 != 0:
                             number_instrument1 = best_bid_ask_price1 - 0.6 * best_bid_ask_price1 / 100
                             instrument_price1 = round(float(number_instrument1 - (number_instrument1 % 0.5)), 2)
                             number_instrument2 = best_bid_ask_price2 - 0.6 * best_bid_ask_price2 / 100
@@ -2186,7 +2188,95 @@ def run_arbitrage(ui):
                     # stop_loss_counter - the end **********************************************************************
                 # stop_loss_conditions_trade and stop_gain_conditions_trade - the end **********************************
 
-                # stop gain orders - start *****************************************************************************
+                # stop gain orders - start *****************************************************************************                
+                if stop_gain_conditions_trade is True and \
+                        there_are_bid_ask_offer is True and \
+                        stop_loss_counter < 2 and \
+                        stop_loss_for_arbitrage_strategy is False and \
+                        number_multiple_10_and_round_0_digits(
+                            (abs(total_amount) / 2) - abs(instrument_position1)) >= 10 and \
+                        number_multiple_10_and_round_0_digits(
+                            (abs(total_amount) / 2) - abs(instrument_position2)) >= 10 and \
+                        number_multiple_10_and_round_0_digits(
+                            abs(total_amount) - (abs(instrument_position1) + abs(instrument_position2))) >= 10 and \
+                        best_bid_ask_price1 != 0 and \
+                        best_bid_ask_price2 != 0:
+
+                    smaller_amount_for_stop_gain_orders = smaller_amount
+                    smaller_amount_for_stop_gain_orders = number_multiple_10_and_round_0_digits(
+                        smaller_amount_for_stop_gain_orders)
+                    if smaller_amount_for_stop_gain_orders >= 10:
+                        if summary_instrument1['direction'] == 'buy':
+                            connect.sell_limit(
+                                currency=instrument_name_1,
+                                amount=smaller_amount_for_stop_gain_orders,
+                                price=best_bid_ask_price1)
+                            connect.buy_limit(
+                                currency=instrument_name_2,
+                                amount=smaller_amount_for_stop_gain_orders,
+                                price=best_bid_ask_price2)
+                            list_monitor_log('*** STOP GAIN ORDERS: ***')
+                            list_monitor_log(
+                                'currency: ' + instrument_name_1 +
+                                'order: sell limit' +
+                                'amount: ' + str(smaller_amount_for_stop_gain_orders) +
+                                'price :' + str(best_bid_ask_price1))
+                            list_monitor_log(
+                                'currency: ' + instrument_name_2 +
+                                'order: buy limit' +
+                                'amount: ' + str(smaller_amount_for_stop_gain_orders) +
+                                'price :' + str(best_bid_ask_price2))
+                            connect.logwriter('*** STOP GAIN ORDERS: ***')
+                            connect.logwriter(
+                                'currency: ' + instrument_name_1 +
+                                'order: sell limit' +
+                                'amount: ' + str(smaller_amount_for_stop_gain_orders) +
+                                'price :' + str(best_bid_ask_price1))
+                            connect.logwriter(
+                                'currency: ' + instrument_name_2 +
+                                'order: sell limit' +
+                                'amount: ' + str(smaller_amount_for_stop_gain_orders) +
+                                'price :' + str(best_bid_ask_price2))
+
+                        elif summary_instrument1['direction'] == 'sell':
+                            connect.buy_limit(
+                                currency=instrument_name_1,
+                                amount=smaller_amount_for_stop_gain_orders,
+                                price=best_bid_ask_price1)
+                            connect.sell_limit(
+                                currency=instrument_name_2,
+                                amount=smaller_amount_for_stop_gain_orders,
+                                price=best_bid_ask_price2)
+                            list_monitor_log('*** STOP GAIN ORDERS: ***')
+                            list_monitor_log(
+                                'currency: ' + instrument_name_1 +
+                                'order: buy limit' +
+                                'amount: ' + str(smaller_amount_for_stop_gain_orders) +
+                                'price :' + str(best_bid_ask_price1))
+                            list_monitor_log(
+                                'currency: ' + instrument_name_2 +
+                                'order: sell limit' +
+                                'amount: ' + str(smaller_amount_for_stop_gain_orders) +
+                                'price :' + str(best_bid_ask_price2))
+                            connect.logwriter('*** STOP GAIN ORDERS: ***')
+                            connect.logwriter(
+                                'currency: ' + instrument_name_1 +
+                                'order: buy limit' +
+                                'amount: ' + str(smaller_amount_for_stop_gain_orders) +
+                                'price :' + str(best_bid_ask_price1))
+                            connect.logwriter(
+                                'currency: ' + instrument_name_2 +
+                                'order: sell limit' +
+                                'amount: ' + str(smaller_amount_for_stop_gain_orders) +
+                                'price :' + str(best_bid_ask_price2))
+                        else:
+                            list_monitor_log('***** ERROR IN STOP GAIN ORDERS - Error Code: 2272 ***')
+                            connect.logwriter('***** ERROR IN STOP GAIN ORDERS - Error Code: 2273 ***')
+                        time.sleep(2)
+                    else:                        
+                        list_monitor_log('*** Smoller amount for stop gain order < 10 USD ***')
+                else:
+                    pass  # stop_gain_conditions_trade is True                
                 # stop gain orders - the end ***************************************************************************
 
                 # open_conditions_trade - start ************************************************************************
