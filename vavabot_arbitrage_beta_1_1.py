@@ -1948,7 +1948,7 @@ def run_arbitrage(ui):
                 order_book_instrument1 = connect.get_order_book(instrument_name=instrument_name_1)
                 order_book_instrument2 = connect.get_order_book(instrument_name=instrument_name_2)
 
-                # Args modifically - smaller_amount_dic and instrument_price1 and instrument_price2 - start
+                # Args modifically - smaller_amount_dic and instrument_price1 and instrument_price2 - start ************
                 smaller_amount_dic = dict()
                 smaller_amount_dic.clear()
                 smaller_amount_dic[
@@ -2305,7 +2305,7 @@ def run_arbitrage(ui):
                     open_conditions_trade = False
                 # open_conditions_trade - the end **********************************************************************
 
-                # open_trade - start ***********************************************************************************
+                # open_trade_orders - start ****************************************************************************
                 if open_conditions_trade is True and \
                         stop_gain_conditions_trade is False and \
                         stop_loss_for_arbitrage_strategy is False and \
@@ -2313,35 +2313,205 @@ def run_arbitrage(ui):
                         there_are_bid_ask_offer is True and \
                         positions_with_same_size_in_usd_or_currency == 'USD' and \
                         number_multiple_10_and_round_0_digits(
-                            abs(instrument_amount1_usd_before_trade) - abs(instrument_position1)) >= 10 >= abs(
+                            abs(instrument_amount1_usd_before_trade) - abs(instrument_position1)) >= 10 > abs(
                             abs(instrument_position1) - abs(instrument_position2)) and \
                         number_multiple_10_and_round_0_digits(abs(
                             instrument_amount2_usd_before_trade) - abs(instrument_position2)) >= 10 and \
-                        number_multiple_10_and_round_0_digits(abs(instrument_amount1_usd_before_trade)) - \
-                        number_multiple_10_and_round_0_digits(abs(instrument_position1)) >= 10 and \
-                        number_multiple_10_and_round_0_digits(abs(instrument_amount2_usd_before_trade)) - \
-                        number_multiple_10_and_round_0_digits(abs(instrument_position2)) >= 10 and \
-                        number_multiple_10_and_round_0_digits(smaller_amount) >= 10:
+                        number_multiple_10_and_round_0_digits(abs(instrument_amount1_usd_before_trade) -
+                                                              abs(instrument_position1)) >= 10 and \
+                        number_multiple_10_and_round_0_digits(abs(instrument_amount2_usd_before_trade) -
+                                                              abs(instrument_position2)) >= 10 and \
+                        number_multiple_10_and_round_0_digits(smaller_amount) >= 10 and \
+                        best_bid_ask_price1 != 0 and \
+                        best_bid_ask_price2 != 0 and \
+                        best_bid_ask_amount1 != 0 and \
+                        best_bid_ask_amount2 != 0:
 
-                    instrument1_amount_order_usd = abs(smaller_amount)
-                    instrument2_amount_order_usd = instrument1_amount_order_usd
+                    instrument1_amount_order_usd_for_open_orders = \
+                        number_multiple_10_and_round_0_digits(abs(float(smaller_amount)))
+                    instrument2_amount_order_usd_for_open_orders = instrument1_amount_order_usd_for_open_orders
 
-                    # send_orders_open_trade - start *******************************************************************
-                    # send_orders_open_trade - the end *****************************************************************
+                    if instrument_buy_or_sell1 == 'buy' and instrument_buy_or_sell2 == 'sell':
+                        connect.buy_limit(
+                            currency=instrument_name_1,
+                            amount=instrument1_amount_order_usd_for_open_orders,
+                            price=best_bid_ask_price1)
+                        connect.sell_limit(
+                            currency=instrument_name_2,
+                            amount=instrument2_amount_order_usd_for_open_orders,
+                            price=best_bid_ask_price2)
+                        list_monitor_log('*** OPENING ORDERS SENT: ***')
+                        list_monitor_log(
+                            'currency: ' + instrument_name_1 +
+                            'order: sell limit' +
+                            'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
+                            'price :' + str(best_bid_ask_price1))
+                        list_monitor_log(
+                            'currency: ' + instrument_name_2 +
+                            'order: buy limit' +
+                            'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
+                            'price :' + str(best_bid_ask_price2))
+                        connect.logwriter('*** OPENING ORDERS SENT: ***')
+                        connect.logwriter(
+                            'currency: ' + instrument_name_1 +
+                            'order: sell limit' +
+                            'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
+                            'price :' + str(best_bid_ask_price1))
+                        connect.logwriter(
+                            'currency: ' + instrument_name_2 +
+                            'order: sell limit' +
+                            'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
+                            'price :' + str(best_bid_ask_price2))
 
-                    # check_postion1_same_postirion2_in_usd - start ****************************************************
-                    # check_postion1_same_postirion2_in_usd - the end **************************************************
+                    elif instrument_buy_or_sell1 == 'sell' and instrument_buy_or_sell2 == 'buy':
+                        connect.sell_limit(
+                            currency=instrument_name_1,
+                            amount=instrument1_amount_order_usd_for_open_orders,
+                            price=best_bid_ask_price1)
+                        connect.buy_limit(
+                            currency=instrument_name_2,
+                            amount=instrument2_amount_order_usd_for_open_orders,
+                            price=best_bid_ask_price2)
+                        list_monitor_log('*** OPENING ORDERS SENT: ***')
+                        list_monitor_log(
+                            'currency: ' + instrument_name_1 +
+                            'order: buy limit' +
+                            'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
+                            'price :' + str(best_bid_ask_price1))
+                        list_monitor_log(
+                            'currency: ' + instrument_name_2 +
+                            'order: sell limit' +
+                            'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
+                            'price :' + str(best_bid_ask_price2))
+                        connect.logwriter('*** OPENING ORDERS SENT: ***')
+                        connect.logwriter(
+                            'currency: ' + instrument_name_1 +
+                            'order: buy limit' +
+                            'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
+                            'price :' + str(best_bid_ask_price1))
+                        connect.logwriter(
+                            'currency: ' + instrument_name_2 +
+                            'order: sell limit' +
+                            'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
+                            'price :' + str(best_bid_ask_price2))
+                    else:
+                        list_monitor_log('***** ERROR OPENING ORDERS SENT - Error Code: 2398 ***')
+                        connect.logwriter('***** ERROR OPENING ORDERS SENT - Error Code: 2398 ***')
+                    time.sleep(2)
+                elif open_conditions_trade is True and \
+                        stop_gain_conditions_trade is False and \
+                        stop_loss_for_arbitrage_strategy is False and \
+                        stop_loss_counter < 2 and \
+                        there_are_bid_ask_offer is True and \
+                        positions_with_same_size_in_usd_or_currency == 'BTC/ETH' and \
+                        number_multiple_10_and_round_0_digits(
+                            abs(instrument_amount1_usd_before_trade) - abs(instrument_position1)) >= 10 and \
+                        number_multiple_10_and_round_0_digits(abs(instrument_amount1_usd_before_trade) -
+                                                              abs(instrument_position1)) >= 10 and \
+                        number_multiple_10_and_round_0_digits(abs(instrument_amount2_usd_before_trade) -
+                                                              abs(instrument_position2)) >= 10 and \
+                        number_multiple_10_and_round_0_digits(smaller_amount) >= 10 and \
+                        best_bid_ask_price1 != 0 and \
+                        best_bid_ask_price2 != 0 and \
+                        best_bid_ask_amount1 != 0 and \
+                        best_bid_ask_amount2 != 0:
+                    if abs(abs(instrument_position_currency1) - abs(
+                        instrument_position_currency2)) < number_multiple_10_and_round_0_digits(
+                            10 / best_bid_ask_price2):
 
-                elif positions_with_same_size_in_usd_or_currency == 'USD' and \
+                        instrument1_amount_order_usd_for_open_orders = \
+                            number_multiple_10_and_round_0_digits(abs(float(smaller_amount)))
+                        instrument1_amount_order_btc_for_open_orders = instrument1_amount_order_usd_for_open_orders \
+                            / best_bid_ask_price1
+                        instrument2_amount_order_usd_for_open_orders = \
+                            instrument1_amount_order_btc_for_open_orders * best_bid_ask_price2
+
+                        if instrument_buy_or_sell1 == 'buy' and instrument_buy_or_sell2 == 'sell':
+                            connect.buy_limit(
+                                currency=instrument_name_1,
+                                amount=instrument1_amount_order_usd_for_open_orders,
+                                price=best_bid_ask_price1)
+                            connect.sell_limit(
+                                currency=instrument_name_2,
+                                amount=instrument2_amount_order_usd_for_open_orders,
+                                price=best_bid_ask_price2)
+                            list_monitor_log('*** OPENING ORDERS SENT: ***')
+                            list_monitor_log(
+                                'currency: ' + instrument_name_1 +
+                                'order: sell limit' +
+                                'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
+                                'price :' + str(best_bid_ask_price1))
+                            list_monitor_log(
+                                'currency: ' + instrument_name_2 +
+                                'order: buy limit' +
+                                'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
+                                'price :' + str(best_bid_ask_price2))
+                            connect.logwriter('*** OPENING ORDERS SENT: ***')
+                            connect.logwriter(
+                                'currency: ' + instrument_name_1 +
+                                'order: sell limit' +
+                                'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
+                                'price :' + str(best_bid_ask_price1))
+                            connect.logwriter(
+                                'currency: ' + instrument_name_2 +
+                                'order: sell limit' +
+                                'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
+                                'price :' + str(best_bid_ask_price2))
+
+                        elif instrument_buy_or_sell1 == 'sell' and instrument_buy_or_sell2 == 'buy':
+                            connect.sell_limit(
+                                currency=instrument_name_1,
+                                amount=instrument1_amount_order_usd_for_open_orders,
+                                price=best_bid_ask_price1)
+                            connect.buy_limit(
+                                currency=instrument_name_2,
+                                amount=instrument2_amount_order_usd_for_open_orders,
+                                price=best_bid_ask_price2)
+                            list_monitor_log('*** OPENING ORDERS SENT: ***')
+                            list_monitor_log(
+                                'currency: ' + instrument_name_1 +
+                                'order: buy limit' +
+                                'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
+                                'price :' + str(best_bid_ask_price1))
+                            list_monitor_log(
+                                'currency: ' + instrument_name_2 +
+                                'order: sell limit' +
+                                'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
+                                'price :' + str(best_bid_ask_price2))
+                            connect.logwriter('*** OPENING ORDERS SENT: ***')
+                            connect.logwriter(
+                                'currency: ' + instrument_name_1 +
+                                'order: buy limit' +
+                                'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
+                                'price :' + str(best_bid_ask_price1))
+                            connect.logwriter(
+                                'currency: ' + instrument_name_2 +
+                                'order: sell limit' +
+                                'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
+                                'price :' + str(best_bid_ask_price2))
+                        else:
+                            list_monitor_log('***** ERROR OPENING ORDERS SENT - Error Code: 2492 *****')
+                            connect.logwriter('***** ERROR OPENING ORDERS SENT - Error Code: 2493 *****')
+                        time.sleep(2)
+                    else:
+                        pass
+                else:
+                    list_monitor_log('*** Opening orders NO sent ***')
+                # open_trade_orders - the end **************************************************************************
+
+                # check_postion1_same_postirion2_in_usd - start ********************************************************
+                if positions_with_same_size_in_usd_or_currency == 'USD' and \
                         abs(abs(instrument_position1) - abs(instrument_position2)) >= 10:
-                    # check_postion1_same_postirion2_in_usd - start ****************************************************
-                    # check_postion1_same_postirion2_in_usd - the end **************************************************
                     pass
-
+                elif abs(abs(instrument_position_currency1) - abs(
+                        instrument_position_currency2)) < number_multiple_10_and_round_0_digits(
+                    10 / best_bid_ask_price2):
                 else:
                     pass
-                # open_trade - the end *********************************************************************************
+                # check_postion1_same_postirion2_in_usd - the end ******************************************************
+
                 btc_index_and_greeks_structure_monitor_print()
+
             except Exception as er:
                 list_monitor_log.append(str(er))
                 time.sleep(40)
