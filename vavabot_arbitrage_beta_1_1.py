@@ -1517,7 +1517,7 @@ def run_arbitrage(ui):
                 pass
 
             # no bid/ask offer
-            if book_summary_instrument[0]['mid_price'] is None:
+            if book_summary_instrument[0]['mid_price'] is None or book_summary_instrument[0]['mid_price'] == 'null':
                 list_monitor_log.append('********** ' + str(instrument_name) +
                                         ' No bid/ask offer in annualized_premium **********')
                 return 'No bid/ask offer'
@@ -2578,7 +2578,15 @@ def run_arbitrage(ui):
                 if positions_with_same_size_in_usd_or_currency == 'USD' and \
                         abs(abs(instrument_position1) - abs(instrument_position2)) >= 10 and \
                         there_are_bid_ask_offer is True:
-                    pass
+                    check_instruments_positions(
+                        instrument_name_1=instrument_name_1,
+                        instrument_name_2=instrument_name_2,
+                        instrument_amount1_usd_before_trade=instrument_amount1_usd_before_trade,
+                        instrument_amount2_usd_before_trade=instrument_amount2_usd_before_trade,
+                        instrument_buy_or_sell1=instrument_buy_or_sell1,
+                        instrument_buy_or_sell2=instrument_buy_or_sell2,
+                        positions_with_same_size_in_usd_or_currency=positions_with_same_size_in_usd_or_currency)
+
                 elif positions_with_same_size_in_usd_or_currency == 'BTC/ETH':
                     if best_bid_ask_price2 != 0 and \
                         there_are_bid_ask_offer is True and \
