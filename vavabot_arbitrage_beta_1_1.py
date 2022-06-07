@@ -1232,56 +1232,6 @@ def run_arbitrage(ui):
     def number_multiple_10_and_round_0_digits(number=None):
         return round(float(number - (number % 10)), 0)
 
-    def buy_or_sell_first_order(instrument_name2, instrument_amount, instrument_direction2, instrument_name1,
-                                instrument_price1, instrument_price2):
-        global what_instrument
-        from connection_arbitrage import connect
-
-        instrument_amount2 = float
-        if ConfigAndInstrumentsSaved().positions_with_same_size_in() == 'USD':
-            instrument_amount2 = instrument_amount
-        elif ConfigAndInstrumentsSaved().positions_with_same_size_in() == 'BTC/ETH':
-            if what_instrument == 'instrument_1':
-                instrument_amount2 = instrument_amount / instrument_price1 * instrument_price2
-            elif what_instrument == 'instrument_2':
-                instrument_amount2 = instrument_amount
-                instrument_amount = instrument_amount / instrument_price2 * instrument_price1
-            elif what_instrument == 'None':
-                instrument_amount = 0
-                instrument_amount2 = 0
-        else:
-            pass
-
-        if instrument_direction2 == 'buy':
-            if number_multiple_10_and_round_0_digits(number=abs(instrument_amount)) < 10:
-                pass
-            else:
-                connect.sell_market(currency=instrument_name1,
-                                    amount=number_multiple_10_and_round_0_digits(abs(instrument_amount)))
-                connect.buy_market(currency=instrument_name2,
-                                   amount=number_multiple_10_and_round_0_digits(abs(instrument_amount2)))
-
-        elif instrument_direction2 == 'sell':
-            if number_multiple_10_and_round_0_digits(number=abs(instrument_amount)) < 10:
-                pass
-            else:
-                connect.buy_market(currency=instrument_name1,
-                                   amount=number_multiple_10_and_round_0_digits(abs(instrument_amount)))
-                connect.sell_market(currency=instrument_name2,
-                                    amount=number_multiple_10_and_round_0_digits(abs(instrument_amount2)))
-        else:
-            pass
-
-    def best_bid_ask_price(instrument_name, instrument_direction):
-        from connection_arbitrage import connect
-        order_book = connect.get_order_book(instrument_name=instrument_name)
-        if instrument_direction == 'buy':
-            order_book_best_ask_price = abs(float(order_book['best_ask_price']))
-            return order_book_best_ask_price
-        elif instrument_direction == 'sell':
-            order_book_best_bid_price = abs(float(order_book['best_bid_price']))
-            return order_book_best_bid_price
-
     def check_instruments_positions(instrument_name_1, instrument_name_2,
                                     instrument_amount1_usd_before_trade, instrument_amount2_usd_before_trade,
                                     instrument_buy_or_sell1, instrument_buy_or_sell2,
