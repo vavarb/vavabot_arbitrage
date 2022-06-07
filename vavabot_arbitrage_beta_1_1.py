@@ -1789,7 +1789,6 @@ def run_arbitrage(ui):
             return False
 
     def strategy_entry(instrument_name_1, instrument_name_2,
-                       summary_instrument1, summary_instrument2,
                        best_bid_ask_price_in_usd_instrument1, best_bid_ask_price_in_usd_instrument2,
                        set_entry_position_in_, set_entry_position_bigger_lower_, set_entry_position_value_):
         from lists import list_monitor_log
@@ -1804,11 +1803,6 @@ def run_arbitrage(ui):
                                 str(set_entry_position_value_)
                                 )
         # Args
-        average_price_position_instrument1 = float(summary_instrument1['average_price'])
-        average_price_position_instrument2 = float(summary_instrument2['average_price'])
-
-        instrument_position1 = float(summary_instrument1['size'])
-        instrument_position2 = float(summary_instrument2['size'])
 
         instrument_price1 = float(best_bid_ask_price_in_usd_instrument1)
         instrument_price2 = float(best_bid_ask_price_in_usd_instrument2)
@@ -2369,12 +2363,12 @@ def run_arbitrage(ui):
                         number_multiple_10_and_round_0_digits(
                             (abs(total_amount) / 2) - abs(instrument_position2)) > 10 and \
                         number_multiple_10_and_round_0_digits(
-                            abs(total_amount) - (abs(instrument_position1) + abs(instrument_position2))) > 10:
+                            abs(total_amount) - (abs(instrument_position1) + abs(instrument_position2))) > 10 and \
+                        abs(instrument_position1) + 9.9 < abs(instrument_amount1_usd_before_trade) and \
+                        abs(instrument_position2) + 9.9 < abs(instrument_amount2_usd_before_trade):
                     open_conditions_trade = strategy_entry(
                         instrument_name_1=instrument_name_1,
                         instrument_name_2=instrument_name_2,
-                        summary_instrument1=summary_instrument1,
-                        summary_instrument2=summary_instrument2,
                         best_bid_ask_price_in_usd_instrument1=best_bid_ask_price1,
                         best_bid_ask_price_in_usd_instrument2=best_bid_ask_price2,
                         set_entry_position_in_=set_entry_position_in_,
@@ -2576,7 +2570,7 @@ def run_arbitrage(ui):
                     else:
                         pass
                 else:
-                    list_monitor_log('*** Opening orders NO sent ***')
+                    list_monitor_log.append('*** Opening orders NO sent ***')
                 # open_trade_orders - the end **************************************************************************
 
                 # check_postion1_same_postirion2_in_usd - start ********************************************************
