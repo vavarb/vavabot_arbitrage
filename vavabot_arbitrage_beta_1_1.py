@@ -1262,10 +1262,6 @@ def run_arbitrage(ui):
                 number_multiple_10_and_round_0_digits(abs(
                     abs(instrument_position2) - abs(instrument_position1)
                 ))
-            difference_instrument1_instrument2_for_dict = \
-                number_multiple_10_and_round_0_digits(abs(
-                    abs(instrument_position2) - abs(instrument_position1)
-                ))
         else:
             pass
 
