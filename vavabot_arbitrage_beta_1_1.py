@@ -2375,6 +2375,10 @@ def run_arbitrage(ui):
                     stop_loss_counter = stop_loss_counter + 1
                 else:
                     pass
+
+                if stop_loss_counter >= 2:
+                    list_monitor_log.append('*** Stop Loss Counter: ' + str(stop_loss_counter) + ' ***')
+                    connect.logwriter('*** Stop Loss Counter: ' + str(stop_loss_counter) + ' ***')
                     # stop_loss_counter - the end **********************************************************************
                 # stop_loss_conditions_trade and stop_gain_conditions_trade - the end **********************************
 
@@ -2513,8 +2517,8 @@ def run_arbitrage(ui):
                         best_bid_ask_amount1 != 0 and \
                         best_bid_ask_amount2 != 0:
 
-                    instrument1_amount_order_usd_for_open_orders = \
-                        number_multiple_10_and_round_0_digits(abs(float(smaller_amount)))
+                    instrument1_amount_order_usd_for_open_orders = number_multiple_10_and_round_0_digits(
+                        abs(float(smaller_amount)))
                     instrument2_amount_order_usd_for_open_orders = instrument1_amount_order_usd_for_open_orders
 
                     if instrument_buy_or_sell1 == 'buy' and instrument_buy_or_sell2 == 'sell':
@@ -2529,18 +2533,18 @@ def run_arbitrage(ui):
                         list_monitor_log.append('*** OPENING ORDERS SENT: ***')
                         list_monitor_log.append(
                             'currency: ' + instrument_name_1 +
-                            'order: sell limit' +
+                            'order: buy limit' +
                             'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
                             'price :' + str(best_bid_ask_price1))
                         list_monitor_log.append(
                             'currency: ' + instrument_name_2 +
-                            'order: buy limit' +
+                            'order: sell limit' +
                             'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
                             'price :' + str(best_bid_ask_price2))
                         connect.logwriter('*** OPENING ORDERS SENT: ***')
                         connect.logwriter(
                             'currency: ' + instrument_name_1 +
-                            'order: sell limit' +
+                            'order: buy limit' +
                             'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
                             'price :' + str(best_bid_ask_price1))
                         connect.logwriter(
@@ -2561,23 +2565,23 @@ def run_arbitrage(ui):
                         list_monitor_log.append('*** OPENING ORDERS SENT: ***')
                         list_monitor_log.append(
                             'currency: ' + instrument_name_1 +
-                            'order: buy limit' +
+                            'order: sell limit' +
                             'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
                             'price :' + str(best_bid_ask_price1))
                         list_monitor_log.append(
                             'currency: ' + instrument_name_2 +
-                            'order: sell limit' +
+                            'order: buy limit' +
                             'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
                             'price :' + str(best_bid_ask_price2))
                         connect.logwriter('*** OPENING ORDERS SENT: ***')
                         connect.logwriter(
                             'currency: ' + instrument_name_1 +
-                            'order: buy limit' +
+                            'order: sell limit' +
                             'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
                             'price :' + str(best_bid_ask_price1))
                         connect.logwriter(
                             'currency: ' + instrument_name_2 +
-                            'order: sell limit' +
+                            'order: buy limit' +
                             'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
                             'price :' + str(best_bid_ask_price2))
                     else:
@@ -2590,8 +2594,6 @@ def run_arbitrage(ui):
                         stop_loss_counter < 2 and \
                         there_are_bid_ask_offer is True and \
                         positions_with_same_size_in_usd_or_currency == 'BTC/ETH' and \
-                        number_multiple_10_and_round_0_digits(
-                            abs(instrument_amount1_usd_before_trade) - abs(instrument_position1)) >= 10 and \
                         number_multiple_10_and_round_0_digits(abs(instrument_amount1_usd_before_trade) -
                                                               abs(instrument_position1)) >= 10 and \
                         number_multiple_10_and_round_0_digits(abs(instrument_amount2_usd_before_trade) -
@@ -2601,16 +2603,17 @@ def run_arbitrage(ui):
                         best_bid_ask_price2 != 0 and \
                         best_bid_ask_amount1 != 0 and \
                         best_bid_ask_amount2 != 0:
-                    if abs(abs(instrument_position_currency1) - abs(
-                        instrument_position_currency2)) < number_multiple_10_and_round_0_digits(
-                            10 / best_bid_ask_price2):
+                    if number_multiple_10_and_round_0_digits(
+                            (abs(
+                                abs(instrument_position_currency1) - abs(instrument_position_currency2)))
+                            * best_bid_ask_price2) < 10:
 
                         instrument1_amount_order_usd_for_open_orders = \
                             number_multiple_10_and_round_0_digits(abs(float(smaller_amount)))
                         instrument1_amount_order_btc_for_open_orders = instrument1_amount_order_usd_for_open_orders \
                             / best_bid_ask_price1
-                        instrument2_amount_order_usd_for_open_orders = \
-                            instrument1_amount_order_btc_for_open_orders * best_bid_ask_price2
+                        instrument2_amount_order_usd_for_open_orders = number_multiple_10_and_round_0_digits(
+                            abs(float(instrument1_amount_order_btc_for_open_orders) * float(best_bid_ask_price2)))
 
                         if instrument_buy_or_sell1 == 'buy' and instrument_buy_or_sell2 == 'sell':
                             connect.buy_limit(
@@ -2624,18 +2627,18 @@ def run_arbitrage(ui):
                             list_monitor_log.append('*** OPENING ORDERS SENT: ***')
                             list_monitor_log.append(
                                 'currency: ' + instrument_name_1 +
-                                'order: sell limit' +
+                                'order: buy limit' +
                                 'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
                                 'price :' + str(best_bid_ask_price1))
                             list_monitor_log.append(
                                 'currency: ' + instrument_name_2 +
-                                'order: buy limit' +
+                                'order: sell limit' +
                                 'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
                                 'price :' + str(best_bid_ask_price2))
                             connect.logwriter('*** OPENING ORDERS SENT: ***')
                             connect.logwriter(
                                 'currency: ' + instrument_name_1 +
-                                'order: sell limit' +
+                                'order: buy limit' +
                                 'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
                                 'price :' + str(best_bid_ask_price1))
                             connect.logwriter(
@@ -2656,23 +2659,23 @@ def run_arbitrage(ui):
                             list_monitor_log.append('*** OPENING ORDERS SENT: ***')
                             list_monitor_log.append(
                                 'currency: ' + instrument_name_1 +
-                                'order: buy limit' +
+                                'order: sell limit' +
                                 'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
                                 'price :' + str(best_bid_ask_price1))
                             list_monitor_log.append(
                                 'currency: ' + instrument_name_2 +
-                                'order: sell limit' +
+                                'order: buy limit' +
                                 'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
                                 'price :' + str(best_bid_ask_price2))
                             connect.logwriter('*** OPENING ORDERS SENT: ***')
                             connect.logwriter(
                                 'currency: ' + instrument_name_1 +
-                                'order: buy limit' +
+                                'order: sell limit' +
                                 'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
                                 'price :' + str(best_bid_ask_price1))
                             connect.logwriter(
                                 'currency: ' + instrument_name_2 +
-                                'order: sell limit' +
+                                'order: buy limit' +
                                 'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
                                 'price :' + str(best_bid_ask_price2))
                         else:
