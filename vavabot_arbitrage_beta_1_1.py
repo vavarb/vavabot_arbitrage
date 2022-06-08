@@ -1257,19 +1257,13 @@ def run_arbitrage(ui):
         # Args modifically - smaller_amount_dic and instrument_price1 and instrument_price2 - start *******************
         smaller_amount_dic = dict()
         smaller_amount_dic.clear()
-        smaller_amount_dic[
-            'abs(instrument_amount1_usd_before_trade) - abs(instrument_position1)'] = \
-            number_multiple_10_and_round_0_digits(
-                abs(instrument_amount1_usd_before_trade) - abs(instrument_position1)
-            )
-        smaller_amount_dic[
-            'abs(instrument_amount2_usd_before_trade) - abs(instrument_position2)'] = \
-            number_multiple_10_and_round_0_digits(
-                abs(instrument_amount2_usd_before_trade) - abs(instrument_position2)
-            )
-        difference_instrument1_instrument2_for_dict = 0
+
         if positions_with_same_size_in_usd_or_currency == 'USD':
             smaller_amount_dic['abs(abs(instrument_position2) - abs(instrument_position1))'] = \
+                number_multiple_10_and_round_0_digits(abs(
+                    abs(instrument_position2) - abs(instrument_position1)
+                ))
+            difference_instrument1_instrument2_for_dict = \
                 number_multiple_10_and_round_0_digits(abs(
                     abs(instrument_position2) - abs(instrument_position1)
                 ))
@@ -1277,7 +1271,7 @@ def run_arbitrage(ui):
             if abs(instrument_position1) > abs(instrument_position2) and instrument_buy_or_sell1 == 'buy' and \
                     order_book_instrument1['best_bid_amount'] != 0:
                 difference_instrument1_instrument2_for_dict = number_multiple_10_and_round_0_digits(
-                    abs(abs(instrument_position_currency1) - abs(instrument_position_currency2) *
+                    abs((abs(instrument_position_currency1) - abs(instrument_position_currency2)) *
                         float(order_book_instrument1['best_bid_price'])))
                 smaller_amount_dic['difference_instrument1_instrument2_for_dict'] = \
                     difference_instrument1_instrument2_for_dict
@@ -1285,7 +1279,7 @@ def run_arbitrage(ui):
             elif abs(instrument_position1) > abs(instrument_position2) and instrument_buy_or_sell1 == 'sell' and \
                     order_book_instrument1['best_ask_amount'] != 0:
                 difference_instrument1_instrument2_for_dict = number_multiple_10_and_round_0_digits(
-                    abs(abs(instrument_position_currency1) - abs(instrument_position_currency2) *
+                    abs((abs(instrument_position_currency1) - abs(instrument_position_currency2)) *
                         float(order_book_instrument1['best_ask_price'])))
                 smaller_amount_dic['difference_instrument1_instrument2_for_dict'] = \
                     difference_instrument1_instrument2_for_dict
@@ -1293,7 +1287,7 @@ def run_arbitrage(ui):
             elif abs(instrument_position1) < abs(instrument_position2) and instrument_buy_or_sell2 == 'buy' and \
                     order_book_instrument2['best_bid_amount'] != 0:
                 difference_instrument1_instrument2_for_dict = number_multiple_10_and_round_0_digits(
-                    abs(abs(instrument_position_currency1) - abs(instrument_position_currency2) *
+                    abs((abs(instrument_position_currency1) - abs(instrument_position_currency2)) *
                         float(order_book_instrument2['best_bid_price'])))
                 smaller_amount_dic['difference_instrument1_instrument2_for_dict'] = \
                     difference_instrument1_instrument2_for_dict
@@ -1301,12 +1295,13 @@ def run_arbitrage(ui):
             elif abs(instrument_position1) < abs(instrument_position2) and instrument_buy_or_sell2 == 'sell' and \
                     order_book_instrument2['best_ask_amount'] != 0:
                 difference_instrument1_instrument2_for_dict = number_multiple_10_and_round_0_digits(
-                    abs(abs(instrument_position_currency1) - abs(instrument_position_currency2) *
+                    abs((abs(instrument_position_currency1) - abs(instrument_position_currency2)) *
                         float(order_book_instrument2['best_ask_price'])))
                 smaller_amount_dic['difference_instrument1_instrument2_for_dict'] = \
                     difference_instrument1_instrument2_for_dict
 
             else:
+                difference_instrument1_instrument2_for_dict = 0
                 list_monitor_log.append('***** ERROR in Check Instruments - Error Code: 1359 *****')
                 connect.logwriter('***** ERROR in Check Instruments - Error Code: 1360 *****')
 
@@ -1330,12 +1325,14 @@ def run_arbitrage(ui):
             best_bid_ask_amount2 = 0
             best_bid_ask_price2 = 0
 
-        smaller_amount_dic['best_bid_ask_amount1'] = number_multiple_10_and_round_0_digits(
-            abs(float(best_bid_ask_amount1))
-        )
-        smaller_amount_dic['best_bid_ask_amount2'] = number_multiple_10_and_round_0_digits(
-            abs(float(best_bid_ask_amount2))
-        )
+        if abs(instrument_position1) > abs(instrument_position2):
+            smaller_amount_dic['best_bid_ask_amount1'] = number_multiple_10_and_round_0_digits(
+                abs(float(best_bid_ask_amount1))
+            )
+        else:
+            smaller_amount_dic['best_bid_ask_amount2'] = number_multiple_10_and_round_0_digits(
+                abs(float(best_bid_ask_amount2))
+            )
 
         if len(smaller_amount_dic) > 0:
             smaller_amount_name = min(smaller_amount_dic, key=smaller_amount_dic.get)  # name
@@ -1346,7 +1343,10 @@ def run_arbitrage(ui):
 
         # there_are_bid_ask_offer - start ******************************************************************************
         if number_multiple_10_and_round_0_digits(best_bid_ask_amount1) >= 10 and \
-                number_multiple_10_and_round_0_digits(best_bid_ask_amount2) >= 10:
+                abs(instrument_position1) > abs(instrument_position2):
+            there_are_bid_ask_offer = True
+        elif number_multiple_10_and_round_0_digits(best_bid_ask_amount2) >= 10 and \
+                abs(instrument_position1) < abs(instrument_position2):
             there_are_bid_ask_offer = True
         else:
             there_are_bid_ask_offer = False
@@ -1413,9 +1413,7 @@ def run_arbitrage(ui):
                 list_monitor_log.append('***** ERROR in Check Instruments - Error Code: 1462 *****')
                 connect.logwriter('***** ERROR in Check Instruments - Error Code: 1463 *****')
         elif positions_with_same_size_in_usd_or_currency == 'BTC/ETH':
-            if best_bid_ask_price2 != 0 and \
-                    there_are_bid_ask_offer is True and \
-                    best_bid_ask_price1 != 0 and \
+            if there_are_bid_ask_offer is True and \
                     number_multiple_10_and_round_0_digits(float(smaller_amount)) >= 10:
                 if difference_instrument1_instrument2_for_dict >= 10:
                     instrument_amount_usd_for_check_postions = number_multiple_10_and_round_0_digits(
