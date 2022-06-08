@@ -845,6 +845,9 @@ def config(ui):
         ui.radioButton_testnet_true.setEnabled(False)
         ui.radioButton_2_testnet_false.setEnabled(False)
 
+    def disable_positions_with_same_size_in():
+        ui.lineEdit_o_or_f_instrumet1_5.setDisabled(True)
+
     def config_save():
         from lists import list_monitor_log
         try:
@@ -880,6 +883,7 @@ def config(ui):
     config_saved_print()
     ui.pushButton_submit_new_instruments.clicked.connect(instruments_save)
     ui.pushButton_submit_new_instruments_2.clicked.connect(config_save)
+    disable_positions_with_same_size_in()
 
 
 def run_arbitrage(ui):
