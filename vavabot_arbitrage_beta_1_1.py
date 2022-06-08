@@ -2703,9 +2703,8 @@ def run_arbitrage(ui):
                     if best_bid_ask_price2 != 0 and \
                         there_are_bid_ask_offer is True and \
                             best_bid_ask_price1 != 0:
-                        if abs(abs(instrument_position_currency1) - abs(
-                                instrument_position_currency2)) >= number_multiple_10_and_round_0_digits(
-                                10 / best_bid_ask_price2):
+                        if number_multiple_10_and_round_0_digits((abs(abs(instrument_position_currency1) - abs(
+                                instrument_position_currency2))) * best_bid_ask_price2) >= 10:
                             check_instruments_positions(
                                 instrument_name_1=instrument_name_1,
                                 instrument_name_2=instrument_name_2,
