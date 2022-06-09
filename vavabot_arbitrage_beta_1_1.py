@@ -1803,13 +1803,13 @@ def run_arbitrage(ui):
         from lists import list_monitor_log
         from connection_arbitrage import connect
 
-        list_monitor_log.append('*** Trade Opening Setup Check ***')
-        list_monitor_log.append('Trade setup: ' +
+        list_monitor_log.append(' *** Trade Opening Setup Check *** ')
+        list_monitor_log.append(' Trade setup: ' +
                                 str(set_entry_position_in_) +
                                 ' ' +
                                 str(set_entry_position_bigger_lower_) +
                                 ' ' +
-                                str(set_entry_position_value_)
+                                str(set_entry_position_value_) + ' ' +
                                 )
         # Args
 
