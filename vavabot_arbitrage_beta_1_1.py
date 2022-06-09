@@ -1849,11 +1849,11 @@ def run_arbitrage(ui):
                         str(instrument_name_1))
                     return False
             else:
-                list_monitor_log.append('***** ERROR in Trade Opening Setup Check - Error Code 2480 *****')
+                list_monitor_log.append('***** ERROR in Trade Opening Setup Check - Error Code 1852 *****')
                 list_monitor_log.append('set_entry_position_in_' +
                                         str(set_entry_position_in_) + ': ' +
                                         str(difference_instrument2_instrument1_percentage) + '%')
-                connect.logwriter('***** ERROR in Trade Opening Setup Check - Error Code 2483 *****')
+                connect.logwriter('***** ERROR in Trade Opening Setup Check - Error Code 1856 *****')
                 connect.logwriter('set_entry_position_in_: ' +
                                   str(set_entry_position_in_) + ': ' +
                                   str(difference_instrument2_instrument1_percentage) + '%')
