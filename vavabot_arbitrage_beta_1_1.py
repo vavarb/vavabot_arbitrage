@@ -1431,18 +1431,19 @@ def run_arbitrage(ui):
 
     def stop_gain(instrument_name_1, instrument_name_2,
                   summary_instrument1, summary_instrument2,
-                  best_bid_ask_price_in_usd_instrument1, best_bid_ask_price_in_usd_instrument2,
+                  order_book_instrument1, order_book_instrument2,
                   set_exit_position_in_, set_exit_position_bigger_lower_, set_exit_position_value_):
         from lists import list_monitor_log
         from connection_arbitrage import connect
 
-        list_monitor_log.append('*** Stop Gain Check ***')
-        list_monitor_log.append('Stop Gains selected in: ' +
+        list_monitor_log.append(' *** Stop Gain Check *** ')
+        list_monitor_log.append(' Stop Gains selected in: ' +
                                 str(set_exit_position_in_) +
                                 ' ' +
                                 str(set_exit_position_bigger_lower_) +
                                 ' ' +
-                                str(set_exit_position_value_)
+                                str(set_exit_position_value_) +
+                                ' '
                                 )
         # Args
         average_price_position_instrument1 = float(summary_instrument1['average_price'])
@@ -1453,31 +1454,34 @@ def run_arbitrage(ui):
 
         if summary_instrument1['direction'] == 'buy':
             profit_loss_in_usd_instrument1 = \
-                (float(best_bid_ask_price_in_usd_instrument1) - float(average_price_position_instrument1)) * \
+                (float(order_book_instrument1['best_bid_price']) - float(average_price_position_instrument1)) * \
                 abs(instrument_position1)
+            instrument_price1 = float(order_book_instrument1['best_bid_price'])
         elif summary_instrument1['direction'] == 'sell':
             profit_loss_in_usd_instrument1 = \
-                (float(average_price_position_instrument1) - float(best_bid_ask_price_in_usd_instrument1)) * \
+                (float(average_price_position_instrument1) - float(order_book_instrument1['best_ask_price'])) * \
                 abs(instrument_position1)
+            instrument_price1 = float(order_book_instrument1['best_ask_price'])
         else:
             profit_loss_in_usd_instrument1 = 0
+            instrument_price1 = 0
 
         if summary_instrument2['direction'] == 'buy':
             profit_loss_in_usd_instrument2 = \
-                (float(best_bid_ask_price_in_usd_instrument2) - float(average_price_position_instrument2)) * \
+                (float(order_book_instrument2['best_bid_price']) - float(average_price_position_instrument2)) * \
                 abs(instrument_position2)
+            instrument_price2 = float(order_book_instrument2['best_bid_price'])
         elif summary_instrument2['direction'] == 'sell':
             profit_loss_in_usd_instrument2 = \
-                (float(average_price_position_instrument2) - float(best_bid_ask_price_in_usd_instrument2)) * \
+                (float(average_price_position_instrument2) - float(order_book_instrument2['best_ask_price'])) * \
                 abs(instrument_position2)
+            instrument_price2 = float(order_book_instrument2['best_ask_price'])
         else:
             profit_loss_in_usd_instrument2 = 0
+            instrument_price2 = 0
 
         profit_loss_in_usd_total = float(profit_loss_in_usd_instrument1) + \
             float(profit_loss_in_usd_instrument2)
-
-        instrument_price1 = float(best_bid_ask_price_in_usd_instrument1)
-        instrument_price2 = float(best_bid_ask_price_in_usd_instrument2)
 
         # strategy exit position in Profit_
         if set_exit_position_in_ == 'Profit_%':
@@ -1485,27 +1489,27 @@ def run_arbitrage(ui):
                     abs(instrument_position1) + abs(instrument_position2))
             if set_exit_position_bigger_lower_ == '>':
                 if float(profit_loss_percentage) > float(set_exit_position_value_):
-                    list_monitor_log.append('*** Stopped position gain ***')
-                    list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
+                    list_monitor_log.append(' *** Stopped position gain *** ')
+                    list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%. ')
                     return True
                 else:
-                    list_monitor_log.append('*** Stop Gain checked ***')
-                    list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
+                    list_monitor_log.append(' *** Stop Gain checked *** ')
+                    list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%. ')
                     return False
             elif set_exit_position_bigger_lower_ == '<':
                 if float(profit_loss_percentage) < float(set_exit_position_value_):
-                    list_monitor_log.append('*** Stopped position gain ***')
-                    list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
+                    list_monitor_log.append(' *** Stopped position gain *** ')
+                    list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%. ')
                     return True
                 else:
-                    list_monitor_log.append('*** Stop Gain checked ***')
-                    list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
+                    list_monitor_log.append(' *** Stop Gain checked *** ')
+                    list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%. ')
                     return False
             else:
-                list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2199 ***')
-                list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
-                connect.logwriter('***** ERROR in Stop Gain check - Error Code 2201 ***')
-                connect.logwriter(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%')
+                list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 1509 *** ')
+                list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%. ')
+                connect.logwriter('\n***** ERROR in Stop Gain check - Error Code 1511 *** ')
+                connect.logwriter('\n' + str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%. ')
                 return False
 
         # strategy exit position in Difference_%
@@ -1515,34 +1519,35 @@ def run_arbitrage(ui):
             if set_exit_position_bigger_lower_ == '>':
                 if difference_instrument2_instrument1_percentage > \
                         float(set_exit_position_value_):
-                    list_monitor_log.append('*** Stopped position gain ***')
+                    list_monitor_log.append(' *** Stopped position gain *** ')
                     list_monitor_log.append(
-                        str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
+                        str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%. ')
                     return True
                 else:
-                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(' *** Stop Gain checked *** ')
                     list_monitor_log.append(
-                        str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
+                        str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%. ')
                     return False
             elif set_exit_position_bigger_lower_ == '<':
                 if difference_instrument2_instrument1_percentage < \
                         float(set_exit_position_value_):
-                    list_monitor_log.append('*** Stopped position gain ***')
+                    list_monitor_log.append(' *** Stopped position gain *** ')
                     list_monitor_log.append(
-                        str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
+                        str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%. ')
                     return True
                 else:
-                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(' *** Stop Gain checked *** ')
                     list_monitor_log.append(
-                        str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
+                        str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%'. )
                     return False
             else:
-                list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 22324 ***')
+                list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 1544 *** ')
                 list_monitor_log.append(
-                    str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
-                connect.logwriter('***** ERROR in Stop Gain check - Error Code 2237 ***')
+                    str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%. ')
+                connect.logwriter('\n***** ERROR in Stop Gain check - Error Code 1547 *** ')
                 connect.logwriter(
-                    str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%')
+                    '\n' + str(set_exit_position_in_) + ': ' + str(
+                        difference_instrument2_instrument1_percentage) + '%. ')
                 return False
 
         # strategy exit position in Difference_USD
@@ -1550,33 +1555,33 @@ def run_arbitrage(ui):
             instrument2_intrument1_difference_in_usd = abs(instrument_price2) - abs(instrument_price1)
             if set_exit_position_bigger_lower_ == '>':
                 if instrument2_intrument1_difference_in_usd > float(set_exit_position_value_):
-                    list_monitor_log.append('*** Stopped position gain ***')
+                    list_monitor_log.append(' *** Stopped position gain *** ')
                     list_monitor_log.append(
-                        str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
+                        str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD. ')
                     return True
                 else:
-                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(' *** Stop Gain checked *** ')
                     list_monitor_log.append(
-                        str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
+                        str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD. ')
                     return False
             elif set_exit_position_bigger_lower_ == '<':
                 if instrument2_intrument1_difference_in_usd < float(set_exit_position_value_):
-                    list_monitor_log.append('*** Stopped position gain ***')
+                    list_monitor_log.append(' *** Stopped position gain *** ')
                     list_monitor_log.append(
-                        str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
+                        str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD. ')
                     return True
                 else:
-                    list_monitor_log.append('*** Stop Gain checked ***')
+                    list_monitor_log.append(' *** Stop Gain checked *** ')
                     list_monitor_log.append(
-                        str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
+                        str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD. ')
                     return False
             else:
-                list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2268 ***')
+                list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 1579 ***')
                 list_monitor_log.append(
-                    str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
-                connect.logwriter('***** ERROR in Stop Gain check - Error Code 2271 ***')
+                    str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD. ')
+                connect.logwriter('***** ERROR in Stop Gain check - Error Code 1582 ***')
                 connect.logwriter(
-                    str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD')
+                    str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD. ')
                 return False
 
         # strategy exit position in Difference_Premium
@@ -1584,55 +1589,55 @@ def run_arbitrage(ui):
             annualized_premium1 = annualized_premium(instrument_name=instrument_name_1)
             annualized_premium2 = annualized_premium(instrument_name=instrument_name_2)
             if annualized_premium1 == 'No bid/ask offer' or annualized_premium2 == 'No bid/ask offer':
-                list_monitor_log.append('***** Stop Gain NO checked - No bid/ask offer *****')
-                connect.logwriter('***** Stop Gain NO checked - No bid/ask offer *****')
+                list_monitor_log.append(' ***** Stop Gain NO checked - No bid/ask offer ***** ')
+                connect.logwriter(' ***** Stop Gain NO checked - No bid/ask offer ***** ')
                 return False
             else:
                 instrument2_instrument1_annualized_premium = float(annualized_premium2) - float(annualized_premium1)
                 if set_exit_position_bigger_lower_ == '>':
                     if instrument2_instrument1_annualized_premium > float(set_exit_position_value_):
-                        list_monitor_log.append('*** Stopped position gain: ' + str(instrument_name_2) +
+                        list_monitor_log.append(' *** Stopped position gain: ' + str(instrument_name_2) +
                                                 ' > ' + str(set_exit_position_value_) + 'AP Difference ' +
                                                 str(instrument_name_1) + '. ' +
-                                                str(instrument2_instrument1_annualized_premium))
+                                                str(instrument2_instrument1_annualized_premium) + ' *** ')
                         return True
                     else:
-                        list_monitor_log.append('*** Stop Gain checked ***')
+                        list_monitor_log.append(' *** Stop Gain checked *** ')
                         list_monitor_log.append(
                             str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
                         list_monitor_log.append(
-                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %')
+                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %. ')
                         list_monitor_log.append(
-                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %')
+                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %. ')
                         return False
                 elif set_exit_position_bigger_lower_ == '<':
                     if instrument2_instrument1_annualized_premium < float(set_exit_position_value_):
-                        list_monitor_log.append('*** Stopped position gain: ' + str(instrument_name_2) +
+                        list_monitor_log.append(' *** Stopped position gain: ' + str(instrument_name_2) +
                                                 ' < ' + str(set_exit_position_value_) + 'AP Difference ' +
                                                 str(instrument_name_1) + '. ' +
-                                                str(instrument2_instrument1_annualized_premium))
+                                                str(instrument2_instrument1_annualized_premium) + ' *** ')
                         return True
                     else:
-                        list_monitor_log.append('*** Stop Gain checked ***')
+                        list_monitor_log.append(' *** Stop Gain checked *** ')
                         list_monitor_log.append(
                             str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
                         list_monitor_log.append(
                             str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %')
                         list_monitor_log.append(
-                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %')
+                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %. ')
                         return False
                 else:
-                    list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2319 ***')
+                    list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 1630 *** ')
                     list_monitor_log.append(
                         str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
-                    connect.logwriter('***** ERROR in Stop Gain check - Error Code 2322 ***')
+                    connect.logwriter('\n***** ERROR in Stop Gain check - Error Code 1633 ***')
                     connect.logwriter(
-                        str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
+                        '\n' + str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
                     return False
         else:
-            list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 2327 ***** ' + str(
-                set_exit_position_in_) + ' ' + str(set_exit_position_value_))
-            connect.logwriter('***** ERROR in Stop Gain check - Error Code 2329 ***** ' + str(
+            list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 1638 ***** ' + str(
+                set_exit_position_in_) + ' ' + str(set_exit_position_value_) + ' *** ')
+            connect.logwriter('\n***** ERROR in Stop Gain check - Error Code 1640 ***** ' + str(
                 set_exit_position_in_) + ' ' + str(set_exit_position_value_))
             return False
 
