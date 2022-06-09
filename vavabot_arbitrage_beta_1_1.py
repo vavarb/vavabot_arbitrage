@@ -1538,7 +1538,7 @@ def run_arbitrage(ui):
                 else:
                     list_monitor_log.append(' *** Stop Gain checked *** ')
                     list_monitor_log.append(
-                        str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%'. )
+                        str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%. ')
                     return False
             else:
                 list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 1544 *** ')
@@ -1647,12 +1647,12 @@ def run_arbitrage(ui):
         from connection_arbitrage import connect
         from lists import list_monitor_log
 
-        list_monitor_log.append('*** Stop Loss Check ***')
+        list_monitor_log.append(' *** Stop Loss Check *** ')
         list_monitor_log.append('Stop Loss selected in: ' +
                                 str(set_stop_loss_in_) +
                                 ' ' +
-                                str(set_stop_loss_value_)
-                                )
+                                str(set_stop_loss_value_) +
+                                ' ')
         # Args
 
         average_price_position_instrument1 = float(summary_instrument1['average_price'])
@@ -1668,79 +1668,111 @@ def run_arbitrage(ui):
         instrument_buy_or_sell2 = summary_instrument2['direction']
 
         if instrument_buy_or_sell1 == 'buy' and order_book_instrument1['best_bid_amount'] != 0:
-            best_bid_ask_price1 = float(order_book_instrument1['best_bid_price'])
+            best_bid_ask_price_in_usd_instrument1 = float(order_book_instrument1['best_bid_price'])
         elif instrument_buy_or_sell1 == 'sell' and order_book_instrument1['best_ask_amount'] != 0:
-            best_bid_ask_price1 = float(order_book_instrument1['best_ask_price'])
+            best_bid_ask_price_in_usd_instrument1 = float(order_book_instrument1['best_ask_price'])
         else:
-            best_bid_ask_price1 = 0
+            best_bid_ask_price_in_usd_instrument1 = 0
 
         if instrument_buy_or_sell2 == 'buy' and order_book_instrument1['best_bid_amount'] != 0:
-            best_bid_ask_price2 = float(order_book_instrument2['best_bid_price'])
+            best_bid_ask_price_in_usd_instrument2 = float(order_book_instrument2['best_bid_price'])
         elif instrument_buy_or_sell2 == 'sell' and order_book_instrument1['best_ask_amount'] != 0:
-            best_bid_ask_price2 = float(order_book_instrument2['best_ask_price'])
+            best_bid_ask_price_in_usd_instrument2 = float(order_book_instrument2['best_ask_price'])
         else:
-            best_bid_ask_price2 = 0
-
-        best_bid_ask_price_in_usd_instrument1 = best_bid_ask_price1
-        best_bid_ask_price_in_usd_instrument2 = best_bid_ask_price2
+            best_bid_ask_price_in_usd_instrument2 = 0
 
         if summary_instrument1['direction'] == 'buy':
             profit_loss_in_usd_instrument1 = \
                 (float(best_bid_ask_price_in_usd_instrument1) - float(average_price_position_instrument1)) * \
                 abs(instrument_position1_currency)
+            if best_bid_ask_price_in_usd_instrument1 != 0:
+                profit_loss_in_currency_instrument1 = \
+                    profit_loss_in_usd_instrument1 / best_bid_ask_price_in_usd_instrument1
+            else:
+                profit_loss_in_currency_instrument1 = 0
         elif summary_instrument1['direction'] == 'sell':
             profit_loss_in_usd_instrument1 = \
                 (float(average_price_position_instrument1) - float(best_bid_ask_price_in_usd_instrument1)) * \
                 abs(instrument_position1_currency)
+            if best_bid_ask_price_in_usd_instrument1 != 0:
+                profit_loss_in_currency_instrument1 = \
+                    profit_loss_in_usd_instrument1 / best_bid_ask_price_in_usd_instrument1
+            else:
+                profit_loss_in_currency_instrument1 = 0
         else:
             profit_loss_in_usd_instrument1 = 0
+            profit_loss_in_currency_instrument1 = 0
 
         if summary_instrument2['direction'] == 'buy':
             profit_loss_in_usd_instrument2 = \
                 (float(best_bid_ask_price_in_usd_instrument2) - float(average_price_position_instrument2)) * \
                 abs(instrument_position2_currency)
+            if best_bid_ask_price_in_usd_instrument2 != 0:
+                profit_loss_in_currency_instrument2 = \
+                    profit_loss_in_usd_instrument2 / best_bid_ask_price_in_usd_instrument2
+            else:
+                profit_loss_in_currency_instrument2 = 0
         elif summary_instrument2['direction'] == 'sell':
             profit_loss_in_usd_instrument2 = \
                 (float(average_price_position_instrument2) - float(best_bid_ask_price_in_usd_instrument2)) * \
                 abs(instrument_position2_currency)
+            if best_bid_ask_price_in_usd_instrument2 != 0:
+                profit_loss_in_currency_instrument2 = \
+                    profit_loss_in_usd_instrument2 / best_bid_ask_price_in_usd_instrument2
+            else:
+                profit_loss_in_currency_instrument2 = 0
         else:
             profit_loss_in_usd_instrument2 = 0
+            profit_loss_in_currency_instrument2 = 0
 
         profit_loss_in_usd_total = float(profit_loss_in_usd_instrument1) + float(profit_loss_in_usd_instrument2)
+        instrument_total_profit_loss_in_currency = float(
+            profit_loss_in_currency_instrument1) + float(profit_loss_in_currency_instrument2)
 
         instrument_price1 = float(best_bid_ask_price_in_usd_instrument1)
         instrument_price2 = float(best_bid_ask_price_in_usd_instrument2)
 
+        # Args - the end
+
         if instrument_price1 == 0 or instrument_price2 == 0:
-            list_monitor_log.append('*** No Bid/Ask Offer into Stop Loss Check ***')
+            list_monitor_log.append(' *** No Bid/Ask Offer into Stop Loss Check *** ')
             list_monitor_log.append('instrument_price1: ' +
                                     str(instrument_price1) +
                                     'instrument_price2: ' +
-                                    str(instrument_price2))
-            list_monitor_log.append('***** Stop Loss has NOT been Checked *****')
+                                    str(instrument_price2) + ' ')
+            list_monitor_log.append(' ***** Stop Loss has NOT been Checked ***** ')
             return False
-        else:
-            instrument_total_profit_loss_in_currency1 = float(profit_loss_in_usd_instrument1) / instrument_price1
-            instrument_total_profit_loss_in_currency2 = float(profit_loss_in_usd_instrument2) / instrument_price2
-            instrument_total_profit_loss_in_currency = instrument_total_profit_loss_in_currency1 + \
-                instrument_total_profit_loss_in_currency2
 
-        if set_stop_loss_in_ == 'USD:':
+        elif set_stop_loss_in_ == 'USD:':
             if profit_loss_in_usd_total < float(set_stop_loss_value_):
-                connect.logwriter('***** Stop Loss has been executed *****')
-                list_monitor_log.append('***** Stop Loss has been executed *****')
+                connect.logwriter('\n***** Stop Loss has been executed ***** ')
+                list_monitor_log.append(' ***** Stop Loss has been executed ***** ')
+                list_monitor_log.append(' set_stop_loss_in_: ' + str(set_stop_loss_in_) + '. ' +
+                                        ' set_stop_loss_value_: ' + str(set_stop_loss_value_) + '. ' +
+                                        ' profit_loss_in_usd_total: ' + str(profit_loss_in_usd_total) + '. ')
                 return True
             else:
-                list_monitor_log.append('*** Stop Loss Checked ***')
+                list_monitor_log.append(' *** Stop Loss Checked *** ')
+                list_monitor_log.append(' set_stop_loss_in_: ' + str(set_stop_loss_in_) + '. ' +
+                                        ' set_stop_loss_value_: ' + str(set_stop_loss_value_) + '. ' +
+                                        ' profit_loss_in_usd_total: ' + str(profit_loss_in_usd_total) + '. ')
                 return False
 
         elif set_stop_loss_in_ == 'BTC/ETH:':
             if instrument_total_profit_loss_in_currency < float(set_stop_loss_value_):
-                connect.logwriter('***** Stop Loss has been executed *****')
-                list_monitor_log.append('***** Stop Loss has been executed *****')
+                connect.logwriter('\n***** Stop Loss has been executed ***** ')
+                list_monitor_log.append(' ***** Stop Loss has been executed ***** ')
+                list_monitor_log.append(' set_stop_loss_in_: ' + str(set_stop_loss_in_) + '. ' +
+                                        ' set_stop_loss_value_: ' + str(set_stop_loss_value_) + '. ' +
+                                        ' instrument_total_profit_loss_in_currency: ' +
+                                        str(instrument_total_profit_loss_in_currency) + '. ')
                 return True
             else:
-                list_monitor_log.append('*** Stop Loss Checked ***')
+                list_monitor_log.append(' *** Stop Loss Checked *** ')
+                list_monitor_log.append(' set_stop_loss_in_: ' + str(set_stop_loss_in_) + '. ' +
+                                        ' set_stop_loss_value_: ' + str(set_stop_loss_value_) + '. ' +
+                                        ' instrument_total_profit_loss_in_currency: ' +
+                                        str(instrument_total_profit_loss_in_currency) + '. ')
                 return False
 
         elif set_stop_loss_in_ == '%:':
@@ -1753,10 +1785,16 @@ def run_arbitrage(ui):
                 return True
             else:
                 list_monitor_log.append('*** Stop Loss Checked ***')
+                list_monitor_log.append(' set_stop_loss_in_: ' + str(set_stop_loss_in_) + '. ' +
+                                        ' set_stop_loss_value_: ' + str(set_stop_loss_value_) + '. ' +
+                                        ' percentage_stop_loss: ' +
+                                        str(percentage_stop_loss) + '. ')
                 return False
         else:
-            connect.logwriter('********** ERROR - Stop Loss has NOT been Checked - Error Code 2382 **********')
-            list_monitor_log.append('********** ERROR - Stop Loss has NOT been Checked - Error Code 2383 **********')
+            connect.logwriter('\n ********** ERROR - Stop Loss has NOT been Checked - Error Code 1794 **********')
+            list_monitor_log.append('********** ERROR - Stop Loss has NOT been Checked - Error Code 1795 **********')
+            connect.logwriter('\nset_stop_loss_in_: ' + str(set_stop_loss_in_) + '. ' +
+                              '\nset_stop_loss_value_: ' + str(set_stop_loss_value_) + '. ')
             return False
 
     def strategy_entry(instrument_name_1, instrument_name_2,
@@ -2121,8 +2159,8 @@ def run_arbitrage(ui):
                             instrument_name_2=instrument_name_2,
                             summary_instrument1=summary_instrument1,
                             summary_instrument2=summary_instrument2,
-                            best_bid_ask_price_in_usd_instrument1=best_bid_ask_price1,
-                            best_bid_ask_price_in_usd_instrument2=best_bid_ask_price2,
+                            order_book_instrument1=order_book_instrument1,
+                            order_book_instrument2=order_book_instrument2,
                             set_exit_position_in_=set_exit_position_in_,
                             set_exit_position_bigger_lower_=set_exit_position_bigger_lower_,
                             set_exit_position_value_=set_exit_position_value_
