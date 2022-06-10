@@ -2250,10 +2250,10 @@ def run_arbitrage(ui):
                     best_bid_ask_amount1 = 0
                     best_bid_ask_price1 = 0
 
-                if instrument_buy_or_sell2 == 'buy' and order_book_instrument1['best_ask_amount'] != 0:
+                if instrument_buy_or_sell2 == 'buy' and order_book_instrument2['best_ask_amount'] != 0:
                     best_bid_ask_amount2 = float(order_book_instrument2['best_ask_amount'])
                     best_bid_ask_price2 = float(order_book_instrument2['best_ask_price'])
-                elif instrument_buy_or_sell2 == 'sell' and order_book_instrument1['best_bid_amount'] != 0:
+                elif instrument_buy_or_sell2 == 'sell' and order_book_instrument2['best_bid_amount'] != 0:
                     best_bid_ask_amount2 = float(order_book_instrument2['best_bid_amount'])
                     best_bid_ask_price2 = float(order_book_instrument2['best_bid_price'])
                 else:
@@ -2303,13 +2303,13 @@ def run_arbitrage(ui):
                         abs(float(best_bid_ask_amount_for_stop_gain_dict1)))
                     best_bid_ask_price_for_stop_gain_dict1 = 0
 
-                if instrument_buy_or_sell2 == 'buy' and order_book_instrument1['best_bid_amount'] != 0:
+                if instrument_buy_or_sell2 == 'buy' and order_book_instrument2['best_bid_amount'] != 0:
                     best_bid_ask_amount_for_stop_gain_dict2 = float(order_book_instrument2['best_bid_amount'])
                     smaller_amount_for_stop_gain_dic[
                         'best_bid_ask_amount_for_stop_gain_dict2'] = number_multiple_10_and_round_0_digits(
                         abs(float(best_bid_ask_amount_for_stop_gain_dict2)))
                     best_bid_ask_price_for_stop_gain_dict2 = float(order_book_instrument2['best_bid_price'])
-                elif instrument_buy_or_sell2 == 'sell' and order_book_instrument1['best_ask_amount'] != 0:
+                elif instrument_buy_or_sell2 == 'sell' and order_book_instrument2['best_ask_amount'] != 0:
                     best_bid_ask_amount_for_stop_gain_dict2 = float(order_book_instrument2['best_ask_amount'])
                     smaller_amount_for_stop_gain_dic[
                         'best_bid_ask_amount_for_stop_gain_dict2'] = number_multiple_10_and_round_0_digits(
@@ -2770,12 +2770,14 @@ def run_arbitrage(ui):
                 # check_postion1_same_postirion2_in_usd if diferente directions or postions > total amount - start *****
                 list_monitor_log.append(' *** Check instruments direction *** ')
                 if positions_with_same_size_in_usd_or_currency == 'USD' and \
-                        ((instrument_buy_or_sell1 != summary_instrument1['direction'] or
-                         instrument_buy_or_sell2 != summary_instrument2['direction']) or
-                         abs(float(total_amount / 2)) - abs(float(instrument_position1)) < - 10 or
-                         abs(float(total_amount / 2)) - abs(float(instrument_position2)) < - 10 or
+                        (((instrument_buy_or_sell1 != summary_instrument1['direction'] and
+                           float(instrument_position1) != 0) or
+                            (instrument_buy_or_sell2 != summary_instrument2['direction'] and
+                             instrument_position2 != 0)) or
+                         abs(float(total_amount / 2)) - abs(float(instrument_position1)) < -10 or
+                         abs(float(total_amount / 2)) - abs(float(instrument_position2)) < -10 or
                          abs(float(total_amount)) - (abs(float(instrument_position1)) +
-                         abs(float(instrument_position2)))) and \
+                         abs(float(instrument_position2))) < -10) and \
                         there_are_bid_ask_offer is True:
 
                     check_instruments_positions_true_or_false = True
