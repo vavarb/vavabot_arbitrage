@@ -1103,7 +1103,7 @@ def run_arbitrage(ui):
                     pass
 
                 counter = counter + 1
-                if counter >= 100000:
+                if counter >= 100000000:
                     counter = 0
                     info = {'object_signal': 'pushbutton_2_click_signal', 'msg': ''}
                     sinal.ui_signal1.emit(info)
