@@ -2299,7 +2299,7 @@ def run_arbitrage(ui):
                     smaller_amount_for_stop_gain_dic[
                         'best_bid_ask_amount_for_stop_gain_dict1'] = number_multiple_10_and_round_0_digits(
                         abs(float(best_bid_ask_amount_for_stop_gain_dict1)))
-                    best_bid_ask_price_for_stop_gain_dict1 = float(order_book_instrument1['best_bid_price'])
+                    best_bid_ask_price_for_stop_gain_dict1 = float(order_book_instrument1['best_ask_price'])
                 else:
                     best_bid_ask_amount_for_stop_gain_dict1 = 0
                     smaller_amount_for_stop_gain_dic[
@@ -2318,7 +2318,7 @@ def run_arbitrage(ui):
                     smaller_amount_for_stop_gain_dic[
                         'best_bid_ask_amount_for_stop_gain_dict2'] = number_multiple_10_and_round_0_digits(
                         abs(float(best_bid_ask_amount_for_stop_gain_dict2)))
-                    best_bid_ask_price_for_stop_gain_dict2 = float(order_book_instrument2['best_bid_price'])
+                    best_bid_ask_price_for_stop_gain_dict2 = float(order_book_instrument2['best_ask_price'])
                 else:
                     best_bid_ask_amount_for_stop_gain_dict2 = 0
                     smaller_amount_for_stop_gain_dic[
@@ -2589,7 +2589,7 @@ def run_arbitrage(ui):
                                 'price :' + str(best_bid_ask_price_for_stop_gain_dict1) + ' ')
                             connect.logwriter(
                                 '\ncurrency: ' + instrument_name_2 +
-                                'order: sell limit' +
+                                'order: buy limit' +
                                 'amount: ' + str(smaller_amount_for_stop_gain_orders) +
                                 'price :' + str(best_bid_ask_price_for_stop_gain_dict2))
                             time.sleep(5)
