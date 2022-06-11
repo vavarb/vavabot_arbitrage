@@ -889,6 +889,7 @@ def config(ui):
             list_monitor_log.append(str(er))
             config_save_file.close()
 
+    remove_log_arbitrage_log_if_bigger_500kb_when_open_app()
     enable_disable_maturity()
     instruments_saved_print_and_check_available()
     config_saved_print()
