@@ -713,7 +713,6 @@ def config(ui):
             list_monitor_log.append('***** ERROR in remove_log_arbitrage_log_if_bigger_500kb_when_open_app():' +
                                     str(er) + '. Error Code 713 *****')
 
-
     def enable_disable_maturity():
         ui.lineEdit_o_or_f_instrumet1.setCurrentText('Future')
         ui.lineEdit_o_or_f_instrumet1.setEnabled(False)
