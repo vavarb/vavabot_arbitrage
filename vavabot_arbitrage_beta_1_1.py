@@ -1078,6 +1078,7 @@ def run_arbitrage(ui):
                         info = {'object_signal': 'textedit_monitor_append', 'msg': msg3}
                         sinal.ui_signal1.emit(info)
                     len_log_a = len(list_monitor_log)
+                    counter = counter + 1
                     time.sleep(0.0001)
                     pass
                 else:
@@ -1102,8 +1103,7 @@ def run_arbitrage(ui):
                 else:
                     pass
 
-                counter = counter + 1
-                if counter >= 100000000:
+                if counter >= 10000:
                     counter = 0
                     info = {'object_signal': 'pushbutton_2_click_signal', 'msg': ''}
                     sinal.ui_signal1.emit(info)
