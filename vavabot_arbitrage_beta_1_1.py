@@ -698,14 +698,21 @@ def credentials(ui):
 def config(ui):
     def remove_log_arbitrage_log_if_bigger_500kb_when_open_app():
         import os
+        from lists import list_monitor_log
 
-        if os.path.isfile('log_arbitrage.log') is True:
-            if float(os.path.getsize('log_arbitrage.log')) > 500000:
-                os.unlink('log_arbitrage.log')
+        try:
+            if os.path.isfile('log_arbitrage.log') is True:
+                if float(os.path.getsize('log_arbitrage.log')) > 500000:
+                    os.unlink('log_arbitrage.log')
+                else:
+                    pass
             else:
                 pass
-        else:
-            pass
+
+        except Exception as er:
+            list_monitor_log.append('***** ERROR in remove_log_arbitrage_log_if_bigger_500kb_when_open_app():' +
+                                    str(er) + '. Error Code 713 *****')
+
 
     def enable_disable_maturity():
         ui.lineEdit_o_or_f_instrumet1.setCurrentText('Future')
