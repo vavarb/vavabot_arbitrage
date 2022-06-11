@@ -696,6 +696,17 @@ def credentials(ui):
 
 
 def config(ui):
+    def remove_log_arbitrage_log_if_bigger_500kb_when_open_app():
+        import os
+
+        if os.path.isfile('log_arbitrage.log') is True:
+            if float(os.path.getsize('log_arbitrage.log')) > 500000:
+                os.unlink('log_arbitrage.log')
+            else:
+                pass
+        else:
+            pass
+
     def enable_disable_maturity():
         ui.lineEdit_o_or_f_instrumet1.setCurrentText('Future')
         ui.lineEdit_o_or_f_instrumet1.setEnabled(False)
