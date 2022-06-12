@@ -704,6 +704,7 @@ def config(ui):
         date_now_instrument = QtCore.QDate.currentDate()
         ui.lineEdit_maturity_instrumet1.setDate(date_now_instrument.addDays(-1))
         ui.lineEdit_maturity_instrumet1_2.setDate(date_now_instrument.addDays(-1))
+
     def remove_log_arbitrage_log_if_bigger_500kb_when_open_app():
         import os
         from lists import list_monitor_log
@@ -801,7 +802,7 @@ def config(ui):
                 msg.exec_()
                 pass
 
-            elif ui.lineEdit_maturity_instrumet1.text() == ui.lineEdit_maturity_instrumet1_2.text() and \
+            elif ui.lineEdit_maturity_instrumet1.date() == ui.lineEdit_maturity_instrumet1_2.date() and \
                     ui.checkBox_perpetual_1.checkState() == 0 and ui.checkBox_perpetual_2.checkState() == 0:
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -818,8 +819,10 @@ def config(ui):
                 msg.exec_()
                 pass
 
-            elif ui.lineEdit_maturity_instrumet1.currentText() == lineEdit_maturity_instrumet1_2.addDays(-1) or \
-                    ui.lineEdit_currency_instrumet1_2.currentText() == date_now_instrument.addDays(-1):
+            elif (ui.lineEdit_maturity_instrumet1.date() == date_now_instrument.addDays(-1) and
+                    ui.checkBox_perpetual_1.checkState() == 0) or \
+                    (ui.lineEdit_maturity_instrumet1_2.date() == date_now_instrument.addDays(-1) and
+                     ui.checkBox_perpetual_2.checkState() == 0):
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
                 msg.setText('Instruments maturities\nmust be set\n   ERROR')
