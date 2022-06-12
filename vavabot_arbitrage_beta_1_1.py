@@ -293,7 +293,11 @@ class Deribit:
             # logwriter(msg=out['result'])
             # print(out)
             # print(out['result'])
-            return out['result']
+            if 'error' in out:
+                self.logwriter(out['error'])
+                return out['result']
+            else:
+                return out['result']
         except Exception as er:
             self.logwriter('_sender error: ' + str(er))
             list_monitor_log.append('_sender error: ' + str(er))
@@ -1295,10 +1299,10 @@ def run_arbitrage(ui):
             best_bid_ask_amount1 = 0
             best_bid_ask_price1 = 0
 
-        if summary_instrument2['direction'] == 'buy' and order_book_instrument1['best_bid_amount'] != 0:
+        if summary_instrument2['direction'] == 'buy' and order_book_instrument2['best_bid_amount'] != 0:
             best_bid_ask_amount2 = float(order_book_instrument2['best_bid_amount'])
             best_bid_ask_price2 = float(order_book_instrument2['best_bid_price'])
-        elif summary_instrument2['direction'] == 'sell' and order_book_instrument1['best_ask_amount'] != 0:
+        elif summary_instrument2['direction'] == 'sell' and order_book_instrument2['best_ask_amount'] != 0:
             best_bid_ask_amount2 = float(order_book_instrument2['best_ask_amount'])
             best_bid_ask_price2 = float(order_book_instrument2['best_ask_price'])
         else:
@@ -1321,21 +1325,26 @@ def run_arbitrage(ui):
             smaller_amount = 0  # valor
         # Args modifically - smaller_amount_dic and instrument_price1 and instrument_price2 - the end ******************
 
-        # there_are_bid_ask_offer - start ******************************************************************************
+        # there_are_bid_ask_offer for instrument1 postirion != instrument2_position - start ****************************
         if number_multiple_10_and_round_0_digits(best_bid_ask_amount1) >= 10 and \
                 abs(instrument_position1) > abs(instrument_position2):
             there_are_bid_ask_offer = True
         elif number_multiple_10_and_round_0_digits(best_bid_ask_amount2) >= 10 and \
                 abs(instrument_position1) < abs(instrument_position2):
             there_are_bid_ask_offer = True
-        else:
+        elif (number_multiple_10_and_round_0_digits(best_bid_ask_amount1) < 10 and
+                abs(instrument_position1) > abs(instrument_position2)) or \
+            (number_multiple_10_and_round_0_digits(best_bid_ask_amount2) < 10 and
+                abs(instrument_position1) < abs(instrument_position2)):
             there_are_bid_ask_offer = False
             list_monitor_log.append(' ****** There is NO bid or ask offer in Check Instruments Positions ***** ')
             list_monitor_log.append(
                 instrument_name_1 + ': ' + str(best_bid_ask_amount1) + ' bid/ask amount ')
             list_monitor_log.append(
                 instrument_name_2 + ': ' + str(best_bid_ask_amount2) + ' bid/ask amount ')
-        # there_are_bid_ask_offer - the end ****************************************************************************
+        else:
+            there_are_bid_ask_offer = False
+        # # there_are_bid_ask_offer for instrument1 postirion != instrument2_position - the end ************************
 
         if positions_with_same_size_in_usd_or_currency == 'USD' and \
                 ((instrument_buy_or_sell1 != summary_instrument1['direction'] and summary_instrument1['size'] != 0) or
@@ -1431,99 +1440,97 @@ def run_arbitrage(ui):
                 pass
 
         elif positions_with_same_size_in_usd_or_currency == 'USD' and \
-                (abs(float(total_amount / 2)) - abs(float(instrument_position1)) < -10 or
-                    abs(float(total_amount / 2)) - abs(float(instrument_position2)) < -10 or
+                (abs(float(total_amount / 2)) - abs(float(instrument_position1)) <= -10 or
+                    abs(float(total_amount / 2)) - abs(float(instrument_position2)) <= -10 or
                     (abs(float(total_amount)) - (abs(float(instrument_position1)) +
-                     abs(float(instrument_position2))) < 10)) and \
-                ((instrument_buy_or_sell1 == summary_instrument1['direction'] and summary_instrument1['size'] != 0) or
+                     abs(float(instrument_position2))) <= - 10)) and \
+                ((instrument_buy_or_sell1 == summary_instrument1['direction'] and summary_instrument1['size'] != 0) and
                     (instrument_buy_or_sell2 == summary_instrument2['direction'] and summary_instrument2['size'] != 0)):
             
-            if abs(float(total_amount / 2)) - abs(float(instrument_position1)) < -10:
-                if best_bid_ask_amount1 <= abs(float(total_amount / 2)) - abs(float(instrument_position1)):
+            if abs(float(total_amount / 2)) - abs(float(instrument_position1)) <= -10:
+                if best_bid_ask_amount1 <= abs(abs(float(total_amount / 2)) - abs(float(instrument_position1))):
                     amount_for_max_postiion_instrument1 = number_multiple_10_and_round_0_digits(
                         best_bid_ask_amount1
                     )
                 else:
                     amount_for_max_postiion_instrument1 = number_multiple_10_and_round_0_digits(
-                        abs(float(total_amount / 2)) - abs(float(instrument_position1))
+                        abs(abs(float(total_amount / 2)) - abs(float(instrument_position1)))
                     )
             else:
                 amount_for_max_postiion_instrument1 = 0
                 
-            if abs(float(total_amount / 2)) - abs(float(instrument_position2)) < -10:
-                if best_bid_ask_amount2 <= abs(float(total_amount / 2)) - abs(float(instrument_position2)):
+            if abs(float(total_amount / 2)) - abs(float(instrument_position2)) <= -10:
+                if best_bid_ask_amount2 <= abs(abs(float(total_amount / 2)) - abs(float(instrument_position2))):
                     amount_for_max_postiion_instrument2 = number_multiple_10_and_round_0_digits(
                         best_bid_ask_amount2
                     )
                 else:
                     amount_for_max_postiion_instrument2 = number_multiple_10_and_round_0_digits(
-                        abs(float(total_amount / 2)) - abs(float(instrument_position2))
+                        abs(abs(float(total_amount / 2)) - abs(float(instrument_position2)))
                     )
             else:
                 amount_for_max_postiion_instrument2 = 0
                 
             if 0 != amount_for_max_postiion_instrument1 <= amount_for_max_postiion_instrument2:
                 amount_for_max_postiion = amount_for_max_postiion_instrument1
-            elif 0 != amount_for_max_postiion_instrument2 > amount_for_max_postiion_instrument2:
+            elif 0 != amount_for_max_postiion_instrument1 > amount_for_max_postiion_instrument2:
                 amount_for_max_postiion = amount_for_max_postiion_instrument2
             else:
                 amount_for_max_postiion = 0
             
-            if amount_for_max_postiion >= 10 and abs(float(total_amount / 2)) - abs(float(instrument_position1)) < -10:
+            if amount_for_max_postiion >= 10 and abs(float(total_amount / 2)) - abs(float(instrument_position1)) <= -10:
                 if summary_instrument1['direction'] == 'buy':
-                    connect.sell_limit(currency=str(summary_instrument1['instrument_name']),
-                                       amount=amount_for_max_postiion,
+                    connect.sell_limit(currency=instrument_name_1,
+                                       amount=float(amount_for_max_postiion),
                                        price=float(best_bid_ask_price1))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                    list_monitor_log.append('Sell order'
-                                            'instrument Name: ' + instrument_name_1 +
-                                            'Amount order: ' + str(amount_for_max_postiion) +
-                                            'Price: ' + str(best_bid_ask_price1) +
+                    list_monitor_log.append(' Sell order'
+                                            ' instrument Name: ' + instrument_name_1 +
+                                            ' Amount order: ' + str(amount_for_max_postiion) +
+                                            ' Price: ' + str(best_bid_ask_price1) +
                                             ' ')
                 elif summary_instrument1['direction'] == 'sell':
-                    connect.buy_limit(currency=str(summary_instrument1['instrument_name']),
-                                      amount=amount_for_max_postiion,
+                    connect.buy_limit(currency=instrument_name_1,
+                                      amount=float(amount_for_max_postiion),
                                       price=float(best_bid_ask_price1))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                    list_monitor_log.append('Buy order'
-                                            'instrument Name: ' + instrument_name_1 +
-                                            'Amount order: ' + str(amount_for_max_postiion) +
-                                            'Price: ' + str(best_bid_ask_price1) +
+                    list_monitor_log.append(' Buy order'
+                                            ' instrument Name: ' + instrument_name_1 +
+                                            ' Amount order: ' + str(amount_for_max_postiion) +
+                                            ' Price: ' + str(best_bid_ask_price1) +
                                             ' ')
                 else:
                     pass
-                time.sleep(5)
-                connect.cancel_all()
             else:
                 pass
             
-            if amount_for_max_postiion >= 10 and abs(float(total_amount / 2)) - abs(float(instrument_position2)) < -10:
+            if amount_for_max_postiion >= 10 and abs(float(total_amount / 2)) - abs(float(instrument_position2)) <= -10:
                 if summary_instrument2['direction'] == 'buy':
-                    connect.sell_limit(currency=str(summary_instrument2['instrument_name']),
-                                       amount=amount_for_max_postiion,
+                    connect.sell_limit(currency=instrument_name_2,
+                                       amount=float(amount_for_max_postiion),
                                        price=float(best_bid_ask_price2))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                    list_monitor_log.append('Sell order'
-                                            'instrument Name: ' + instrument_name_2 +
-                                            'Amount order: ' + str(amount_for_max_postiion) +
-                                            'Price: ' + str(best_bid_ask_price2) +
+                    list_monitor_log.append(' Sell order'
+                                            ' instrument Name: ' + instrument_name_2 +
+                                            ' Amount order: ' + str(amount_for_max_postiion) +
+                                            ' Price: ' + str(best_bid_ask_price2) +
                                             ' ')
                 elif summary_instrument2['direction'] == 'sell':
-                    connect.buy_limit(currency=str(summary_instrument2['instrument_name']),
-                                      amount=amount_for_max_postiion,
+                    connect.buy_limit(currency=instrument_name_2,
+                                      amount=float(amount_for_max_postiion),
                                       price=float(best_bid_ask_price2))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
                     list_monitor_log.append('Buy order'
-                                            'instrument Name: ' + instrument_name_2 +
-                                            'Amount order: ' + str(amount_for_max_postiion) +
-                                            'Price: ' + str(best_bid_ask_price2) +
+                                            ' instrument Name: ' + instrument_name_2 +
+                                            ' Amount order: ' + str(amount_for_max_postiion) +
+                                            ' Price: ' + str(best_bid_ask_price2) +
                                             ' ')
                 else:
                     pass
-                time.sleep(5)
-                connect.cancel_all()
             else:
                 pass
+            time.sleep(5)
+            connect.cancel_all()
             
         elif positions_with_same_size_in_usd_or_currency == 'USD' and \
             number_multiple_10_and_round_0_digits(abs(
@@ -1584,7 +1591,7 @@ def run_arbitrage(ui):
                 time.sleep(5)
                 connect.cancel_all()
             else:
-                list_monitor_log.append(' ***** ERROR in Check Instruments - Error Code: 1569 ***** ')
+                list_monitor_log.append(' ***** ERROR in Check Instruments - Error Code: 1587 ***** ')
                 connect.logwriter('\n***** ERROR in Check Instruments - Error Code: 1570 *****')
         else:
             list_monitor_log.append(' *** The instruments has NOT been checked *** ')
@@ -2807,10 +2814,10 @@ def run_arbitrage(ui):
                            float(instrument_position1) != 0) or
                             (instrument_buy_or_sell2 != summary_instrument2['direction'] and
                              instrument_position2 != 0)) or
-                         abs(float(total_amount / 2)) - abs(float(instrument_position1)) < -10 or
-                         abs(float(total_amount / 2)) - abs(float(instrument_position2)) < -10 or
+                         abs(float(total_amount / 2)) - abs(float(instrument_position1)) <= -10 or
+                         abs(float(total_amount / 2)) - abs(float(instrument_position2)) <= -10 or
                          abs(float(total_amount)) - (abs(float(instrument_position1)) +
-                         abs(float(instrument_position2))) < -10) and \
+                         abs(float(instrument_position2))) <= -10) and \
                         there_are_bid_ask_offer is True:
 
                     check_instruments_positions_true_or_false = True
