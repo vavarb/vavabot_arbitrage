@@ -818,7 +818,7 @@ def config(ui):
                 msg.exec_()
                 pass
 
-            elif ui.lineEdit_currency_instrumet1.currentText() == date_now_instrument.addDays(-1) or \
+            elif ui.lineEdit_maturity_instrumet1.currentText() == lineEdit_maturity_instrumet1_2.addDays(-1) or \
                     ui.lineEdit_currency_instrumet1_2.currentText() == date_now_instrument.addDays(-1):
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
