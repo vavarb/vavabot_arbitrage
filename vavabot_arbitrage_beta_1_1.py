@@ -702,7 +702,6 @@ def credentials(ui):
 def config(ui):
     def set_date():
         date_now_instrument = QtCore.QDate.currentDate()
-        date_yesterday = date_now_instrument.addDays(-1)
         ui.lineEdit_maturity_instrumet1.setDate(date_now_instrument.addDays(-1))
         ui.lineEdit_maturity_instrumet1_2.setDate(date_now_instrument.addDays(-1))
     def remove_log_arbitrage_log_if_bigger_500kb_when_open_app():
@@ -776,6 +775,7 @@ def config(ui):
     def instruments_save():
         from lists import list_monitor_log
         try:
+            date_now_instrument = QtCore.QDate.currentDate()
             if ui.lineEdit_currency_instrumet1.currentText() == 'Set BTC or ETH:' or \
                     ui.lineEdit_currency_instrumet1_2.currentText() == 'Set BTC or ETH:':
                 msg = QtWidgets.QMessageBox()
@@ -814,6 +814,15 @@ def config(ui):
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
                 msg.setText('Instruments currencies\nmust be\nsame currency\n   ERROR')
+                msg.setWindowTitle('***** ERROR *****')
+                msg.exec_()
+                pass
+
+            elif ui.lineEdit_currency_instrumet1.currentText() == date_now_instrument.addDays(-1) or \
+                    ui.lineEdit_currency_instrumet1_2.currentText() == date_now_instrument.addDays(-1):
+                msg = QtWidgets.QMessageBox()
+                msg.setIcon(QtWidgets.QMessageBox.Information)
+                msg.setText('Instruments maturities\nmust be set\n   ERROR')
                 msg.setWindowTitle('***** ERROR *****')
                 msg.exec_()
                 pass
