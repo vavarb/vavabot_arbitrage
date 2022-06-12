@@ -700,6 +700,11 @@ def credentials(ui):
 
 
 def config(ui):
+    def set_date():
+        date_now_instrument = QtCore.QDate.currentDate()
+        date_yesterday = date_now_instrument.addDays(-1)
+        ui.lineEdit_maturity_instrumet1.setDate(date_now_instrument.addDays(-1))
+        ui.lineEdit_maturity_instrumet1_2.setDate(date_now_instrument.addDays(-1))
     def remove_log_arbitrage_log_if_bigger_500kb_when_open_app():
         import os
         from lists import list_monitor_log
@@ -796,7 +801,8 @@ def config(ui):
                 msg.exec_()
                 pass
 
-            elif ui.lineEdit_maturity_instrumet1.text() == ui.lineEdit_maturity_instrumet1_2.text():
+            elif ui.lineEdit_maturity_instrumet1.text() == ui.lineEdit_maturity_instrumet1_2.text() and \
+                    ui.checkBox_perpetual_1.checkState() == 0 and ui.checkBox_perpetual_2.checkState() == 0:
                 msg = QtWidgets.QMessageBox()
                 msg.setIcon(QtWidgets.QMessageBox.Information)
                 msg.setText('Instruments maturities\nmust be\nDifferent\n   ERROR')
@@ -900,6 +906,7 @@ def config(ui):
             config_save_file.close()
 
     remove_log_arbitrage_log_if_bigger_500kb_when_open_app()
+    set_date()
     enable_disable_maturity()
     instruments_saved_print_and_check_available()
     config_saved_print()
