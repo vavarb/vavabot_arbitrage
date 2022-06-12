@@ -700,6 +700,14 @@ def credentials(ui):
 
 
 def config(ui):
+    def set_version_and_icon():
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Arbitrage beta 1.2"))
+
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
     def set_date():
         date_now_instrument = QtCore.QDate.currentDate()
         ui.lineEdit_maturity_instrumet1.setDate(date_now_instrument.addDays(-1))
@@ -917,6 +925,7 @@ def config(ui):
             list_monitor_log.append(str(er))
             config_save_file.close()
 
+    set_version_and_icon()
     remove_log_arbitrage_log_if_bigger_500kb_when_open_app()
     set_date()
     enable_disable_maturity()
