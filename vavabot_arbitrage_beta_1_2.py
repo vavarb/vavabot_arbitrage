@@ -1373,8 +1373,69 @@ def run_arbitrage(ui):
         else:
             there_are_bid_ask_offer = False
         # # there_are_bid_ask_offer for instrument1 postirion != instrument2_position - the end ************************
-
         if positions_with_same_size_in_usd_or_currency == 'USD' and \
+                number_multiple_10_and_round_0_digits(abs(
+                    abs(instrument_position1) - abs(instrument_position2))) >= 10 and \
+                there_are_bid_ask_offer is True and \
+                number_multiple_10_and_round_0_digits(float(smaller_amount)) >= 10 and \
+                ((instrument_buy_or_sell1 == summary_instrument1['direction'] and summary_instrument1['size'] != 0) or
+                 (instrument_buy_or_sell2 == summary_instrument2['direction'] and summary_instrument2['size'] != 0)):
+
+            instrument_amount_usd_for_check_postions = number_multiple_10_and_round_0_digits(
+                float(smaller_amount))
+            if abs(instrument_position1) > abs(instrument_position2) and summary_instrument1['direction'] == 'buy':
+                connect.sell_limit(currency=instrument_name_1,
+                                   amount=instrument_amount_usd_for_check_postions,
+                                   price=best_bid_ask_price1)
+                list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
+                list_monitor_log.append('Sell order'
+                                        'instrument Name: ' + instrument_name_1 +
+                                        'Amount order: ' + str(instrument_amount_usd_for_check_postions) +
+                                        'Price: ' + str(best_bid_ask_price1) +
+                                        ' ')
+                time.sleep(5)
+                connect.cancel_all()
+            elif abs(instrument_position1) > abs(instrument_position2) and summary_instrument1['direction'] == 'sell':
+                connect.buy_limit(currency=instrument_name_1,
+                                  amount=instrument_amount_usd_for_check_postions,
+                                  price=best_bid_ask_price1)
+                list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
+                list_monitor_log.append('Buy order'
+                                        'instrument Name: ' + instrument_name_1 +
+                                        'Amount order: ' + str(instrument_amount_usd_for_check_postions) +
+                                        'Price: ' + str(best_bid_ask_price1)
+                                        )
+                time.sleep(5)
+                connect.cancel_all()
+            elif abs(instrument_position2) > abs(instrument_position1) and summary_instrument2['direction'] == 'buy':
+                connect.sell_limit(currency=instrument_name_2,
+                                   amount=instrument_amount_usd_for_check_postions,
+                                   price=best_bid_ask_price2)
+                list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
+                list_monitor_log.append('Sell order'
+                                        'instrument Name: ' + instrument_name_2 +
+                                        'Amount order: ' + str(instrument_amount_usd_for_check_postions) +
+                                        'Price: ' + str(best_bid_ask_price2) +
+                                        ' ')
+                time.sleep(5)
+                connect.cancel_all()
+            elif abs(instrument_position2) > abs(instrument_position1) and summary_instrument2['direction'] == 'sell':
+                connect.buy_limit(currency=instrument_name_2,
+                                  amount=instrument_amount_usd_for_check_postions,
+                                  price=best_bid_ask_price2)
+                list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
+                list_monitor_log.append('Buy order'
+                                        'instrument Name: ' + instrument_name_2 +
+                                        'Amount order: ' + str(instrument_amount_usd_for_check_postions) +
+                                        'Price: ' + str(best_bid_ask_price2) +
+                                        ' ')
+                time.sleep(5)
+                connect.cancel_all()
+            else:
+                list_monitor_log.append(' ***** ERROR in Check Instruments - Error Code: 1435 ***** ')
+                connect.logwriter('\n***** ERROR in Check Instruments - Error Code: 1436 *****')
+
+        elif positions_with_same_size_in_usd_or_currency == 'USD' and \
                 ((instrument_buy_or_sell1 != summary_instrument1['direction'] and summary_instrument1['size'] != 0) or
                  (instrument_buy_or_sell2 != summary_instrument2['direction'] and summary_instrument2['size'] != 0)):
 
@@ -1559,68 +1620,7 @@ def run_arbitrage(ui):
                 pass
             time.sleep(5)
             connect.cancel_all()
-            
-        elif positions_with_same_size_in_usd_or_currency == 'USD' and \
-            number_multiple_10_and_round_0_digits(abs(
-                abs(instrument_position1) - abs(instrument_position2))) >= 10 and \
-                there_are_bid_ask_offer is True and \
-                number_multiple_10_and_round_0_digits(float(smaller_amount)) >= 10 and \
-                ((instrument_buy_or_sell1 == summary_instrument1['direction'] and summary_instrument1['size'] != 0) or
-                    (instrument_buy_or_sell2 == summary_instrument2['direction'] and summary_instrument2['size'] != 0)):
-            
-            instrument_amount_usd_for_check_postions = number_multiple_10_and_round_0_digits(
-                float(smaller_amount))
-            if abs(instrument_position1) > abs(instrument_position2) and summary_instrument1['direction'] == 'buy':
-                connect.sell_limit(currency=instrument_name_1, 
-                                   amount=instrument_amount_usd_for_check_postions,
-                                   price=best_bid_ask_price1)
-                list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                list_monitor_log.append('Sell order'
-                                        'instrument Name: ' + instrument_name_1 +
-                                        'Amount order: ' + str(instrument_amount_usd_for_check_postions) +
-                                        'Price: ' + str(best_bid_ask_price1) +
-                                        ' ')
-                time.sleep(5)
-                connect.cancel_all()
-            elif abs(instrument_position1) > abs(instrument_position2) and summary_instrument1['direction'] == 'sell':
-                connect.buy_limit(currency=instrument_name_1, 
-                                  amount=instrument_amount_usd_for_check_postions, 
-                                  price=best_bid_ask_price1)
-                list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                list_monitor_log.append('Buy order'
-                                        'instrument Name: ' + instrument_name_1 +
-                                        'Amount order: ' + str(instrument_amount_usd_for_check_postions) +
-                                        'Price: ' + str(best_bid_ask_price1)
-                                        )
-                time.sleep(5)
-                connect.cancel_all()
-            elif abs(instrument_position2) > abs(instrument_position1) and summary_instrument2['direction'] == 'buy':
-                connect.sell_limit(currency=instrument_name_2, 
-                                   amount=instrument_amount_usd_for_check_postions,
-                                   price=best_bid_ask_price2)
-                list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                list_monitor_log.append('Sell order'
-                                        'instrument Name: ' + instrument_name_2 +
-                                        'Amount order: ' + str(instrument_amount_usd_for_check_postions) +
-                                        'Price: ' + str(best_bid_ask_price2) +
-                                        ' ')
-                time.sleep(5)
-                connect.cancel_all()
-            elif abs(instrument_position2) > abs(instrument_position1) and summary_instrument2['direction'] == 'sell':
-                connect.buy_limit(currency=instrument_name_2, 
-                                  amount=instrument_amount_usd_for_check_postions, 
-                                  price=best_bid_ask_price2)
-                list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                list_monitor_log.append('Buy order'
-                                        'instrument Name: ' + instrument_name_2 +
-                                        'Amount order: ' + str(instrument_amount_usd_for_check_postions) +
-                                        'Price: ' + str(best_bid_ask_price2) +
-                                        ' ')
-                time.sleep(5)
-                connect.cancel_all()
-            else:
-                list_monitor_log.append(' ***** ERROR in Check Instruments - Error Code: 1587 ***** ')
-                connect.logwriter('\n***** ERROR in Check Instruments - Error Code: 1570 *****')
+
         else:
             list_monitor_log.append(' *** The instruments has NOT been checked *** ')
 
