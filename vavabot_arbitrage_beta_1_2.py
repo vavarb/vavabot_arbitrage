@@ -1562,7 +1562,7 @@ def run_arbitrage(ui):
                 
             if 0 != amount_for_max_postiion_instrument1 <= amount_for_max_postiion_instrument2:
                 amount_for_max_postiion = amount_for_max_postiion_instrument1
-            elif 0 != amount_for_max_postiion_instrument1 > amount_for_max_postiion_instrument2:
+            elif 0 != amount_for_max_postiion_instrument2 < amount_for_max_postiion_instrument1:
                 amount_for_max_postiion = amount_for_max_postiion_instrument2
             else:
                 amount_for_max_postiion = 0
