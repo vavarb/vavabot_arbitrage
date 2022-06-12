@@ -2131,7 +2131,7 @@ def run_arbitrage(ui):
             elif set_entry_position_bigger_lower_ == '<':
                 if instrument2_intrument1_difference_in_usd < set_entry_position_value_:
                     list_monitor_log.append(' *** Opened position:' + str(instrument_name_2) +
-                                            ' > ' + str(set_entry_position_value_) + 'USD ' +
+                                            ' < ' + str(set_entry_position_value_) + 'USD ' +
                                             str(instrument_name_1) + '. ' +
                                             str(instrument2_intrument1_difference_in_usd) + 'USD ')
                     return True
@@ -2143,11 +2143,11 @@ def run_arbitrage(ui):
                         str(instrument_name_1) + ' ')
                     return False
             else:
-                list_monitor_log.append(' ***** ERROR in Trade Opening Setup Check - Error Code 1894 ***** ')
+                list_monitor_log.append(' ***** ERROR in Trade Opening Setup Check - Error Code 2146 ***** ')
                 list_monitor_log.append(' set_entry_position_in_' +
                                         str(set_entry_position_in_) + ': ' +
                                         str(instrument2_intrument1_difference_in_usd) + 'USD ')
-                connect.logwriter('\n***** ERROR in Trade Opening Setup Check - Error Code 1898 *****')
+                connect.logwriter('\n***** ERROR in Trade Opening Setup Check - Error Code 2150 *****')
                 connect.logwriter('\nset_entry_position_in_' +
                                   str(set_entry_position_in_) + ': ' +
                                   str(instrument2_intrument1_difference_in_usd) + 'USD ')
@@ -2809,8 +2809,8 @@ def run_arbitrage(ui):
                         time.sleep(5)
                         connect.cancel_all()
                     else:
-                        list_monitor_log.append(' ***** ERROR OPENING ORDERS SENT - Error Code: 2540 *** ')
-                        connect.logwriter('\n***** ERROR OPENING ORDERS SENT - Error Code: 2541 ***')
+                        list_monitor_log.append(' ***** ERROR OPENING ORDERS SENT - Error Code: 2812 *** ')
+                        connect.logwriter('\n***** ERROR OPENING ORDERS SENT - Error Code: 2813 ***')
                     time.sleep(2)
                 else:
                     list_monitor_log.append(' *** Opening orders NO sent *** ')
