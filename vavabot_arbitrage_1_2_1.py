@@ -239,11 +239,18 @@ class Deribit:
 
     # noinspection PyMethodMayBeStatic
     def logwriter(self, msg):
-        from lists import list_monitor_log
-        out = datetime.now().strftime("\n[%Y%m%d,%H:%M:%S] ") + str(msg)
-        list_monitor_log.append(str(out))
-        with open('log_arbitrage.log', 'a') as log_file:
-            log_file.write(out)
+        try:
+            from lists import list_monitor_log
+            out = datetime.now().strftime("\n[%Y/%m/%d, %H:%M:%S] ") + str(msg)
+            out_list_monitor_log_append = str(msg)
+            list_monitor_log.append(str(out_list_monitor_log_append))
+            with open('log_arbitrage.log', 'a') as log_file:
+                log_file.write(out)
+        except Exception as er:
+            from lists import list_monitor_log
+            list_monitor_log.append(str(er))
+            with open('log_arbitrage.log', 'a') as log_file:
+                log_file.write(str(er))
 
     def _auth(self, client_id=None, wss_url=None, client_secret=None):
         self.client_id = client_id
@@ -1126,7 +1133,8 @@ def run_arbitrage(ui):
             try:
                 if len(list_monitor_log) > 0:
                     for i in list_monitor_log:
-                        info = {'object_signal': 'textedit_monitor_append', 'msg': str(i)}
+                        info = {'object_signal': 'textedit_monitor_append', 'msg':
+                                datetime.now().strftime("[%Y/%m/%d, %H:%M:%S] ") + str(i)}
                         sinal.ui_signal1.emit(info)
                         counter = counter + 1
                     list_monitor_log.clear()

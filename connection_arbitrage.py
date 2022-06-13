@@ -19,6 +19,7 @@ def led_color():
 def connection():
     global connect
     global led
+
     while True:
         try:
             connect_set_heartbeat = connect.set_heartbeat()
