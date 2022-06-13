@@ -25,61 +25,43 @@ def connection():
             if connect_set_heartbeat == 'ok':
                 list_monitor_log.append('connection ok')
                 led = 'green'
-                time.sleep(40)
-                pass
-            else:
-                list_monitor_log.append('********** Thread_connection - Connection ERROR **********')
-                led = 'red'
+                time.sleep(2)
+            elif connect_set_heartbeat == 'too_many_requests':
+                list_monitor_log.append(str('***************** ERROR too_many_requests ******************'))
+                connect.logwriter(str('***************** ERROR too_many_requests ******************'))
+                connect.cancel_all()
                 time.sleep(10)
+                connect.cancel_all()
+            else:
+                list_monitor_log.append('********** OffLine - Connection ERROR **********')
+                connect.logwriter(str('********** OffLine - Connection ERROR **********'))
+                led = 'red'
+                time.sleep(2)
                 connect = Deribit(client_id=CredentialsSaved.api_secret_saved(),
                                   client_secret=CredentialsSaved.secret_key_saved(),
                                   wss_url=CredentialsSaved.url())
+                connect_set_heartbeat2 = connect.set_heartbeat()
+                if connect_set_heartbeat2 == 'ok':
+                    list_monitor_log.append(str('***************** Reeturn Connection ******************'))
+                    connect.logwriter(str('***************** Reeturn Connection ******************'))
+                    connect.cancel_all()
+                    time.sleep(2)
+                elif connect_set_heartbeat2 == 'too_many_requests':
+                    list_monitor_log.append(str('***************** ERROR too_many_requests ******************'))
+                    connect.logwriter(str('***************** ERROR too_many_requests ******************'))
+                    connect.cancel_all()
+                    time.sleep(10)
+                    connect.cancel_all()
+                    pass
+                else:
+                    pass
         except Exception as e:
             led = 'red'
             time.sleep(10)
             list_monitor_log.append('********** Thread_connection - Connection ERROR ********** ' + str(e))
+            connect.logwriter('********** Thread_connection - Connection ERROR ********** ' + str(e))
             pass
 
 
 run_thread = threading.Thread(daemon=True, target=connection)
 run_thread.start()
-
-
-
-
-'''
-connect = Deribit(client_id=CredentialsSaved.api_secret_saved(),
-                  client_secret=CredentialsSaved.secret_key_saved(),
-                  wss_url=CredentialsSaved.url())
-'''
-'''
-def connection(ui):
-    def thread_heartbeat():
-        from connection_arbitrage import connect
-        from lists import list_monitor_log
-        green_icon = "./green_led_icon.png"
-        red_icon = "./red_led_icon.png"
-        while True:
-            try:
-                connect_set_heartbeat = connect.set_heartbeat()
-                if connect_set_heartbeat == 'ok':
-                    list_monitor_log.append('connection ok')
-                    ui.label_29.setPixmap(QtGui.QPixmap(green_icon))
-                    time.sleep(40)
-                    pass
-                else:
-                    list_monitor_log.append('********** Connection ERROR **********')
-                    ui.label_29.setPixmap(QtGui.QPixmap(red_icon))
-                    time.sleep(10)
-                    connect = Deribit(client_id=CredentialsSaved.api_secret_saved(),
-                                      client_secret=CredentialsSaved.secret_key_saved(),
-                                      wss_url=CredentialsSaved.url())
-                    pass
-            except Exception as e:
-                time.sleep(10)
-                list_monitor_log.append('********** Connection ERROR ********** ' + str(e))
-                pass
-
-    run_thread = threading.Thread(daemon=True, target=thread_heartbeat)
-    run_thread.start()
-'''
