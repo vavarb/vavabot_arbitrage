@@ -1122,8 +1122,8 @@ def run_arbitrage(ui):
                     for i in list_monitor_log:
                         info = {'object_signal': 'textedit_monitor_append', 'msg': str(i)}
                         sinal.ui_signal1.emit(info)
+                        counter = counter + 1
                     list_monitor_log.clear()
-                    counter = counter + 1
                 else:
                     time.sleep(0.0001)
 
