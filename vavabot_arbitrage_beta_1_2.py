@@ -1125,7 +1125,6 @@ def run_arbitrage(ui):
                         sinal.ui_signal1.emit(info)
                     list_monitor_log.clear()
                     counter = counter + 1
-                    time.sleep(0.0001)
                 else:
                     time.sleep(0.0001)
 
@@ -2907,6 +2906,7 @@ def run_arbitrage(ui):
     monitor_index_and_summary_thread.start()
     ui.pushButton_start_trading.clicked.connect(start_arbitrage_strategy_and_message)
     ui.pushButton_stop_arbitrage.clicked.connect(strategy_off)
+    ui.checkBox_autoScrollBar.clicked.connect(autoscroll_monitor)
 
 
 if __name__ == "__main__":
