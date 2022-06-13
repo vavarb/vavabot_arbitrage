@@ -34,7 +34,7 @@ class CredentialsSaved:
         from lists import list_monitor_log
         with open('api-key_arbitrage.txt', 'r') as api_secret_saved_file:
             api_secret_saved_file_read = str(api_secret_saved_file.read())
-        list_monitor_log.append('*** API key: ' + str(api_secret_saved_file_read) + ' ***')
+        list_monitor_log.append('*** API key Saved: ' + str(api_secret_saved_file_read) + ' ***')
         return api_secret_saved_file_read
 
     @staticmethod
@@ -42,7 +42,7 @@ class CredentialsSaved:
         from lists import list_monitor_log
         with open('secret-key_arbitrage.txt', 'r') as secret_key_saved_file:
             secret_key_saved_file_read = str(secret_key_saved_file.read())
-        list_monitor_log.append('*** SECRET key: ' + str(secret_key_saved_file_read) + ' ***')
+        list_monitor_log.append('*** SECRET key Saved: ' + str(secret_key_saved_file_read) + ' ***')
         return secret_key_saved_file_read
 
     @staticmethod
@@ -51,25 +51,25 @@ class CredentialsSaved:
         with open('testnet_true_or_false_arbitrage.txt', 'r') as testnet_saved_tru_or_false_file:
             testnet_saved_tru_or_false_file_read = str(testnet_saved_tru_or_false_file.read())
         if testnet_saved_tru_or_false_file_read == 'True':
-            list_monitor_log.append('*** TEST Account ***')
+            list_monitor_log.append('*** TEST Account Selected ***')
             return True
         elif testnet_saved_tru_or_false_file_read == 'False':
-            list_monitor_log.append('*** REAL Account ***')
+            list_monitor_log.append('*** REAL Account Selected ***')
             return False
         else:
-            list_monitor_log.append('***** ERROR in testnet_saved_tru_or_false *****')
+            list_monitor_log.append('***** ERROR in testnet_saved_tru_or_false - Error Code: 60 *****')
 
     @staticmethod
     def url():
         from lists import list_monitor_log
         if CredentialsSaved.testnet_saved_tru_or_false() is True:
-            list_monitor_log.append('*** URL: ' + 'wss://test.deribit.com/ws/api/v2' + ' ***')
+            list_monitor_log.append('*** URL: ' + 'wss://test.deribit.com/ws/api/v2' + ' Selected ***')
             return 'wss://test.deribit.com/ws/api/v2'
         elif CredentialsSaved.testnet_saved_tru_or_false() is False:
-            list_monitor_log.append('*** URL: ' + 'wss://deribit.com/ws/api/v2' + ' ***')
+            list_monitor_log.append('*** URL: ' + 'wss://deribit.com/ws/api/v2' + ' Selected ***')
             return 'wss://deribit.com/ws/api/v2'
         else:
-            list_monitor_log.append('***** URL ERROR in testnet True or False *****')
+            list_monitor_log.append('***** URL ERROR in testnet True or False - Error Code: 72 *****')
 
 
 class ConfigAndInstrumentsSaved:
@@ -117,7 +117,7 @@ class ConfigAndInstrumentsSaved:
         elif 'ETH' in instrument_name:
             currency = 'ETH'
         else:
-            list_monitor_log.append('********** Instrument currency ERROR in line 106 *********')
+            list_monitor_log.append('********** Instrument currency ERROR - Error Code 120 *********')
 
         a10 = connect.get_instruments(currency)
         list_instrument_name = []
@@ -281,8 +281,8 @@ class Deribit:
             # print('identified')
             return self._sender(msg)
         except Exception as er:
-            self.logwriter('auth error:' + str(er))
-            list_monitor_log.append('auth error:' + str(er))
+            self.logwriter('***** auth ERROR - Error Code: 284 ' + str(er) + ' *****')
+            list_monitor_log.append('***** auth error:' + str(er) + ' - Error Code: 285 *****')
 
     def _sender(self, msg):
         from lists import list_monitor_log
@@ -727,8 +727,11 @@ def config(ui):
                 pass
 
         except Exception as er:
-            list_monitor_log.append('***** ERROR in remove_log_arbitrage_log_if_bigger_500kb_when_open_app():' +
-                                    str(er) + '. Error Code 713 *****')
+            from connection_arbitrage import connect
+            list_monitor_log.append('***** ERROR in remove_log_arbitrage_log_if_bigger_500kb_when_open_app(): ' +
+                                    str(er) + '. Error Code 732 *****')
+            connect.logwriter('***** ERROR in remove_log_arbitrage_log_if_bigger_500kb_when_open_app(): ' +
+                              str(er) + '. Error Code 734 *****')
 
     def enable_disable_maturity():
         ui.lineEdit_o_or_f_instrumet1.setCurrentText('Future')
@@ -770,7 +773,8 @@ def config(ui):
                 msg.exec_()
                 pass
         except Exception as er:
-            list_monitor_log.append(str(er))
+            list_monitor_log.append('***** ERROR: ' + str(er) + ' - Error Code: 777 *****')
+            connect.logwriter('***** ERROR: ' + str(er) + ' - Error Code: 778 *****')
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Information)
             msg.setText('Instruments Syntax ERROR')
@@ -885,7 +889,8 @@ def config(ui):
             else:
                 pass
         except Exception as er:
-            list_monitor_log.append(str(er))
+            list_monitor_log.append('***** ERROR: ' + str(er) + ' - Error Code: 892 *****')
+            connect.logwriter('***** ERROR: ' + str(er) + ' - Error Code: 893 *****')
             instruments_save_file.close()
 
         ui.pushButton_submit_new_credintals.setEnabled(False)
@@ -922,7 +927,8 @@ def config(ui):
                     )
                 config_saved_print()
         except Exception as er:
-            list_monitor_log.append(str(er))
+            list_monitor_log.append('***** ERROR: ' + str(er) + ' - Error Code: 930 *****')
+            connect.logwriter('***** ERROR: ' + str(er) + ' - Error Code: 931 *****')
             config_save_file.close()
 
     set_version_and_icon()
@@ -1111,8 +1117,8 @@ def run_arbitrage(ui):
             info = {'object_signal': 'led_connection', 'led_color': 'red'}
             sinal.ui_signal1.emit(info)
         else:
-            connect.logwriter('*** ERROR - lists_monitor() Error Code:: 1114 ***')
-            msg2 = str('*** ERROR - lists_monitor() Error Code:: 1115 ***')
+            connect.logwriter('*** ERROR - lists_monitor() Error Code:: 1120 ***')
+            msg2 = str('*** ERROR - lists_monitor() Error Code:: 1121 ***')
             info = {'object_signal': 'textedit_monitor_append', 'msg': msg2}
             sinal.ui_signal1.emit(info)
 
@@ -1137,8 +1143,8 @@ def run_arbitrage(ui):
                         info = {'object_signal': 'led_connection', 'led_color': 'red'}
                         sinal.ui_signal1.emit(info)
                     else:
-                        connect.logwriter('*** ERROR - lists_monitor() Error Code:: 1140 ***')
-                        msg4 = str('*** ERROR - lists_monitor() Error Code:: 1141 ***')
+                        connect.logwriter('*** ERROR - lists_monitor() Error Code:: 1146 ***')
+                        msg4 = str('*** ERROR - lists_monitor() Error Code:: 1147 ***')
                         info = {'object_signal': 'textedit_monitor_append', 'msg': msg4}
                         sinal.ui_signal1.emit(info)
                 else:
@@ -1153,8 +1159,8 @@ def run_arbitrage(ui):
                     pass
             except Exception as er:
                 from connection_arbitrage import connect
-                connect.logwriter(str(er) + ' Error Code:: 1156')
-                msg5 = str('*** ERROR - lists_monitor() Error Code:: 1157: ' + str(er) + ' ***')
+                connect.logwriter(str(er) + ' Error Code:: 1162')
+                msg5 = str('*** ERROR - lists_monitor() Error Code:: 1163: ' + str(er) + ' ***')
                 info = {'object_signal': 'textedit_monitor_append', 'msg': msg5}
                 sinal.ui_signal1.emit(info)
                 time.sleep(5)
@@ -1246,10 +1252,11 @@ def run_arbitrage(ui):
                 sinal.ui_signal1.emit(info5)
 
         except Exception as er:
-            list_monitor_log.append(
-                '********** btc_index_and_greeks_structure_monitor_print ' + str(er) +
-                ' **********'
-            )
+            from connection_arbitrage import connect
+            list_monitor_log.append('***** ERROR in btc_index_and_greeks_structure_monitor_print(): ' +
+                                    str(er) + ' - Error Code: 1257 *****')
+            connect.logwriter('***** ERROR in btc_index_and_greeks_structure_monitor_print(): ' +
+                              str(er) + ' - Error Code: 1259 *****')
 
     def print_index_and_summary():
         global index_greeks_print_on_off
@@ -1357,9 +1364,9 @@ def run_arbitrage(ui):
             there_are_bid_ask_offer = False
             list_monitor_log.append(' ****** There is NO bid or ask offer in Check Instruments Positions ***** ')
             list_monitor_log.append(
-                instrument_name_1 + ': ' + str(best_bid_ask_amount1) + ' bid/ask amount ')
+                instrument_name_1 + ': ' + str(best_bid_ask_amount1) + ' bid/ask amount. ')
             list_monitor_log.append(
-                instrument_name_2 + ': ' + str(best_bid_ask_amount2) + ' bid/ask amount ')
+                instrument_name_2 + ': ' + str(best_bid_ask_amount2) + ' bid/ask amount. ')
         else:
             there_are_bid_ask_offer = False
         # # there_are_bid_ask_offer for instrument1 postirion != instrument2_position - the end ************************
@@ -1378,10 +1385,10 @@ def run_arbitrage(ui):
                                    amount=instrument_amount_usd_for_check_postions,
                                    price=best_bid_ask_price1)
                 list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                list_monitor_log.append('Sell order'
+                list_monitor_log.append('Sell order: '
                                         'instrument Name: ' + instrument_name_1 +
-                                        'Amount order: ' + str(instrument_amount_usd_for_check_postions) +
-                                        'Price: ' + str(best_bid_ask_price1) +
+                                        ' Amount order: ' + str(instrument_amount_usd_for_check_postions) +
+                                        ' Price: ' + str(best_bid_ask_price1) +
                                         ' ')
                 time.sleep(5)
                 connect.cancel_all()
@@ -1390,10 +1397,10 @@ def run_arbitrage(ui):
                                   amount=instrument_amount_usd_for_check_postions,
                                   price=best_bid_ask_price1)
                 list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                list_monitor_log.append('Buy order'
+                list_monitor_log.append('Buy order: '
                                         'instrument Name: ' + instrument_name_1 +
-                                        'Amount order: ' + str(instrument_amount_usd_for_check_postions) +
-                                        'Price: ' + str(best_bid_ask_price1)
+                                        ' Amount order: ' + str(instrument_amount_usd_for_check_postions) +
+                                        ' Price: ' + str(best_bid_ask_price1)
                                         )
                 time.sleep(5)
                 connect.cancel_all()
@@ -1402,10 +1409,10 @@ def run_arbitrage(ui):
                                    amount=instrument_amount_usd_for_check_postions,
                                    price=best_bid_ask_price2)
                 list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                list_monitor_log.append('Sell order'
+                list_monitor_log.append('Sell order: '
                                         'instrument Name: ' + instrument_name_2 +
-                                        'Amount order: ' + str(instrument_amount_usd_for_check_postions) +
-                                        'Price: ' + str(best_bid_ask_price2) +
+                                        ' Amount order: ' + str(instrument_amount_usd_for_check_postions) +
+                                        ' Price: ' + str(best_bid_ask_price2) +
                                         ' ')
                 time.sleep(5)
                 connect.cancel_all()
@@ -1414,16 +1421,16 @@ def run_arbitrage(ui):
                                   amount=instrument_amount_usd_for_check_postions,
                                   price=best_bid_ask_price2)
                 list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                list_monitor_log.append('Buy order'
+                list_monitor_log.append('Buy order: '
                                         'instrument Name: ' + instrument_name_2 +
-                                        'Amount order: ' + str(instrument_amount_usd_for_check_postions) +
-                                        'Price: ' + str(best_bid_ask_price2) +
+                                        ' Amount order: ' + str(instrument_amount_usd_for_check_postions) +
+                                        ' Price: ' + str(best_bid_ask_price2) +
                                         ' ')
                 time.sleep(5)
                 connect.cancel_all()
             else:
-                list_monitor_log.append(' ***** ERROR in Check Instruments - Error Code: 1435 ***** ')
-                connect.logwriter('\n***** ERROR in Check Instruments - Error Code: 1436 *****')
+                list_monitor_log.append(' ***** ERROR in Check Instruments - Error Code: 1432 ***** ')
+                connect.logwriter(' ***** ERROR in Check Instruments - Error Code: 1433 ***** ')
 
         elif positions_with_same_size_in_usd_or_currency == 'USD' and \
                 ((instrument_buy_or_sell1 != summary_instrument1['direction'] and summary_instrument1['size'] != 0) or
@@ -1466,20 +1473,20 @@ def run_arbitrage(ui):
                                        amount=amount_for_direction,
                                        price=float(best_bid_ask_price1))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                    list_monitor_log.append('Sell order'
+                    list_monitor_log.append('Sell order: '
                                             'instrument Name: ' + instrument_name_1 +
-                                            'Amount order: ' + str(amount_for_direction) +
-                                            'Price: ' + str(best_bid_ask_price1) +
+                                            ' Amount order: ' + str(amount_for_direction) +
+                                            ' Price: ' + str(best_bid_ask_price1) +
                                             ' ')
                 elif summary_instrument1['direction'] == 'sell':
                     connect.buy_limit(currency=str(summary_instrument1['instrument_name']),
                                       amount=amount_for_direction,
                                       price=float(best_bid_ask_price1))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                    list_monitor_log.append('Sell order'
+                    list_monitor_log.append('Sell order: '
                                             'instrument Name: ' + instrument_name_1 +
-                                            'Amount order: ' + str(amount_for_direction) +
-                                            'Price: ' + str(best_bid_ask_price1) +
+                                            ' Amount order: ' + str(amount_for_direction) +
+                                            ' Price: ' + str(best_bid_ask_price1) +
                                             ' ')
                 else:
                     pass
@@ -1496,20 +1503,20 @@ def run_arbitrage(ui):
                                        amount=amount_for_direction,
                                        price=float(best_bid_ask_price2))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                    list_monitor_log.append('Sell order'
+                    list_monitor_log.append('Sell order: '
                                             'instrument Name: ' + instrument_name_2 +
-                                            'Amount order: ' + str(amount_for_direction) +
-                                            'Price: ' + str(best_bid_ask_price2) +
+                                            ' Amount order: ' + str(amount_for_direction) +
+                                            ' Price: ' + str(best_bid_ask_price2) +
                                             ' ')
                 elif summary_instrument2['direction'] == 'sell':
                     connect.buy_limit(currency=str(summary_instrument2['instrument_name']),
                                       amount=amount_for_direction,
                                       price=float(best_bid_ask_price2))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                    list_monitor_log.append('Sell order'
+                    list_monitor_log.append('Sell order: '
                                             'instrument Name: ' + instrument_name_2 +
-                                            'Amount order: ' + str(amount_for_direction) +
-                                            'Price: ' + str(best_bid_ask_price2) +
+                                            ' Amount order: ' + str(amount_for_direction) +
+                                            ' Price: ' + str(best_bid_ask_price2) +
                                             ' ')
                 else:
                     pass
@@ -1563,8 +1570,8 @@ def run_arbitrage(ui):
                                        amount=float(amount_for_max_postiion),
                                        price=float(best_bid_ask_price1))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                    list_monitor_log.append(' Sell order'
-                                            ' instrument Name: ' + instrument_name_1 +
+                    list_monitor_log.append('Sell order: '
+                                            'instrument Name: ' + instrument_name_1 +
                                             ' Amount order: ' + str(amount_for_max_postiion) +
                                             ' Price: ' + str(best_bid_ask_price1) +
                                             ' ')
@@ -1573,7 +1580,7 @@ def run_arbitrage(ui):
                                       amount=float(amount_for_max_postiion),
                                       price=float(best_bid_ask_price1))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                    list_monitor_log.append(' Buy order'
+                    list_monitor_log.append('Buy order:B'
                                             ' instrument Name: ' + instrument_name_1 +
                                             ' Amount order: ' + str(amount_for_max_postiion) +
                                             ' Price: ' + str(best_bid_ask_price1) +
@@ -1589,8 +1596,8 @@ def run_arbitrage(ui):
                                        amount=float(amount_for_max_postiion),
                                        price=float(best_bid_ask_price2))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                    list_monitor_log.append(' Sell order'
-                                            ' instrument Name: ' + instrument_name_2 +
+                    list_monitor_log.append('Sell order: '
+                                            'instrument Name: ' + instrument_name_2 +
                                             ' Amount order: ' + str(amount_for_max_postiion) +
                                             ' Price: ' + str(best_bid_ask_price2) +
                                             ' ')
@@ -1599,8 +1606,8 @@ def run_arbitrage(ui):
                                       amount=float(amount_for_max_postiion),
                                       price=float(best_bid_ask_price2))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                    list_monitor_log.append('Buy order'
-                                            ' instrument Name: ' + instrument_name_2 +
+                    list_monitor_log.append('Buy order: '
+                                            'instrument Name: ' + instrument_name_2 +
                                             ' Amount order: ' + str(amount_for_max_postiion) +
                                             ' Price: ' + str(best_bid_ask_price2) +
                                             ' ')
@@ -1658,8 +1665,8 @@ def run_arbitrage(ui):
 
             # no bid/ask offer
             if book_summary_instrument[0]['mid_price'] is None or book_summary_instrument[0]['mid_price'] == 'null':
-                list_monitor_log.append('********** ' + str(instrument_name) +
-                                        ' No bid/ask offer in annualized_premium **********')
+                list_monitor_log.append(' ********** ' + str(instrument_name) +
+                                        ' - No bid/ask offer in annualized_premium ********** ')
                 return 'No bid/ask offer'
             else:
                 mid_price_future = float(book_summary_instrument[0]['mid_price'])
@@ -1748,10 +1755,10 @@ def run_arbitrage(ui):
                     list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%. ')
                     return False
             else:
-                list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 1509 *** ')
+                list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 1758 *** ')
                 list_monitor_log.append(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%. ')
-                connect.logwriter('\n***** ERROR in Stop Gain check - Error Code 1511 *** ')
-                connect.logwriter('\n' + str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%. ')
+                connect.logwriter('***** ERROR in Stop Gain check - Error Code 1760 *** ')
+                connect.logwriter(str(set_exit_position_in_) + ': ' + str(profit_loss_percentage) + '%. ')
                 return False
 
         # strategy exit position in Difference_%
@@ -1783,12 +1790,12 @@ def run_arbitrage(ui):
                         str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%. ')
                     return False
             else:
-                list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 1544 *** ')
+                list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 1793 *** ')
                 list_monitor_log.append(
                     str(set_exit_position_in_) + ': ' + str(difference_instrument2_instrument1_percentage) + '%. ')
-                connect.logwriter('\n***** ERROR in Stop Gain check - Error Code 1547 *** ')
+                connect.logwriter('***** ERROR in Stop Gain check - Error Code 1796 *** ')
                 connect.logwriter(
-                    '\n' + str(set_exit_position_in_) + ': ' + str(
+                    str(set_exit_position_in_) + ': ' + str(
                         difference_instrument2_instrument1_percentage) + '%. ')
                 return False
 
@@ -1818,12 +1825,12 @@ def run_arbitrage(ui):
                         str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD. ')
                     return False
             else:
-                list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 1579 ***')
+                list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 1828 ***** ')
                 list_monitor_log.append(
-                    str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD. ')
-                connect.logwriter('***** ERROR in Stop Gain check - Error Code 1582 ***')
+                    str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + 'USD. ')
+                connect.logwriter(' ***** ERROR in Stop Gain check - Error Code 1831 ***** ')
                 connect.logwriter(
-                    str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + ' USD. ')
+                    str(set_exit_position_in_) + ': ' + str(instrument2_intrument1_difference_in_usd) + 'USD. ')
                 return False
 
         # strategy exit position in Difference_Premium
@@ -1832,14 +1839,13 @@ def run_arbitrage(ui):
             annualized_premium2 = annualized_premium(instrument_name=instrument_name_2)
             if annualized_premium1 == 'No bid/ask offer' or annualized_premium2 == 'No bid/ask offer':
                 list_monitor_log.append(' ***** Stop Gain NO checked - No bid/ask offer ***** ')
-                connect.logwriter(' ***** Stop Gain NO checked - No bid/ask offer ***** ')
                 return False
             else:
                 instrument2_instrument1_annualized_premium = float(annualized_premium2) - float(annualized_premium1)
                 if set_exit_position_bigger_lower_ == '>':
                     if instrument2_instrument1_annualized_premium > float(set_exit_position_value_):
                         list_monitor_log.append(' *** Stopped position gain: ' + str(instrument_name_2) +
-                                                ' > ' + str(set_exit_position_value_) + 'AP Difference ' +
+                                                ' > ' + str(set_exit_position_value_) + ' AP Difference ' +
                                                 str(instrument_name_1) + '. ' +
                                                 str(instrument2_instrument1_annualized_premium) + ' *** ')
                         return True
@@ -1848,14 +1854,14 @@ def run_arbitrage(ui):
                         list_monitor_log.append(
                             str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
                         list_monitor_log.append(
-                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %. ')
+                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + '%. ')
                         list_monitor_log.append(
-                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %. ')
+                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + '%. ')
                         return False
                 elif set_exit_position_bigger_lower_ == '<':
                     if instrument2_instrument1_annualized_premium < float(set_exit_position_value_):
                         list_monitor_log.append(' *** Stopped position gain: ' + str(instrument_name_2) +
-                                                ' < ' + str(set_exit_position_value_) + 'AP Difference ' +
+                                                ' < ' + str(set_exit_position_value_) + ' AP Difference ' +
                                                 str(instrument_name_1) + '. ' +
                                                 str(instrument2_instrument1_annualized_premium) + ' *** ')
                         return True
@@ -1864,22 +1870,22 @@ def run_arbitrage(ui):
                         list_monitor_log.append(
                             str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
                         list_monitor_log.append(
-                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %')
+                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + '% ')
                         list_monitor_log.append(
-                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %. ')
+                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + '%. ')
                         return False
                 else:
-                    list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 1825 *** ')
+                    list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 1878 ***** ')
                     list_monitor_log.append(
                         str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
-                    connect.logwriter('\n***** ERROR in Stop Gain check - Error Code 1828 ***')
+                    connect.logwriter(' ***** ERROR in Stop Gain check - Error Code 1881 ***** ')
                     connect.logwriter(
-                        '\n' + str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
+                        str(set_exit_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
                     return False
         else:
-            list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 1833 ***** ' + str(
+            list_monitor_log.append('***** ERROR in Stop Gain check - Error Code 1886 ***** ' + str(
                 set_exit_position_in_) + ' ' + str(set_exit_position_value_) + ' *** ')
-            connect.logwriter('\n***** ERROR in Stop Gain check - Error Code 1835 ***** ' + str(
+            connect.logwriter('***** ERROR in Stop Gain check - Error Code 1888 ***** ' + str(
                 set_exit_position_in_) + ' ' + str(set_exit_position_value_))
             return False
 
@@ -1894,7 +1900,7 @@ def run_arbitrage(ui):
                                 str(set_stop_loss_in_) +
                                 ' ' +
                                 str(set_stop_loss_value_) +
-                                ' ')
+                                '. ')
         # Args
 
         average_price_position_instrument1 = float(summary_instrument1['average_price'])
@@ -1987,7 +1993,7 @@ def run_arbitrage(ui):
 
         elif set_stop_loss_in_ == 'USD:':
             if profit_loss_in_usd_total < float(set_stop_loss_value_):
-                connect.logwriter('\n***** Stop Loss has been executed ***** ')
+                connect.logwriter('***** Stop Loss has been executed ***** ')
                 list_monitor_log.append(' ***** Stop Loss has been executed ***** ')
                 list_monitor_log.append(' set_stop_loss_in_: ' + str(set_stop_loss_in_) + '. ' +
                                         ' set_stop_loss_value_: ' + str(set_stop_loss_value_) + '. ' +
@@ -2002,7 +2008,7 @@ def run_arbitrage(ui):
 
         elif set_stop_loss_in_ == 'BTC/ETH:':
             if instrument_total_profit_loss_in_currency < float(set_stop_loss_value_):
-                connect.logwriter('\n***** Stop Loss has been executed ***** ')
+                connect.logwriter('***** Stop Loss has been executed ***** ')
                 list_monitor_log.append(' ***** Stop Loss has been executed ***** ')
                 list_monitor_log.append(' set_stop_loss_in_: ' + str(set_stop_loss_in_) + '. ' +
                                         ' set_stop_loss_value_: ' + str(set_stop_loss_value_) + '. ' +
@@ -2033,10 +2039,12 @@ def run_arbitrage(ui):
                                         str(percentage_stop_loss) + '. ')
                 return False
         else:
-            connect.logwriter('\n ********** ERROR - Stop Loss has NOT been Checked - Error Code 1794 **********')
-            list_monitor_log.append('********** ERROR - Stop Loss has NOT been Checked - Error Code 1795 **********')
-            connect.logwriter('\nset_stop_loss_in_: ' + str(set_stop_loss_in_) + '. ' +
-                              '\nset_stop_loss_value_: ' + str(set_stop_loss_value_) + '. ')
+            connect.logwriter(' ********** ERROR - Stop Loss has NOT been Checked - Error Code 2042 ********** ')
+            list_monitor_log.append('********** ERROR - Stop Loss has NOT been Checked - Error Code 2043 **********')
+            connect.logwriter('set_stop_loss_in_: ' + str(set_stop_loss_in_) + '. ' +
+                              'set_stop_loss_value_: ' + str(set_stop_loss_value_) + '. ')
+            list_monitor_log.append('det_stop_loss_in_: ' + str(set_stop_loss_in_) + '. ' +
+                                    'set_stop_loss_value_: ' + str(set_stop_loss_value_) + '. ')
             return False
 
     def strategy_entry(instrument_name_1, instrument_name_2,
@@ -2051,7 +2059,7 @@ def run_arbitrage(ui):
                                 ' ' +
                                 str(set_entry_position_bigger_lower_) +
                                 ' ' +
-                                str(set_entry_position_value_) + ' '
+                                str(set_entry_position_value_) + '. '
                                 )
         # Args
 
@@ -2064,7 +2072,7 @@ def run_arbitrage(ui):
                 abs(instrument_price2) - abs(instrument_price1)) * 100 / abs(instrument_price1)
             if set_entry_position_bigger_lower_ == '>':
                 if difference_instrument2_instrument1_percentage > float(set_entry_position_value_):
-                    list_monitor_log.append(' *** Opened position:' + str(instrument_name_2) +
+                    list_monitor_log.append(' *** Opened position: ' + str(instrument_name_2) +
                                             ' > ' + str(set_entry_position_value_) + '% ' +
                                             str(instrument_name_1) + '. ' +
                                             str(difference_instrument2_instrument1_percentage) + '%. ')
@@ -2073,12 +2081,12 @@ def run_arbitrage(ui):
                     list_monitor_log.append(' *** Trade Opening Setup Checked *** ')
                     list_monitor_log.append(
                         str(instrument_name_1) + ' ' + str(difference_instrument2_instrument1_percentage) +
-                        'difference of the ' +
-                        str(instrument_name_2) + ' ')
+                        ' difference of the ' +
+                        str(instrument_name_2) + '. ')
                     return False
             elif set_entry_position_bigger_lower_ == '<':
                 if difference_instrument2_instrument1_percentage < float(set_entry_position_value_):
-                    list_monitor_log.append(' *** Opened position:' + str(instrument_name_2) +
+                    list_monitor_log.append(' *** Opened position: ' + str(instrument_name_2) +
                                             ' < ' + str(set_entry_position_value_) + '% ' +
                                             str(instrument_name_1) + '. ' +
                                             str(difference_instrument2_instrument1_percentage) + '%. ')
@@ -2088,15 +2096,15 @@ def run_arbitrage(ui):
                     list_monitor_log.append(
                         str(instrument_name_2) + ' ' + str(difference_instrument2_instrument1_percentage) +
                         '% difference of the ' +
-                        str(instrument_name_1) + ' ')
+                        str(instrument_name_1) + '. ')
                     return False
             else:
-                list_monitor_log.append(' ***** ERROR in Trade Opening Setup Check - Error Code 1852 ***** ')
-                list_monitor_log.append('set_entry_position_in_' +
+                list_monitor_log.append(' ***** ERROR in Trade Opening Setup Check - Error Code 2102 ***** ')
+                list_monitor_log.append('set_entry_position_in_: ' +
                                         str(set_entry_position_in_) + ': ' +
                                         str(difference_instrument2_instrument1_percentage) + '%. ')
-                connect.logwriter('\n***** ERROR in Trade Opening Setup Check - Error Code 1856 *****')
-                connect.logwriter('\nset_entry_position_in_: ' +
+                connect.logwriter('***** ERROR in Trade Opening Setup Check - Error Code 2106 *****')
+                connect.logwriter('set_entry_position_in_: ' +
                                   str(set_entry_position_in_) + ': ' +
                                   str(difference_instrument2_instrument1_percentage) + '%. ')
                 return False
@@ -2109,38 +2117,38 @@ def run_arbitrage(ui):
                     list_monitor_log.append(' *** Opened position:' + str(instrument_name_2) +
                                             ' > ' + str(set_entry_position_value_) + 'USD ' +
                                             str(instrument_name_1) + '. ' +
-                                            str(instrument2_intrument1_difference_in_usd) + 'USD ')
+                                            str(instrument2_intrument1_difference_in_usd) + 'USD. ')
                     return True
                 else:
                     list_monitor_log.append(' *** Trade Opening Setup Checked *** ')
                     list_monitor_log.append(
                         str(instrument_name_2) + '  ' + str(instrument2_intrument1_difference_in_usd) +
                         ' USD difference of the ' +
-                        str(instrument_name_1) + ' ')
+                        str(instrument_name_1) + '. ')
                     return False
             elif set_entry_position_bigger_lower_ == '<':
                 if instrument2_intrument1_difference_in_usd < set_entry_position_value_:
-                    list_monitor_log.append(' *** Opened position:' + str(instrument_name_2) +
+                    list_monitor_log.append(' *** Opened position: ' + str(instrument_name_2) +
                                             ' < ' + str(set_entry_position_value_) + 'USD ' +
                                             str(instrument_name_1) + '. ' +
-                                            str(instrument2_intrument1_difference_in_usd) + 'USD ')
+                                            str(instrument2_intrument1_difference_in_usd) + 'USD. ')
                     return True
                 else:
                     list_monitor_log.append(' *** Trade Opening Setup Checked *** ')
                     list_monitor_log.append(
                         str(instrument_name_2) + '  ' + str(instrument2_intrument1_difference_in_usd) +
-                        ' USD difference of the ' +
-                        str(instrument_name_1) + ' ')
+                        'USD difference of the ' +
+                        str(instrument_name_1) + '. ')
                     return False
             else:
-                list_monitor_log.append(' ***** ERROR in Trade Opening Setup Check - Error Code 2138 ***** ')
-                list_monitor_log.append(' set_entry_position_in_' +
+                list_monitor_log.append(' ***** ERROR in Trade Opening Setup Check - Error Code 2144 ***** ')
+                list_monitor_log.append(' set_entry_position_in_: ' +
                                         str(set_entry_position_in_) + ': ' +
-                                        str(instrument2_intrument1_difference_in_usd) + 'USD ')
-                connect.logwriter('\n***** ERROR in Trade Opening Setup Check - Error Code 2142 *****')
-                connect.logwriter('\nset_entry_position_in_' +
+                                        str(instrument2_intrument1_difference_in_usd) + 'USD. ')
+                connect.logwriter('***** ERROR in Trade Opening Setup Check - Error Code 2148 *****')
+                connect.logwriter('set_entry_position_in_' +
                                   str(set_entry_position_in_) + ': ' +
-                                  str(instrument2_intrument1_difference_in_usd) + 'USD ')
+                                  str(instrument2_intrument1_difference_in_usd) + 'USD. ')
                 return False
 
         # Entry position in Premium(Annualized)
@@ -2155,7 +2163,7 @@ def run_arbitrage(ui):
                 if set_entry_position_bigger_lower_ == '>':
                     if instrument2_instrument1_annualized_premium > float(set_entry_position_value_):
                         list_monitor_log.append(' *** Opened position:' + str(instrument_name_2) +
-                                                ' > ' + str(set_entry_position_value_) + 'AP Difference ' +
+                                                ' > ' + str(set_entry_position_value_) + ' AP Difference ' +
                                                 str(instrument_name_1) + '. ' +
                                                 str(instrument2_instrument1_annualized_premium) + ' ')
                         return True
@@ -2164,14 +2172,14 @@ def run_arbitrage(ui):
                         list_monitor_log.append(
                             str(set_entry_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
                         list_monitor_log.append(
-                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %')
+                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + '% ')
                         list_monitor_log.append(
-                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %. ')
+                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + '%. ')
                         return False
                 elif set_entry_position_bigger_lower_ == '<':
                     if instrument2_instrument1_annualized_premium > float(set_entry_position_value_):
                         list_monitor_log.append(' *** Opened position:' + str(instrument_name_2) +
-                                                ' < ' + str(set_entry_position_value_) + 'AP Difference ' +
+                                                ' < ' + str(set_entry_position_value_) + ' AP Difference ' +
                                                 str(instrument_name_1) + '. ' +
                                                 str(instrument2_instrument1_annualized_premium) + ' ')
                         return True
@@ -2180,22 +2188,22 @@ def run_arbitrage(ui):
                         list_monitor_log.append(
                             str(set_entry_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
                         list_monitor_log.append(
-                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + ' %')
+                            str(instrument_name_1) + ' Annualized Premium: ' + str(annualized_premium1) + '% .')
                         list_monitor_log.append(
-                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + ' %. ')
+                            str(instrument_name_2) + ' Annualized Premium: ' + str(annualized_premium2) + '%. ')
                         return False
                 else:
-                    list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 2141 *** ')
+                    list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 2196 *** ')
                     list_monitor_log.append(
                         str(set_entry_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
-                    connect.logwriter('\n***** ERROR in Stop Gain check - Error Code 2144 ***')
+                    connect.logwriter(' ***** ERROR in Stop Gain check - Error Code 2199 *****')
                     connect.logwriter(
-                        '\n' + str(set_entry_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
+                         str(set_entry_position_in_) + ': ' + str(instrument2_instrument1_annualized_premium))
                     return False
         else:
-            list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 2149 ***** ' + str(
+            list_monitor_log.append(' ***** ERROR in Stop Gain check - Error Code 2204 ***** ' + str(
                 set_entry_position_in_) + ' ' + str(set_entry_position_value_) + ' ')
-            connect.logwriter('\n***** ERROR in Stop Gain check - Error Code 2151 ***** ' + str(
+            connect.logwriter('***** ERROR in Stop Gain check - Error Code 2206 ***** \n' + str(
                 set_entry_position_in_) + ' ' + str(set_entry_position_value_))
             return False
 
@@ -2204,6 +2212,7 @@ def run_arbitrage(ui):
         global strategy_on_off
         global what_instrument
         from lists import list_monitor_log
+        from connection_arbitrage import connect
 
         sinal.ui_signal1.emit({
             'object_signal': 'setup_arbitrage_strategy_started',
@@ -2255,6 +2264,7 @@ def run_arbitrage(ui):
 
         # Strategy arbitrage
         list_monitor_log.append('***** Arbitrage Started *****')
+        connect.logwriter('***** Arbitrage Started *****')
         while strategy_on_off == 'on':
             from lists import list_monitor_log
             try:
@@ -2386,9 +2396,9 @@ def run_arbitrage(ui):
                     there_are_bid_ask_offer = False
                     list_monitor_log.append(' ****** There  is NO bid or ask offer ***** ')
                     list_monitor_log.append(
-                        instrument_name_1 + ' : ' + str(best_bid_ask_amount1) + ' bid/ask amount ')
+                        instrument_name_1 + ' : ' + str(best_bid_ask_amount1) + 'USD (bid/ask amount). ')
                     list_monitor_log.append(
-                        instrument_name_2 + ' : ' + str(best_bid_ask_amount2) + ' bid/ask amount ')
+                        instrument_name_2 + ' : ' + str(best_bid_ask_amount2) + 'USD (bid/ask amount). ')
                     time.sleep(3)
                 # there_are_bid_ask_offer - the end ********************************************************************
 
@@ -2505,25 +2515,25 @@ def run_arbitrage(ui):
                                 list_monitor_log.append(' *** STOP LOSS ORDERS: *** ')
                                 list_monitor_log.append(
                                     'currency: ' + instrument_name_1 +
-                                    'order: sell limit' +
+                                    ' order: sell limit - ' +
                                     'amount: ' + str(smaller_amount_for_stop_orders) +
-                                    'price :' + str(instrument_price1) + ' ')
+                                    ' price: ' + str(instrument_price1) + '. ')
                                 list_monitor_log.append(
                                     'currency: ' + instrument_name_2 +
-                                    'order: buy limit' +
+                                    ' order: buy limit - ' +
                                     'amount: ' + str(smaller_amount_for_stop_orders) +
-                                    'price :' + str(instrument_price2) + ' ')
+                                    ' price: ' + str(instrument_price2) + '. ')
                                 connect.logwriter(' *** STOP LOSS ORDERS: *** ')
                                 connect.logwriter(
                                     'currency: ' + instrument_name_1 +
-                                    'order: sell limit' +
+                                    ' order: sell limit - ' +
                                     'amount: ' + str(smaller_amount_for_stop_orders) +
-                                    'price :' + str(instrument_price1) + ' ')
+                                    ' price: ' + str(instrument_price1) + '. ')
                                 connect.logwriter(
                                     'currency: ' + instrument_name_2 +
-                                    'order: sell limit' +
+                                    ' order: sell limit - ' +
                                     'amount: ' + str(smaller_amount_for_stop_orders) +
-                                    'price :' + str(instrument_price2) + ' ')
+                                    ' price: ' + str(instrument_price2) + '. ')
                                 time.sleep(5)
                                 connect.cancel_all()
                             else:
@@ -2538,25 +2548,25 @@ def run_arbitrage(ui):
                                 list_monitor_log.append(' *** STOP LOSS ORDERS: *** ')
                                 list_monitor_log.append(
                                     'currency: ' + instrument_name_1 +
-                                    'order: buy limit' +
+                                    ' order: buy limit - ' +
                                     'amount: ' + str(smaller_amount_for_stop_orders) +
-                                    'price :' + str(instrument_price1) + ' ')
+                                    '. price: ' + str(instrument_price1) + '. ')
                                 list_monitor_log.append(
                                     'currency: ' + instrument_name_2 +
-                                    'order: sell limit' +
+                                    ' order: sell limit - ' +
                                     'amount: ' + str(smaller_amount_for_stop_orders) +
-                                    'price :' + str(instrument_price2) + ' ')
+                                    '. price: ' + str(instrument_price2) + '. ')
                                 connect.logwriter(' *** STOP LOSS ORDERS: *** ')
                                 connect.logwriter(
                                     'currency: ' + instrument_name_1 +
-                                    'order: buy limit' +
+                                    ' order: buy limit - ' +
                                     'amount: ' + str(smaller_amount_for_stop_orders) +
-                                    'price :' + str(instrument_price1) + ' ')
+                                    '. price: ' + str(instrument_price1) + '. ')
                                 connect.logwriter(
                                     'currency: ' + instrument_name_2 +
-                                    'order: sell limit' +
+                                    ' order: sell limit - ' +
                                     'amount: ' + str(smaller_amount_for_stop_orders) +
-                                    'price :' + str(instrument_price2) + ' ')
+                                    '. price: ' + str(instrument_price2) + '. ')
                                 time.sleep(5)
                                 connect.cancel_all()
                         else:
@@ -2565,11 +2575,11 @@ def run_arbitrage(ui):
                             list_monitor_log.append(' *** STOP LOSS ORDERS: *** ')
                             list_monitor_log.append(
                                 'currency: ' + instrument_name_1 + instrument_name_2 +
-                                'order: close position ')
-                            connect.logwriter('\n*** STOP LOSS ORDERS: ***')
+                                '. Order: close position ')
+                            connect.logwriter('*** STOP LOSS ORDERS: ***')
                             connect.logwriter(
-                                '\ncurrency: ' + instrument_name_1 + instrument_name_2 +
-                                'order: close position ')
+                                'currency: ' + instrument_name_1 + instrument_name_2 +
+                                '. Order: close position ')
                             time.sleep(5)
                             connect.cancel_all()
                 else:
@@ -2583,8 +2593,8 @@ def run_arbitrage(ui):
                     pass
 
                 if stop_loss_counter >= 2:
-                    list_monitor_log.append(' *** Stop Loss Counter: ' + str(stop_loss_counter) + ' *** ')
-                    connect.logwriter('\n*** Stop Loss Counter: ' + str(stop_loss_counter) + ' ***')
+                    list_monitor_log.append(' ***** Stop Loss Counter: ' + str(stop_loss_counter) + ' ***** ')
+                    connect.logwriter('***** Stop Loss Counter: ' + str(stop_loss_counter) + ' *****')
                     # stop_loss_counter - the end **********************************************************************
                 # stop_loss_conditions_trade and stop_gain_conditions_trade - the end **********************************
 
@@ -2616,25 +2626,25 @@ def run_arbitrage(ui):
                             list_monitor_log.append(' *** STOP GAIN ORDERS SENT: *** ')
                             list_monitor_log.append(
                                 'currency: ' + instrument_name_1 +
-                                'order: sell limit' +
+                                'order: sell limit - ' +
                                 'amount: ' + str(smaller_amount_for_stop_gain_orders) +
-                                'price :' + str(best_bid_ask_price_for_stop_gain_dict1) + ' ')
+                                '. Price :' + str(best_bid_ask_price_for_stop_gain_dict1) + ' ')
                             list_monitor_log.append(
                                 'currency: ' + instrument_name_2 +
-                                'order: buy limit' +
+                                'order: buy limit - ' +
                                 'amount: ' + str(smaller_amount_for_stop_gain_orders) +
-                                'price :' + str(best_bid_ask_price_for_stop_gain_dict2) + ' ')
-                            connect.logwriter('\n*** STOP GAIN ORDERS SENT: *** ')
+                                '. Price :' + str(best_bid_ask_price_for_stop_gain_dict2) + ' ')
+                            connect.logwriter('*** STOP GAIN ORDERS SENT: *** ')
                             connect.logwriter(
-                                '\ncurrency: ' + instrument_name_1 +
-                                'order: sell limit' +
+                                'currency: ' + instrument_name_1 +
+                                'order: sell limit - ' +
                                 'amount: ' + str(smaller_amount_for_stop_gain_orders) +
-                                'price :' + str(best_bid_ask_price_for_stop_gain_dict1) + ' ')
+                                '. Price :' + str(best_bid_ask_price_for_stop_gain_dict1) + ' ')
                             connect.logwriter(
-                                '\ncurrency: ' + instrument_name_2 +
-                                'order: buy limit' +
+                                'currency: ' + instrument_name_2 +
+                                'order: buy limit - ' +
                                 'amount: ' + str(smaller_amount_for_stop_gain_orders) +
-                                'price :' + str(best_bid_ask_price_for_stop_gain_dict2))
+                                '. Price :' + str(best_bid_ask_price_for_stop_gain_dict2))
                             time.sleep(5)
                             connect.cancel_all()
                         elif summary_instrument1['direction'] == 'sell':
@@ -2649,35 +2659,35 @@ def run_arbitrage(ui):
                             list_monitor_log.append(' *** STOP GAIN ORDERS SENT: *** ')
                             list_monitor_log.append(
                                 'currency: ' + instrument_name_1 +
-                                'order: buy limit' +
-                                'amount: ' + str(smaller_amount_for_stop_gain_orders) +
-                                'price :' + str(best_bid_ask_price_for_stop_gain_dict1) + ' ')
+                                'order: buy limit - ' +
+                                'Amount: ' + str(smaller_amount_for_stop_gain_orders) +
+                                '. Price :' + str(best_bid_ask_price_for_stop_gain_dict1) + ' ')
                             list_monitor_log.append(
                                 'currency: ' + instrument_name_2 +
-                                'order: sell limit' +
-                                'amount: ' + str(smaller_amount_for_stop_gain_orders) +
-                                'price :' + str(best_bid_ask_price_for_stop_gain_dict2) + ' ')
-                            connect.logwriter('\n *** STOP GAIN ORDERS SENT: *** ')
+                                'order: sell limit - ' +
+                                'Amount: ' + str(smaller_amount_for_stop_gain_orders) +
+                                '. Price :' + str(best_bid_ask_price_for_stop_gain_dict2) + ' ')
+                            connect.logwriter(' *** STOP GAIN ORDERS SENT: *** ')
                             connect.logwriter(
-                                '\ncurrency: ' + instrument_name_1 +
-                                'order: buy limit' +
-                                'amount: ' + str(smaller_amount_for_stop_gain_orders) +
-                                'price :' + str(best_bid_ask_price_for_stop_gain_dict1))
+                                'currency: ' + instrument_name_1 +
+                                'order: buy limit - ' +
+                                'Amount: ' + str(smaller_amount_for_stop_gain_orders) +
+                                '. Price :' + str(best_bid_ask_price_for_stop_gain_dict1))
                             connect.logwriter(
-                                '\ncurrency: ' + instrument_name_2 +
-                                'order: sell limit' +
-                                'amount: ' + str(smaller_amount_for_stop_gain_orders) +
-                                'price :' + str(best_bid_ask_price_for_stop_gain_dict2))
+                                'currency: ' + instrument_name_2 +
+                                'order: sell limit - ' +
+                                'Amount: ' + str(smaller_amount_for_stop_gain_orders) +
+                                '. Price :' + str(best_bid_ask_price_for_stop_gain_dict2))
                             time.sleep(5)
                             connect.cancel_all()
                         else:
-                            list_monitor_log.append('***** ERROR IN STOP GAIN ORDERS - Error Code: 2419 ***')
-                            connect.logwriter('\n***** ERROR IN STOP GAIN ORDERS - Error Code: 2420 ***')
+                            list_monitor_log.append('***** ERROR IN STOP GAIN ORDERS - Error Code: 2684 ***')
+                            connect.logwriter('***** ERROR IN STOP GAIN ORDERS - Error Code: 2685 ***')
                         time.sleep(2)
                     else:                        
                         list_monitor_log.append(' *** Smaller amount for stop gain order < 10 USD *** ')
                 else:
-                    pass  # stop_gain_conditions_trade is True                
+                    pass  # stop_gain_conditions_trade is False
                 # stop gain orders - the end ***************************************************************************
 
                 # open_conditions_trade - start ************************************************************************
@@ -2742,26 +2752,26 @@ def run_arbitrage(ui):
                             price=best_bid_ask_price2)
                         list_monitor_log.append(' *** OPENING ORDERS SENT: *** ')
                         list_monitor_log.append(
-                            'currency: ' + instrument_name_1 +
-                            'order: buy limit' +
-                            'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
-                            'price :' + str(best_bid_ask_price1) + ' ')
+                            'Currency: ' + instrument_name_1 +
+                            '. Order: buy limit - ' +
+                            'Amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
+                            '. Price :' + str(best_bid_ask_price1) + ' ')
                         list_monitor_log.append(
-                            'currency: ' + instrument_name_2 +
-                            'order: sell limit' +
-                            'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
-                            'price :' + str(best_bid_ask_price2) + ' ')
-                        connect.logwriter('\n*** OPENING ORDERS SENT: ***')
+                            'Currency: ' + instrument_name_2 +
+                            '. Order: sell limit - ' +
+                            'Amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
+                            '. Price :' + str(best_bid_ask_price2) + ' ')
+                        connect.logwriter('*** OPENING ORDERS SENT: ***')
                         connect.logwriter(
-                            '\ncurrency: ' + instrument_name_1 +
-                            'order: buy limit' +
-                            'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
-                            'price :' + str(best_bid_ask_price1) + ' ')
+                            'Currency: ' + instrument_name_1 +
+                            '. Order: buy limit - ' +
+                            'Amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
+                            '. Price :' + str(best_bid_ask_price1) + ' ')
                         connect.logwriter(
-                            '\ncurrency: ' + instrument_name_2 +
-                            'order: sell limit' +
-                            'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
-                            'price :' + str(best_bid_ask_price2))
+                            'Currency: ' + instrument_name_2 +
+                            'Order: sell limit - ' +
+                            '. Amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
+                            '. Price :' + str(best_bid_ask_price2))
                         time.sleep(5)
                         connect.cancel_all()
 
@@ -2776,31 +2786,31 @@ def run_arbitrage(ui):
                             price=best_bid_ask_price2)
                         list_monitor_log.append(' *** OPENING ORDERS SENT: *** ')
                         list_monitor_log.append(
-                            'currency: ' + instrument_name_1 +
-                            'order: sell limit' +
-                            'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
-                            'price :' + str(best_bid_ask_price1) + ' ')
+                            'Currency: ' + instrument_name_1 +
+                            '. Order: sell limit - ' +
+                            'Amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
+                            '. Price :' + str(best_bid_ask_price1) + ' ')
                         list_monitor_log.append(
-                            'currency: ' + instrument_name_2 +
-                            'order: buy limit' +
-                            'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
-                            'price :' + str(best_bid_ask_price2) + ' ')
-                        connect.logwriter('\n*** OPENING ORDERS SENT: *** ')
+                            'Currency: ' + instrument_name_2 +
+                            '. Order: buy limit - ' +
+                            'Amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
+                            '. Price :' + str(best_bid_ask_price2) + ' ')
+                        connect.logwriter('*** OPENING ORDERS SENT: *** ')
                         connect.logwriter(
-                            '\ncurrency: ' + instrument_name_1 +
-                            'order: sell limit' +
-                            'amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
-                            'price :' + str(best_bid_ask_price1))
+                            'Currency: ' + instrument_name_1 +
+                            '. Order: sell limit - ' +
+                            'Amount: ' + str(instrument1_amount_order_usd_for_open_orders) +
+                            '. Price :' + str(best_bid_ask_price1))
                         connect.logwriter(
-                            '\ncurrency: ' + instrument_name_2 +
-                            'order: buy limit' +
-                            'amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
-                            'price :' + str(best_bid_ask_price2))
+                            'Currency: ' + instrument_name_2 +
+                            '. Order: buy limit - ' +
+                            'Amount: ' + str(instrument2_amount_order_usd_for_open_orders) +
+                            ' Price :' + str(best_bid_ask_price2))
                         time.sleep(5)
                         connect.cancel_all()
                     else:
                         list_monitor_log.append(' ***** ERROR OPENING ORDERS SENT - Error Code: 2812 *** ')
-                        connect.logwriter('\n***** ERROR OPENING ORDERS SENT - Error Code: 2813 ***')
+                        connect.logwriter('***** ERROR OPENING ORDERS SENT - Error Code: 2813 ***')
                     time.sleep(2)
                 else:
                     list_monitor_log.append(' *** Opening orders NO sent *** ')
@@ -2854,7 +2864,8 @@ def run_arbitrage(ui):
                 btc_index_and_greeks_structure_monitor_print()
 
             except Exception as er:
-                list_monitor_log.append(str(er))
+                list_monitor_log.append('***** ERROR: ' + str(er) + ' - Error Code: 2867 *****')
+                connect.logwriter('***** ERROR: ' + str(er) + ' - Error Code: 2868 *****')
                 time.sleep(40)
                 pass
             finally:
@@ -2867,6 +2878,7 @@ def run_arbitrage(ui):
         sinal.ui_signal1.emit(info)
 
         list_monitor_log.append('***** Arbitrage Stopped *****')
+        connect.logwriter(' ***** Arbitrage Stopped *****')
         time.sleep(5)
 
         index_greeks_print_on_off = 'on'
