@@ -2116,8 +2116,8 @@ def run_arbitrage(ui):
                 else:
                     list_monitor_log.append(' *** Trade Opening Setup Checked *** ')
                     list_monitor_log.append(
-                        str(instrument_name_2) + ' ' + str(instrument2_intrument1_difference_in_usd) +
-                        'USD difference of the ' +
+                        str(instrument_name_2) + '  ' + str(instrument2_intrument1_difference_in_usd) +
+                        ' USD difference of the ' +
                         str(instrument_name_1) + ' ')
                     return False
             elif set_entry_position_bigger_lower_ == '<':
@@ -2130,16 +2130,16 @@ def run_arbitrage(ui):
                 else:
                     list_monitor_log.append(' *** Trade Opening Setup Checked *** ')
                     list_monitor_log.append(
-                        str(instrument_name_2) + ' ' + str(instrument2_intrument1_difference_in_usd) +
-                        'USD difference of the ' +
+                        str(instrument_name_2) + '  ' + str(instrument2_intrument1_difference_in_usd) +
+                        ' USD difference of the ' +
                         str(instrument_name_1) + ' ')
                     return False
             else:
-                list_monitor_log.append(' ***** ERROR in Trade Opening Setup Check - Error Code 2146 ***** ')
+                list_monitor_log.append(' ***** ERROR in Trade Opening Setup Check - Error Code 2138 ***** ')
                 list_monitor_log.append(' set_entry_position_in_' +
                                         str(set_entry_position_in_) + ': ' +
                                         str(instrument2_intrument1_difference_in_usd) + 'USD ')
-                connect.logwriter('\n***** ERROR in Trade Opening Setup Check - Error Code 2150 *****')
+                connect.logwriter('\n***** ERROR in Trade Opening Setup Check - Error Code 2142 *****')
                 connect.logwriter('\nset_entry_position_in_' +
                                   str(set_entry_position_in_) + ': ' +
                                   str(instrument2_intrument1_difference_in_usd) + 'USD ')
