@@ -4,3 +4,4 @@ secret-key_arbitrage.txt
 targets_arbitrage.txt
 testnet_true_or_false_arbitrage.txt
 log_arbitrage.log
+pyinstaller.py
