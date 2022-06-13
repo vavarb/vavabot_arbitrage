@@ -955,7 +955,8 @@ def run_arbitrage(ui):
 
         elif object_signal == 'textedit_monitor_append':
             msg1 = str(info['msg'])
-            ui.textEdit_monitor.append(msg1)
+            msg2 = msg1.replace('\n', '')
+            ui.textEdit_monitor.append(str(msg2))
 
         elif object_signal == 'pushbutton_2_click_signal':
             ui.textEdit_monitor.clear()
@@ -1097,11 +1098,10 @@ def run_arbitrage(ui):
 
     def lists_monitor():
         import time
-        from lists import list_monitor_log, list_monitor_print_log
+        from lists import list_monitor_log
         from connection_arbitrage import connect
 
         counter = 0
-        len_log_a = 0
         led1 = led_color()
 
         if led1 == 'green':
@@ -1111,29 +1111,23 @@ def run_arbitrage(ui):
             info = {'object_signal': 'led_connection', 'led_color': 'red'}
             sinal.ui_signal1.emit(info)
         else:
-            connect.logwriter('*** ERROR - lists_monitor() Error Code:: 922 ***')
-            msg2 = str('*** ERROR - lists_monitor() Error Code:: 923 ***')
+            connect.logwriter('*** ERROR - lists_monitor() Error Code:: 1114 ***')
+            msg2 = str('*** ERROR - lists_monitor() Error Code:: 1115 ***')
             info = {'object_signal': 'textedit_monitor_append', 'msg': msg2}
             sinal.ui_signal1.emit(info)
 
         while True:
             try:
-                len_log_b = len(list_monitor_log)
-                if len_log_a != len_log_b:
-                    list_monitor_print_log.append(list_monitor_log[len_log_a:])
-                    del (list_monitor_log[:len_log_a])
-                    for i in range(len(list_monitor_print_log)):
-                        msg3 = str(list_monitor_print_log[i])
-                        del (list_monitor_print_log[i])
+                if len(list_monitor_log) > 0:
+                    for i in list_monitor_log:
+                        msg3 = str(i)
                         info = {'object_signal': 'textedit_monitor_append', 'msg': msg3}
                         sinal.ui_signal1.emit(info)
-                    len_log_a = len(list_monitor_log)
+                    list_monitor_log.clear()
                     counter = counter + 1
                     time.sleep(0.0001)
-                    pass
                 else:
                     time.sleep(0.0001)
-                    pass
 
                 if led1 != led_color():
                     if led_color() == 'green':
@@ -1145,11 +1139,10 @@ def run_arbitrage(ui):
                         info = {'object_signal': 'led_connection', 'led_color': 'red'}
                         sinal.ui_signal1.emit(info)
                     else:
-                        connect.logwriter('*** ERROR - lists_monitor() Error Code:: 956 ***')
-                        msg4 = str('*** ERROR - lists_monitor() Error Code:: 957 ***')
+                        connect.logwriter('*** ERROR - lists_monitor() Error Code:: 1144 ***')
+                        msg4 = str('*** ERROR - lists_monitor() Error Code:: 1145 ***')
                         info = {'object_signal': 'textedit_monitor_append', 'msg': msg4}
                         sinal.ui_signal1.emit(info)
-                        pass
                 else:
                     pass
 
@@ -1158,13 +1151,12 @@ def run_arbitrage(ui):
                     info = {'object_signal': 'pushbutton_2_click_signal', 'msg': ''}
                     sinal.ui_signal1.emit(info)
                     time.sleep(0.5)
-                    pass
                 else:
                     pass
             except Exception as er:
                 from connection_arbitrage import connect
-                connect.logwriter(str(er) + ' Error Code:: 975')
-                msg5 = str('*** ERROR - lists_monitor() Error Code:: 976: ' + str(er) + ' ***')
+                connect.logwriter(str(er) + ' Error Code:: 1162')
+                msg5 = str('*** ERROR - lists_monitor() Error Code:: 1163: ' + str(er) + ' ***')
                 info = {'object_signal': 'textedit_monitor_append', 'msg': msg5}
                 sinal.ui_signal1.emit(info)
                 time.sleep(5)
