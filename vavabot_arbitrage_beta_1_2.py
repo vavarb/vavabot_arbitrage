@@ -1120,8 +1120,7 @@ def run_arbitrage(ui):
             try:
                 if len(list_monitor_log) > 0:
                     for i in list_monitor_log:
-                        msg3 = str(i)
-                        info = {'object_signal': 'textedit_monitor_append', 'msg': msg3}
+                        info = {'object_signal': 'textedit_monitor_append', 'msg': str(i)}
                         sinal.ui_signal1.emit(info)
                     list_monitor_log.clear()
                     counter = counter + 1
@@ -1138,8 +1137,8 @@ def run_arbitrage(ui):
                         info = {'object_signal': 'led_connection', 'led_color': 'red'}
                         sinal.ui_signal1.emit(info)
                     else:
-                        connect.logwriter('*** ERROR - lists_monitor() Error Code:: 1144 ***')
-                        msg4 = str('*** ERROR - lists_monitor() Error Code:: 1145 ***')
+                        connect.logwriter('*** ERROR - lists_monitor() Error Code:: 1140 ***')
+                        msg4 = str('*** ERROR - lists_monitor() Error Code:: 1141 ***')
                         info = {'object_signal': 'textedit_monitor_append', 'msg': msg4}
                         sinal.ui_signal1.emit(info)
                 else:
@@ -1154,8 +1153,8 @@ def run_arbitrage(ui):
                     pass
             except Exception as er:
                 from connection_arbitrage import connect
-                connect.logwriter(str(er) + ' Error Code:: 1162')
-                msg5 = str('*** ERROR - lists_monitor() Error Code:: 1163: ' + str(er) + ' ***')
+                connect.logwriter(str(er) + ' Error Code:: 1156')
+                msg5 = str('*** ERROR - lists_monitor() Error Code:: 1157: ' + str(er) + ' ***')
                 info = {'object_signal': 'textedit_monitor_append', 'msg': msg5}
                 sinal.ui_signal1.emit(info)
                 time.sleep(5)
