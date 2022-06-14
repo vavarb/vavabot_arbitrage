@@ -523,6 +523,7 @@ class Deribit:
         return self._sender(msg)
 
 
+# noinspection PyShadowingNames
 def credentials(ui):
     def message_box_reboot():
         import sys
@@ -706,6 +707,7 @@ def credentials(ui):
     ui.radioButton_2_testnet_false.clicked.connect(message_box_reboot3)
 
 
+# noinspection PyShadowingNames
 def config(ui):
     def set_version_and_icon():
         _translate = QtCore.QCoreApplication.translate
@@ -949,6 +951,7 @@ def config(ui):
     disable_positions_with_same_size_in()
 
 
+# noinspection PyShadowingNames
 def run_arbitrage(ui):
     from lists import list_monitor_log
 
