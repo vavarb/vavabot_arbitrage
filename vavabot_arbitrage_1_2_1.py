@@ -10,7 +10,7 @@ import threading
 global index_greeks_print_on_off
 global strategy_on_off
 global list_monitor_log
-global what_instrument
+global counter_send_order
 
 
 # Classe de Sinais.
@@ -2303,7 +2303,6 @@ def run_arbitrage(ui):
     def arbitrage_strategy():
         global index_greeks_print_on_off
         global strategy_on_off
-        global what_instrument
         from lists import list_monitor_log
         from connection_arbitrage import connect
 
