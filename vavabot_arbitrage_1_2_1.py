@@ -727,8 +727,19 @@ def config(ui):
         from lists import list_monitor_log
 
         try:
+            if os.path.isfile('log_arbitrage_backup.log') is True:
+                if float(os.path.getsize('log_arbitrage_backup.log')) > 8000000:
+                    os.unlink('log_arbitrage_backup.log')
+                else:
+                    pass
+            else:
+                pass
+
             if os.path.isfile('log_arbitrage.log') is True:
                 if float(os.path.getsize('log_arbitrage.log')) > 500000:
+                    with open('log_arbitrage_backup.log', 'a') as file_backup:
+                        with open('log_arbitrage.log', 'r') as log_file:
+                            file_backup.writelines(log_file)
                     os.unlink('log_arbitrage.log')
                 else:
                     pass
