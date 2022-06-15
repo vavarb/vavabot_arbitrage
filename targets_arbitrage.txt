@@ -1,5 +1,5 @@
-Total Amount (USD): 100000
+Total Amount (USD): 200
 Positions with same size in: USD
-Difference in USD < 0
-Difference in USD > 100
-Loss in USD: -10000
+Difference in USD < -10
+Difference in USD > 1000
+Loss in USD: -1000
