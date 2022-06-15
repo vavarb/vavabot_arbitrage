@@ -305,7 +305,7 @@ class Deribit:
             out = json.loads(self._WSS.recv())
             if 'error' in out:
                 self.logwriter(out['error'])
-                return out['result']
+                return out['error']
             else:
                 return out['result']
         except Exception as er:
