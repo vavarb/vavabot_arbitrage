@@ -733,8 +733,9 @@ def config(ui):
             if os.path.isfile('log_arbitrage_backup.log') is True:
                 if float(os.path.getsize('log_arbitrage_backup.log')) > 8000000:
                     os.unlink('log_arbitrage_backup.log')
+                    list_monitor_log.append('*** Deleted log_arbitrage_backup.log (>8MB). ***')
                 else:
-                    pass
+                    list_monitor_log.append('*** Len log_arbitrage_backup.log < 8MB. ***')
             else:
                 pass
 
@@ -743,11 +744,13 @@ def config(ui):
                     with open('log_arbitrage_backup.log', 'a') as file_backup:
                         with open('log_arbitrage.log', 'r') as log_file:
                             file_backup.writelines(log_file)
+                            list_monitor_log.append('*** Appended log_arbitrage.log into log_arbitrage_backup.log ***')
                     os.unlink('log_arbitrage.log')
+                    list_monitor_log.append('*** Deleted and Created log_arbitrage.log ***')
                 else:
-                    pass
+                    list_monitor_log.append('*** Len log_arbitrage.log < 0.5MB. ***')
             else:
-                pass
+                list_monitor_log.append('*** Created log_arbitrage.log ***')
 
         except Exception as er:
             from connection_arbitrage import connect
