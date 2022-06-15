@@ -303,9 +303,6 @@ class Deribit:
             self.logwriter(msg['method'])
             self._WSS.send(json.dumps(msg))
             out = json.loads(self._WSS.recv())
-            # logwriter(msg=out['result'])
-            # print(out)
-            # print(out['result'])
             if 'error' in out:
                 self.logwriter(out['error'])
                 return out['result']
