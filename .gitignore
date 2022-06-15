@@ -7,3 +7,4 @@ log_arbitrage.log
 pyinstaller.py
 test.py
 __pycache__/
+log_arbitrage_backup.log
