@@ -1399,6 +1399,12 @@ def run_arbitrage(ui):
                                         ' Amount order: ' + str(instrument_amount_usd_for_check_postions) +
                                         ' Price: ' + str(best_bid_ask_price1) +
                                         ' ')
+                connect.logwriter(' *** Instruments Checked - Orders Sent *** ')
+                connect.logwriter('Sell order: '
+                                  'instrument Name: ' + instrument_name_1 +
+                                  ' Amount order: ' + str(instrument_amount_usd_for_check_postions) +
+                                  ' Price: ' + str(best_bid_ask_price1) +
+                                  ' ')
                 time.sleep(5)
                 connect.cancel_all()
             elif abs(instrument_position1) > abs(instrument_position2) and summary_instrument1['direction'] == 'sell':
@@ -1411,6 +1417,12 @@ def run_arbitrage(ui):
                                         ' Amount order: ' + str(instrument_amount_usd_for_check_postions) +
                                         ' Price: ' + str(best_bid_ask_price1)
                                         )
+                connect.logwriter(' *** Instruments Checked - Orders Sent *** ')
+                connect.logwriter('Buy order: '
+                                  'instrument Name: ' + instrument_name_1 +
+                                  ' Amount order: ' + str(instrument_amount_usd_for_check_postions) +
+                                  ' Price: ' + str(best_bid_ask_price1)
+                                  )
                 time.sleep(5)
                 connect.cancel_all()
             elif abs(instrument_position2) > abs(instrument_position1) and summary_instrument2['direction'] == 'buy':
@@ -1423,6 +1435,12 @@ def run_arbitrage(ui):
                                         ' Amount order: ' + str(instrument_amount_usd_for_check_postions) +
                                         ' Price: ' + str(best_bid_ask_price2) +
                                         ' ')
+                connect.logwriter(' *** Instruments Checked - Orders Sent *** ')
+                connect.logwriter('Sell order: '
+                                  'instrument Name: ' + instrument_name_2 +
+                                  ' Amount order: ' + str(instrument_amount_usd_for_check_postions) +
+                                  ' Price: ' + str(best_bid_ask_price2) +
+                                  ' ')
                 time.sleep(5)
                 connect.cancel_all()
             elif abs(instrument_position2) > abs(instrument_position1) and summary_instrument2['direction'] == 'sell':
@@ -1435,6 +1453,12 @@ def run_arbitrage(ui):
                                         ' Amount order: ' + str(instrument_amount_usd_for_check_postions) +
                                         ' Price: ' + str(best_bid_ask_price2) +
                                         ' ')
+                connect.logwriter(' *** Instruments Checked - Orders Sent *** ')
+                connect.logwriter('Buy order: '
+                                  'instrument Name: ' + instrument_name_2 +
+                                  ' Amount order: ' + str(instrument_amount_usd_for_check_postions) +
+                                  ' Price: ' + str(best_bid_ask_price2) +
+                                  ' ')
                 time.sleep(5)
                 connect.cancel_all()
             else:
@@ -1487,16 +1511,28 @@ def run_arbitrage(ui):
                                             ' Amount order: ' + str(amount_for_direction) +
                                             ' Price: ' + str(best_bid_ask_price1) +
                                             ' ')
+                    connect.logwriter(' *** Instruments Checked - Orders Sent *** ')
+                    connect.logwriter('Sell order: '
+                                      'instrument Name: ' + instrument_name_1 +
+                                      ' Amount order: ' + str(amount_for_direction) +
+                                      ' Price: ' + str(best_bid_ask_price1) +
+                                      ' ')
                 elif summary_instrument1['direction'] == 'sell':
                     connect.buy_limit(currency=str(summary_instrument1['instrument_name']),
                                       amount=amount_for_direction,
                                       price=float(best_bid_ask_price1))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                    list_monitor_log.append('Sell order: '
+                    list_monitor_log.append('Buy order: '
                                             'instrument Name: ' + instrument_name_1 +
                                             ' Amount order: ' + str(amount_for_direction) +
                                             ' Price: ' + str(best_bid_ask_price1) +
                                             ' ')
+                    connect.logwriter(' *** Instruments Checked - Orders Sent *** ')
+                    connect.logwriter('Buy order: '
+                                      'instrument Name: ' + instrument_name_1 +
+                                      ' Amount order: ' + str(amount_for_direction) +
+                                      ' Price: ' + str(best_bid_ask_price1) +
+                                      ' ')
                 else:
                     pass
                 time.sleep(5)
@@ -1517,16 +1553,29 @@ def run_arbitrage(ui):
                                             ' Amount order: ' + str(amount_for_direction) +
                                             ' Price: ' + str(best_bid_ask_price2) +
                                             ' ')
+                    connect.logwriter(' *** Instruments Checked - Orders Sent *** ')
+                    connect.logwriter('Sell order: '
+                                      'instrument Name: ' + instrument_name_2 +
+                                      ' Amount order: ' + str(amount_for_direction) +
+                                      ' Price: ' + str(best_bid_ask_price2) +
+                                      ' ')
+
                 elif summary_instrument2['direction'] == 'sell':
                     connect.buy_limit(currency=str(summary_instrument2['instrument_name']),
                                       amount=amount_for_direction,
                                       price=float(best_bid_ask_price2))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                    list_monitor_log.append('Sell order: '
+                    list_monitor_log.append('Buy order: '
                                             'instrument Name: ' + instrument_name_2 +
                                             ' Amount order: ' + str(amount_for_direction) +
                                             ' Price: ' + str(best_bid_ask_price2) +
                                             ' ')
+                    connect.logwriter(' *** Instruments Checked - Orders Sent *** ')
+                    connect.logwriter('Buy order: '
+                                      'instrument Name: ' + instrument_name_2 +
+                                      ' Amount order: ' + str(amount_for_direction) +
+                                      ' Price: ' + str(best_bid_ask_price2) +
+                                      ' ')
                 else:
                     pass
                 time.sleep(5)
@@ -1584,16 +1633,28 @@ def run_arbitrage(ui):
                                             ' Amount order: ' + str(amount_for_max_postiion) +
                                             ' Price: ' + str(best_bid_ask_price1) +
                                             ' ')
+                    connect.logwriter(' *** Instruments Checked - Orders Sent *** ')
+                    connect.logwriter('Sell order: '
+                                      'instrument Name: ' + instrument_name_1 +
+                                      ' Amount order: ' + str(amount_for_max_postiion) +
+                                      ' Price: ' + str(best_bid_ask_price1) +
+                                      ' ')
                 elif summary_instrument1['direction'] == 'sell':
                     connect.buy_limit(currency=instrument_name_1,
                                       amount=float(amount_for_max_postiion),
                                       price=float(best_bid_ask_price1))
                     list_monitor_log.append(' *** Instruments Checked - Orders Sent *** ')
-                    list_monitor_log.append('Buy order:B'
+                    list_monitor_log.append('Buy order: '
                                             ' instrument Name: ' + instrument_name_1 +
                                             ' Amount order: ' + str(amount_for_max_postiion) +
                                             ' Price: ' + str(best_bid_ask_price1) +
                                             ' ')
+                    connect.logwriter(' *** Instruments Checked - Orders Sent *** ')
+                    connect.logwriter('Buy order: '
+                                      'instrument Name: ' + instrument_name_1 +
+                                      ' Amount order: ' + str(amount_for_max_postiion) +
+                                      ' Price: ' + str(best_bid_ask_price1) +
+                                      ' ')
                 else:
                     pass
             else:
@@ -1610,6 +1671,12 @@ def run_arbitrage(ui):
                                             ' Amount order: ' + str(amount_for_max_postiion) +
                                             ' Price: ' + str(best_bid_ask_price2) +
                                             ' ')
+                    connect.logwriter(' *** Instruments Checked - Orders Sent *** ')
+                    connect.logwriter('Sell order: '
+                                      'instrument Name: ' + instrument_name_2 +
+                                      ' Amount order: ' + str(amount_for_max_postiion) +
+                                      ' Price: ' + str(best_bid_ask_price2) +
+                                      ' ')
                 elif summary_instrument2['direction'] == 'sell':
                     connect.buy_limit(currency=instrument_name_2,
                                       amount=float(amount_for_max_postiion),
@@ -1620,6 +1687,12 @@ def run_arbitrage(ui):
                                             ' Amount order: ' + str(amount_for_max_postiion) +
                                             ' Price: ' + str(best_bid_ask_price2) +
                                             ' ')
+                    connect.logwriter(' *** Instruments Checked - Orders Sent *** ')
+                    connect.logwriter('Buy order: '
+                                      'instrument Name: ' + instrument_name_2 +
+                                      ' Amount order: ' + str(amount_for_max_postiion) +
+                                      ' Price: ' + str(best_bid_ask_price2) +
+                                      ' ')
                 else:
                     pass
             else:
@@ -2540,7 +2613,7 @@ def run_arbitrage(ui):
                                     ' price: ' + str(instrument_price1) + '. ')
                                 connect.logwriter(
                                     'currency: ' + instrument_name_2 +
-                                    ' order: sell limit - ' +
+                                    ' order: buy limit - ' +
                                     'amount: ' + str(smaller_amount_for_stop_orders) +
                                     ' price: ' + str(instrument_price2) + '. ')
                                 time.sleep(5)
@@ -2583,11 +2656,11 @@ def run_arbitrage(ui):
                             connect.close_position(instrument_name=instrument_name_2)
                             list_monitor_log.append(' *** STOP LOSS ORDERS: *** ')
                             list_monitor_log.append(
-                                'currency: ' + instrument_name_1 + instrument_name_2 +
+                                'currency: ' + instrument_name_1 + ' AND ' + instrument_name_2 +
                                 '. Order: close position ')
                             connect.logwriter('*** STOP LOSS ORDERS: ***')
                             connect.logwriter(
-                                'currency: ' + instrument_name_1 + instrument_name_2 +
+                                'currency: ' + instrument_name_1 + ' AND ' + instrument_name_2 +
                                 '. Order: close position ')
                             time.sleep(5)
                             connect.cancel_all()
