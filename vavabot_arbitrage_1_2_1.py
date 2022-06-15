@@ -1385,9 +1385,7 @@ def run_arbitrage(ui):
                 number_multiple_10_and_round_0_digits(abs(
                     abs(instrument_position1) - abs(instrument_position2))) >= 10 and \
                 there_are_bid_ask_offer is True and \
-                number_multiple_10_and_round_0_digits(float(smaller_amount)) >= 10 and \
-                ((instrument_buy_or_sell1 == summary_instrument1['direction'] and summary_instrument1['size'] != 0) or
-                 (instrument_buy_or_sell2 == summary_instrument2['direction'] and summary_instrument2['size'] != 0)):
+                number_multiple_10_and_round_0_digits(float(smaller_amount)) >= 10:
 
             instrument_amount_usd_for_check_postions = number_multiple_10_and_round_0_digits(
                 float(smaller_amount))
