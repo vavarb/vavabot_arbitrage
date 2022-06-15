@@ -258,6 +258,9 @@ class Deribit:
         self.client_secret = client_secret
 
         from lists import list_monitor_log
+        global counter_send_order
+
+        counter_send_order = 0
 
         timestamp = round(datetime.now().timestamp() * 1000)
         nonce = "abcd"
@@ -293,7 +296,10 @@ class Deribit:
 
     def _sender(self, msg):
         from lists import list_monitor_log
+        global counter_send_order
+        counter_send_order = counter_send_order + 1
         try:
+            self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']) + '_' + str(counter_send_order))
             self.logwriter(msg['method'])
             self._WSS.send(json.dumps(msg))
             out = json.loads(self._WSS.recv())
