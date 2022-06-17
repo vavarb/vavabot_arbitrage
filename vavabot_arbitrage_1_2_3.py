@@ -11,6 +11,8 @@ global index_greeks_print_on_off
 global strategy_on_off
 global list_monitor_log
 global counter_send_order
+global sender_rate_dict
+global delay
 
 
 # Classe de Sinais.
@@ -275,8 +277,15 @@ class Deribit:
 
         from lists import list_monitor_log
         global counter_send_order
+        global sender_rate_dict
+        global delay
 
         counter_send_order = 0
+        delay = 0
+
+        sender_rate_dict = dict()
+        sender_rate_dict['time_1'] = time.time()
+        sender_rate_dict['counter_send_order_for_sender_rate'] = 0
 
         timestamp = round(datetime.now().timestamp() * 1000)
         nonce = "abcd"
@@ -310,22 +319,95 @@ class Deribit:
             self.logwriter('***** auth ERROR - Error Code: 284 ' + str(er) + ' *****')
             list_monitor_log.append('***** auth error:' + str(er) + ' - Error Code: 285 *****')
 
+    # noinspection PyMethodMayBeStatic
+    def sender_rate(self, counter_send_order_for_sender_rate, time_now):
+        global sender_rate_dict
+
+        if float(time_now - sender_rate_dict['time_1']) >= 3:
+            delta_counter_send_order = float(
+                counter_send_order_for_sender_rate) - float(sender_rate_dict['counter_send_order_for_sender_rate'])
+            delta_time_for_sender_rate = float(time_now - sender_rate_dict['time_1'])
+            rate_sender_orders = float(delta_counter_send_order) / float(delta_time_for_sender_rate)
+
+            sender_rate_dict['time_1'] = time_now
+            sender_rate_dict['counter_send_order_for_sender_rate'] = float(counter_send_order_for_sender_rate)
+
+            return round(rate_sender_orders, 2)
+        else:
+            return False
+
     def _sender(self, msg):
         from lists import list_monitor_log
         global counter_send_order
+        global delay
+
         counter_send_order = counter_send_order + 1
+
         try:
             self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']) + '_' + str(counter_send_order))
             self._WSS.send(json.dumps(msg))
             out = json.loads(self._WSS.recv())
+
+            sender_rate_rate = self.sender_rate(
+                        counter_send_order_for_sender_rate=counter_send_order, time_now=time.time())
+
             if 'error' in out:
                 self.logwriter(out['error'])
-                return out['error']
-            else:
+
+                if sender_rate_rate is False:
+                    pass
+                else:
+                    list_monitor_log.append('*** Check Sent Orders Rate ***')
+                    list_monitor_log.append(
+                        '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
+                    if sender_rate_rate >= 5:
+                        delay = round(delay + 0.01, 2)
+                        list_monitor_log.append('*** Sent Orders Rate Checked: >= 5 Orders/second ***')
+                        self.logwriter('*** Setup New Delay for send order: ' + str(delay) + ' seconds ***')
+                    else:
+                        list_monitor_log.append('*** Sent Orders Rate Checked: < 5 Orders/second ***')
+                        if delay >= 0.01:
+                            delay = round(delay - 0.01, 2)
+                            self.logwriter('*** Setup Delay for send order: ' + str(delay) + ' seconds ***')
+                        else:
+                            self.logwriter('*** Setup Delay for send order Unmodified ***')
+
+                if delay > 0:
+                    time.sleep(delay)
+                else:
+                    pass
+
                 return out['result']
+
+            else:
+
+                if sender_rate_rate is False:
+                    pass
+                else:
+                    list_monitor_log.append('*** Check Sent Orders Rate ***')
+                    list_monitor_log.append(
+                        '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
+                    if sender_rate_rate >= 5:
+                        delay = round(delay + 0.01, 2)
+                        list_monitor_log.append('*** Sent Orders Rate Checked: >= 5 Orders/second ***')
+                        self.logwriter('*** Setup New Delay for send order: ' + str(delay) + ' seconds ***')
+                    else:
+                        list_monitor_log.append('*** Sent Orders Rate Checked: < 5 Orders/second ***')
+                        if delay >= 0.01:
+                            delay = round(delay - 0.01, 2)
+                            self.logwriter('*** Setup Delay for send order: ' + str(delay) + ' seconds ***')
+                        else:
+                            self.logwriter('*** Setup Delay for send order Unmodified ***')
+
+                if delay > 0:
+                    time.sleep(delay)
+                else:
+                    pass
+
+                return out['result']
+
         except Exception as er:
             self.logwriter('_sender error: ' + str(er))
-            list_monitor_log.append('_sender error: ' + str(er))
 
     def get_instruments(self, currency):
         msg = \
