@@ -1,5 +1,5 @@
 
-from vavabot_arbitrage_1_2_3 import Deribit, CredentialsSaved
+from vavabot_arbitrage_1_2_2 import Deribit, CredentialsSaved
 import time
 from lists import list_monitor_log
 import threading
