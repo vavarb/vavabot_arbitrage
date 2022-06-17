@@ -1,6 +1,7 @@
 api-key_arbitrage.txt
 secret-key_arbitrage.txt
 log_arbitrage.log
+pyinstaler.py
 test.py
 __pycache__/
 log_arbitrage_backup.log
