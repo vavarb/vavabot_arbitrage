@@ -316,7 +316,6 @@ class Deribit:
         counter_send_order = counter_send_order + 1
         try:
             self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']) + '_' + str(counter_send_order))
-            self.logwriter(msg['method'])
             self._WSS.send(json.dumps(msg))
             out = json.loads(self._WSS.recv())
             if 'error' in out:
