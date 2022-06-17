@@ -32,17 +32,33 @@ class CredentialsSaved:
     @staticmethod
     def api_secret_saved():
         from lists import list_monitor_log
+        import os
+
+        if os.path.isfile('api-key_arbitrage.txt') is False:
+            with open('api-key_arbitrage.txt', 'a') as api_key_save_file:
+                api_key_save_file.write(str('<Type your Deribit Key>'))
+        else:
+            pass
+
         with open('api-key_arbitrage.txt', 'r') as api_secret_saved_file:
             api_secret_saved_file_read = str(api_secret_saved_file.read())
-        list_monitor_log.append('*** API key Saved: ' + str(api_secret_saved_file_read) + ' ***')
+        list_monitor_log.append('*** API key: ' + str(api_secret_saved_file_read) + ' ***')
         return api_secret_saved_file_read
 
     @staticmethod
     def secret_key_saved():
         from lists import list_monitor_log
+        import os
+
+        if os.path.isfile('secret-key_arbitrage.txt') is False:
+            with open('secret-key_arbitrage.txt', 'a') as api_key_save_file:
+                api_key_save_file.write(str('<Type your Deribit Secret Key>'))
+        else:
+            pass
+
         with open('secret-key_arbitrage.txt', 'r') as secret_key_saved_file:
             secret_key_saved_file_read = str(secret_key_saved_file.read())
-        list_monitor_log.append('*** SECRET key Saved: ' + str(secret_key_saved_file_read) + ' ***')
+        list_monitor_log.append('*** SECRET key: ' + str(secret_key_saved_file_read) + ' ***')
         return secret_key_saved_file_read
 
     @staticmethod
@@ -714,7 +730,7 @@ def credentials(ui):
 def config(ui):
     def set_version_and_icon():
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Arbitrage 1.2.2"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Arbitrage 1.2.3"))
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
@@ -1219,7 +1235,12 @@ def run_arbitrage(ui):
 
             p_ = annualized_premium(instrument_name=str(instrument1_name_for_monitor))
 
-            if p_ == 'No bid/ask offer':
+            if '13009' in str(c) or '13004' in str(c):
+                list_monitor_log.append('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
+            else:
+                list_monitor_log.append('***** Error - ' + str(c) + ' *****')
+
+            if p_ == 'No bid/ask offer' and '13009' not in str(c) and '13004' not in str(c):
                 msg5 = {
                     'lineEdit_24_btc_index': b,
                     'lineEdit': str(instrument1_name_for_monitor),
@@ -1239,45 +1260,48 @@ def run_arbitrage(ui):
                     'msg': msg5
                 }
                 sinal.ui_signal1.emit(info5)
-                pass
             else:
-                c2 = connect.get_position(instrument_name=str(instrument2_name_for_monitor))
+                if '13009' not in str(c) and '13004' not in str(c):
+                    c2 = connect.get_position(instrument_name=str(instrument2_name_for_monitor))
 
-                p2_ = annualized_premium(instrument_name=str(instrument2_name_for_monitor))
-                p2 = str(p2_)
+                    p2_ = annualized_premium(instrument_name=str(instrument2_name_for_monitor))
+                    p2 = str(p2_)
 
-                if p2 == 'No bid/ask offer' or c['mark_price'] == 0.0 or c2['mark_price'] == 0.0:
-                    q = str(round((c2['mark_price'] - c['mark_price']), 2))
-                    r = 'None'
-                    s = 'None'
-                    list_monitor_log.append('********** Mark Price is Zero OR No bid/ask offer **********  Mark Price: '
-                                            + str(instrument1_name_for_monitor) + ' = ' + str(c['mark_price']) + '     '
-                                            + str(instrument2_name_for_monitor) + ' = ' + str(c2['mark_price']))
-                    pass
+                    if p2 == 'No bid/ask offer' or c['mark_price'] == 0.0 or c2['mark_price'] == 0.0:
+                        q = str(round((c2['mark_price'] - c['mark_price']), 2))
+                        r = 'None'
+                        s = 'None'
+                        list_monitor_log.append(
+                            '********** Mark Price is Zero OR No bid/ask offer **********  Mark Price: '
+                            + str(instrument1_name_for_monitor) + ' = ' + str(c['mark_price']) + '     '
+                            + str(instrument2_name_for_monitor) + ' = ' + str(c2['mark_price']))
+                        pass
+                    else:
+                        q = str(round((c2['mark_price'] - c['mark_price']), 2))
+                        r = str(round(((c2['mark_price'] - c['mark_price']) * 100 / c['mark_price']), 2))
+                        s = str(round(float(p2_) - float(p_), 2))
+
+                    msg5 = {
+                        'lineEdit_24_btc_index': b,  # btc index price
+                        'lineEdit': str(instrument1_name_for_monitor),  # Instrument name
+                        'c': c,
+                        'lineEdit_11': str(str(instrument1_name_for_monitor) + ' An.Premium (%)'),
+                        'lineEdit_32': str(p_),
+                        'lineEdit_6': str(instrument2_name_for_monitor),
+                        'c2': c2,
+                        'lineEdit_12': str(str(instrument2_name_for_monitor) + ' An.Premium (%)'),
+                        'lineEdit_33': p2,
+                        'lineEdit_34': q,
+                        'lineEdit_35': r,
+                        'lineEdit_36': s
+                    }
+                    info5 = {
+                        'object_signal': 'btc_index_and_greeks_structure_monitor_print',
+                        'msg': msg5
+                    }
+                    sinal.ui_signal1.emit(info5)
                 else:
-                    q = str(round((c2['mark_price'] - c['mark_price']), 2))
-                    r = str(round(((c2['mark_price'] - c['mark_price']) * 100 / c['mark_price']), 2))
-                    s = str(round(float(p2_) - float(p_), 2))
-
-                msg5 = {
-                    'lineEdit_24_btc_index': b,  # btc index price
-                    'lineEdit': str(instrument1_name_for_monitor),  # Instrument name
-                    'c': c,
-                    'lineEdit_11': str(str(instrument1_name_for_monitor) + ' An.Premium (%)'),
-                    'lineEdit_32': str(p_),
-                    'lineEdit_6': str(instrument2_name_for_monitor),
-                    'c2': c2,
-                    'lineEdit_12': str(str(instrument2_name_for_monitor) + ' An.Premium (%)'),
-                    'lineEdit_33': p2,
-                    'lineEdit_34': q,
-                    'lineEdit_35': r,
-                    'lineEdit_36': s
-                }
-                info5 = {
-                    'object_signal': 'btc_index_and_greeks_structure_monitor_print',
-                    'msg': msg5
-                }
-                sinal.ui_signal1.emit(info5)
+                    list_monitor_log.append('***** Error - ' + str(c) + ' *****')
 
         except Exception as er:
             from connection_arbitrage import connect
