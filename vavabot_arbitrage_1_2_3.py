@@ -1238,7 +1238,7 @@ def run_arbitrage(ui):
             if '13009' in str(c) or '13004' in str(c):
                 list_monitor_log.append('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
             else:
-                list_monitor_log.append('***** Error - ' + str(c) + ' *****')
+                pass
 
             if p_ == 'No bid/ask offer' and '13009' not in str(c) and '13004' not in str(c):
                 msg5 = {
