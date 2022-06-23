@@ -143,11 +143,9 @@ class ConfigAndInstrumentsSaved:
             list_instrument_name.append(i['instrument_name'])
         if instrument_name in list_instrument_name:
             list_instrument_name.clear()
-            time.sleep(0.3)
             return 'instrument available'
         else:
             list_instrument_name.clear()
-            time.sleep(0.3)
             return 'instrument NO available'
 
     def instrument_buy_or_sell(self, instrument_number=None):
@@ -358,7 +356,7 @@ class Deribit:
                     pass
                 else:
                     list_monitor_log.append('*** Check Sent Orders Rate ***')
-                    list_monitor_log.append(
+                    self.logwriter(
                         '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
                     if sender_rate_rate >= 5:
                         delay = round(delay + 0.01, 2)
@@ -385,7 +383,7 @@ class Deribit:
                     pass
                 else:
                     list_monitor_log.append('*** Check Sent Orders Rate ***')
-                    list_monitor_log.append(
+                    self.logwriter(
                         '*** Sent Orders Rate: ' + str(sender_rate_rate) + ' Orders/Second ***')
                     if sender_rate_rate >= 5:
                         delay = round(delay + 0.01, 2)
@@ -1529,6 +1527,7 @@ def run_arbitrage(ui):
                                   ' ')
                 time.sleep(5)
                 connect.cancel_all()
+                time.sleep(2)
             elif abs(instrument_position1) > abs(instrument_position2) and summary_instrument1['direction'] == 'sell':
                 connect.buy_limit(currency=instrument_name_1,
                                   amount=instrument_amount_usd_for_check_postions,
@@ -1547,6 +1546,7 @@ def run_arbitrage(ui):
                                   )
                 time.sleep(5)
                 connect.cancel_all()
+                time.sleep(2)
             elif abs(instrument_position2) > abs(instrument_position1) and summary_instrument2['direction'] == 'buy':
                 connect.sell_limit(currency=instrument_name_2,
                                    amount=instrument_amount_usd_for_check_postions,
@@ -1565,6 +1565,7 @@ def run_arbitrage(ui):
                                   ' ')
                 time.sleep(5)
                 connect.cancel_all()
+                time.sleep(2)
             elif abs(instrument_position2) > abs(instrument_position1) and summary_instrument2['direction'] == 'sell':
                 connect.buy_limit(currency=instrument_name_2,
                                   amount=instrument_amount_usd_for_check_postions,
@@ -1583,6 +1584,7 @@ def run_arbitrage(ui):
                                   ' ')
                 time.sleep(5)
                 connect.cancel_all()
+                time.sleep(2)
             else:
                 list_monitor_log.append(' ***** ERROR in Check Instruments - Error Code: 1432 ***** ')
                 connect.logwriter(' ***** ERROR in Check Instruments - Error Code: 1433 ***** ')
@@ -1659,6 +1661,7 @@ def run_arbitrage(ui):
                     pass
                 time.sleep(5)
                 connect.cancel_all()
+                time.sleep(2)
             else:
                 pass
 
@@ -1702,6 +1705,7 @@ def run_arbitrage(ui):
                     pass
                 time.sleep(5)
                 connect.cancel_all()
+                time.sleep(2)
             else:
                 pass
 
@@ -1821,6 +1825,7 @@ def run_arbitrage(ui):
                 pass
             time.sleep(5)
             connect.cancel_all()
+            time.sleep(2)
 
         else:
             list_monitor_log.append(' *** The instruments has NOT been checked *** ')
@@ -2602,7 +2607,6 @@ def run_arbitrage(ui):
                         instrument_name_1 + ' : ' + str(best_bid_ask_amount1) + 'USD (bid/ask amount). ')
                     list_monitor_log.append(
                         instrument_name_2 + ' : ' + str(best_bid_ask_amount2) + 'USD (bid/ask amount). ')
-                    time.sleep(3)
                 # there_are_bid_ask_offer - the end ********************************************************************
 
                 # stop_loss and stop_gain_conditions_trade - start *****************************************************
@@ -2739,6 +2743,7 @@ def run_arbitrage(ui):
                                     ' price: ' + str(instrument_price2) + '. ')
                                 time.sleep(5)
                                 connect.cancel_all()
+                                time.sleep(2)
                             else:
                                 connect.buy_limit(
                                     currency=instrument_name_1,
@@ -2772,6 +2777,7 @@ def run_arbitrage(ui):
                                     '. price: ' + str(instrument_price2) + '. ')
                                 time.sleep(5)
                                 connect.cancel_all()
+                                time.sleep(2)
                         else:
                             connect.close_position(instrument_name=instrument_name_1)
                             connect.close_position(instrument_name=instrument_name_2)
@@ -2785,6 +2791,7 @@ def run_arbitrage(ui):
                                 '. Order: close position ')
                             time.sleep(5)
                             connect.cancel_all()
+                            time.sleep(2)
                 else:
                     pass  # stop_loss_for_arbitrage_strategy is False
                     # stop loss close positions orders - the end *******************************************************
@@ -2850,6 +2857,7 @@ def run_arbitrage(ui):
                                 '. Price :' + str(best_bid_ask_price_for_stop_gain_dict2))
                             time.sleep(5)
                             connect.cancel_all()
+                            time.sleep(2)
                         elif summary_instrument1['direction'] == 'sell':
                             connect.buy_limit(
                                 currency=instrument_name_1,
@@ -2883,6 +2891,7 @@ def run_arbitrage(ui):
                                 '. Price :' + str(best_bid_ask_price_for_stop_gain_dict2))
                             time.sleep(5)
                             connect.cancel_all()
+                            time.sleep(2)
                         else:
                             list_monitor_log.append('***** ERROR IN STOP GAIN ORDERS - Error Code: 2684 ***')
                             connect.logwriter('***** ERROR IN STOP GAIN ORDERS - Error Code: 2685 ***')
@@ -2977,6 +2986,7 @@ def run_arbitrage(ui):
                             '. Price :' + str(best_bid_ask_price2))
                         time.sleep(5)
                         connect.cancel_all()
+                        time.sleep(2)
 
                     elif instrument_buy_or_sell1 == 'sell' and instrument_buy_or_sell2 == 'buy':
                         connect.sell_limit(
@@ -3011,6 +3021,7 @@ def run_arbitrage(ui):
                             ' Price :' + str(best_bid_ask_price2))
                         time.sleep(5)
                         connect.cancel_all()
+                        time.sleep(2)
                     else:
                         list_monitor_log.append(' ***** ERROR OPENING ORDERS SENT - Error Code: 2812 *** ')
                         connect.logwriter('***** ERROR OPENING ORDERS SENT - Error Code: 2813 ***')
@@ -3069,7 +3080,7 @@ def run_arbitrage(ui):
             except Exception as er:
                 list_monitor_log.append('***** ERROR: ' + str(er) + ' - Error Code: 2867 *****')
                 connect.logwriter('***** ERROR: ' + str(er) + ' - Error Code: 2868 *****')
-                time.sleep(40)
+                time.sleep(10)
                 pass
             finally:
                 pass
