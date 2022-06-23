@@ -1249,6 +1249,9 @@ def run_arbitrage(ui):
             ui.pushButton_start_trading.setEnabled(False)
             ui.lineEdit_58.hide()
 
+            ui.lineEdit_orders_rate.setEnabled(False)
+            ui.pushButton_orders_rate.setEnabled(False)
+
             green_icon = "./green_led_icon.png"
             ui.label_32.setPixmap(QtGui.QPixmap(green_icon))
 
@@ -1265,6 +1268,9 @@ def run_arbitrage(ui):
             ui.pushButton.setEnabled(False)
             ui.pushButton_start_trading.setEnabled(True)
             ui.lineEdit_58.show()
+
+            ui.lineEdit_orders_rate.setEnabled(True)
+            ui.pushButton_orders_rate.setEnabled(True)
 
             red_icon = "./red_led_icon.png"
             ui.label_32.setPixmap(QtGui.QPixmap(red_icon))
