@@ -11,6 +11,8 @@ global index_greeks_print_on_off
 global strategy_on_off
 global list_monitor_log
 global counter_send_order
+global sender_rate_dict
+global delay_delay
 
 
 # Classe de Sinais.
@@ -94,6 +96,41 @@ class ConfigAndInstrumentsSaved:
         self.instrument_number = None
 
     @staticmethod
+    def orders_rate_saved():
+        from lists import list_monitor_log
+        import os
+
+        if os.path.isfile('send_orders_rate.txt') is False:
+            with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
+                send_orders_rate_file.write('5')
+        else:
+            pass
+
+        with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
+            send_orders_rate_file_read = str(send_orders_rate_file.read())
+
+        list_monitor_log.append('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
+
+        return round(float(send_orders_rate_file_read), 2)
+
+    @staticmethod
+    def orders_rate_saved2():
+        from connection_arbitrage import connect
+        import os
+
+        if os.path.isfile('send_orders_rate.txt') is False:
+            with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
+                send_orders_rate_file.write('5')
+        else:
+            pass
+
+        with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
+            send_orders_rate_file_read = str(send_orders_rate_file.read())
+
+        ui.lineEdit_orders_rate.setText(str(send_orders_rate_file_read))
+        connect.logwriter('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
+
+    @staticmethod
     def instruments_check():
         with open('instruments_arbitrage.txt', 'r') as instruments_check_file:
             return str(instruments_check_file.read())
@@ -141,11 +178,9 @@ class ConfigAndInstrumentsSaved:
             list_instrument_name.append(i['instrument_name'])
         if instrument_name in list_instrument_name:
             list_instrument_name.clear()
-            time.sleep(0.3)
             return 'instrument available'
         else:
             list_instrument_name.clear()
-            time.sleep(0.3)
             return 'instrument NO available'
 
     def instrument_buy_or_sell(self, instrument_number=None):
@@ -275,6 +310,14 @@ class Deribit:
 
         from lists import list_monitor_log
         global counter_send_order
+        global sender_rate_dict
+        global delay_delay
+
+        delay_delay = 0
+
+        sender_rate_dict = dict()
+        sender_rate_dict['time_1'] = time.time()
+        sender_rate_dict['counter_send_order_for_sender_rate'] = 1
 
         counter_send_order = 0
 
@@ -310,23 +353,87 @@ class Deribit:
             self.logwriter('***** auth ERROR - Error Code: 284 ' + str(er) + ' *****')
             list_monitor_log.append('***** auth error:' + str(er) + ' - Error Code: 285 *****')
 
-    def _sender(self, msg):
+    # noinspection PyMethodMayBeStatic
+    def sender_rate(self, counter_send_order_for_sender_rate, time_now):
+        global sender_rate_dict
+
+        if float(time_now - sender_rate_dict['time_1']) >= 120:
+            delta_counter_send_order = float(
+                counter_send_order_for_sender_rate) - float(sender_rate_dict['counter_send_order_for_sender_rate'])
+            delta_time_for_sender_rate = float(time_now - sender_rate_dict['time_1'])
+            rate_sender_orders = float(delta_counter_send_order) / float(delta_time_for_sender_rate)
+
+            sender_rate_dict['time_1'] = time_now
+            sender_rate_dict['counter_send_order_for_sender_rate'] = float(counter_send_order_for_sender_rate)
+
+            return round(rate_sender_orders, 2)
+        else:
+            return False
+
+    def _delay(self, sender_rate_rate_):
+        global delay_delay
         from lists import list_monitor_log
+
+        if sender_rate_rate_ is not False:
+            orders_per_second_ = float(ConfigAndInstrumentsSaved().orders_rate_saved())
+
+            list_monitor_log.append('*** Check Sent Orders Rate ***')
+            self.logwriter(
+                '*** Sent Orders Rate: ' + str(sender_rate_rate_) + ' Orders/Second ***')
+            if float(sender_rate_rate_) > float(orders_per_second_):
+                delay_delay = round(delay_delay + ((1 / orders_per_second_) - (1 / sender_rate_rate_)), 2)
+                list_monitor_log.append('*** Sent Orders Rate Checked: > ' + str(orders_per_second_) +
+                                        ' Orders/second ***')
+                self.logwriter('*** Setup New Delay to send order: ' + str(delay_delay) + ' seconds ***')
+            else:
+                list_monitor_log.append('*** Sent Orders Rate Checked: < ' + str(orders_per_second_) +
+                                        ' Orders/second ***')
+                if delay_delay == 0:
+                    self.logwriter('*** Setup Delay to send order Unmodified ***')
+                else:
+                    if round(delay_delay - ((1 / sender_rate_rate_) - (1 / orders_per_second_)), 2) > 0:
+                        delay_delay = round(delay_delay - ((1 / sender_rate_rate_) - (1 / orders_per_second_)), 2)
+                        self.logwriter('*** Setup New Delay to send order: ' + str(delay_delay) + ' seconds ***')
+                    else:
+                        delay_delay = 0
+                        self.logwriter('*** Setup New Delay to send order: ' + str(delay_delay) + ' seconds ***')
+            if delay_delay < 0:
+                return 0
+            else:
+                return float(delay_delay)
+        else:
+            if delay_delay < 0:
+                return 0
+            else:
+                return float(delay_delay)
+
+    def _sender(self, msg):
         global counter_send_order
+
         counter_send_order = counter_send_order + 1
+
         try:
             self.logwriter(str(msg['method']) + ' ID: ' + str(msg['id']) + '_' + str(counter_send_order))
-            self.logwriter(msg['method'])
             self._WSS.send(json.dumps(msg))
             out = json.loads(self._WSS.recv())
+
+            delay = self._delay(sender_rate_rate_=self.sender_rate(
+                counter_send_order_for_sender_rate=counter_send_order, time_now=time.time()))
+
+            if delay > 0:
+                time.sleep(delay)
+            else:
+                pass
+
             if 'error' in out:
                 self.logwriter(out['error'])
                 return out['error']
+
             else:
                 return out['result']
+
         except Exception as er:
             self.logwriter('_sender error: ' + str(er))
-            list_monitor_log.append('_sender error: ' + str(er))
 
     def get_instruments(self, currency):
         msg = \
@@ -362,18 +469,6 @@ class Deribit:
                 "method": "public/set_heartbeat",
                 "params": {
                     "interval": 60
-                }
-            }
-        return self._sender(msg)
-
-    def disable_heartbeat(self):
-        msg = \
-            {
-                "jsonrpc": "2.0",
-                "id": 5,
-                "method": "public/disable_heartbeat",
-                "params": {
-
                 }
             }
         return self._sender(msg)
@@ -728,9 +823,47 @@ def credentials(ui):
 
 # noinspection PyShadowingNames
 def config(ui):
+    def save_orders_rate():
+        from connection_arbitrage import connect
+        import os
+
+        try:
+            orders_per_second_from_line_edit = round(float(str.replace(ui.lineEdit_orders_rate.text(), ',', '.')), 2)
+        except ValueError:
+            orders_per_second_from_line_edit = float(5)
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Order/Second must be > 0')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+
+        if orders_per_second_from_line_edit > 0:
+            orders_per_second = round(float(orders_per_second_from_line_edit), 2)
+
+        else:
+            orders_per_second = round(float(5), 2)
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setText('Order/Second must be > 0')
+            msg.setWindowTitle('***** ERROR *****')
+            msg.exec_()
+
+        if os.path.isfile('send_orders_rate.txt') is False:
+            with open('send_orders_rate.txt', 'a') as send_orders_rate_file:
+                send_orders_rate_file.write(str(orders_per_second))
+        else:
+            with open('send_orders_rate.txt', 'w') as send_orders_rate_file:
+                send_orders_rate_file.write(str(orders_per_second))
+
+        with open('send_orders_rate.txt', 'r') as send_orders_rate_file:
+            send_orders_rate_file_read = str(send_orders_rate_file.read())
+
+        ui.lineEdit_orders_rate.setText(str(send_orders_rate_file_read))
+        connect.logwriter('*** Order/Second Setup: ' + str(send_orders_rate_file_read) + ' ***')
+
     def set_version_and_icon():
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Arbitrage 1.2.2"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "VavaBot - Arbitrage 1.2.3"))
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(".../icon_noctuline_wall_e_eve_hedge.ico"),
@@ -982,6 +1115,8 @@ def config(ui):
     ui.pushButton_submit_new_instruments.clicked.connect(instruments_save)
     ui.pushButton_submit_new_instruments_2.clicked.connect(config_save)
     disable_positions_with_same_size_in()
+    ConfigAndInstrumentsSaved().orders_rate_saved2()
+    ui.pushButton_orders_rate.clicked.connect(save_orders_rate)
 
 
 # noinspection PyShadowingNames
@@ -1114,6 +1249,9 @@ def run_arbitrage(ui):
             ui.pushButton_start_trading.setEnabled(False)
             ui.lineEdit_58.hide()
 
+            ui.lineEdit_orders_rate.setEnabled(False)
+            ui.pushButton_orders_rate.setEnabled(False)
+
             green_icon = "./green_led_icon.png"
             ui.label_32.setPixmap(QtGui.QPixmap(green_icon))
 
@@ -1130,6 +1268,9 @@ def run_arbitrage(ui):
             ui.pushButton.setEnabled(False)
             ui.pushButton_start_trading.setEnabled(True)
             ui.lineEdit_58.show()
+
+            ui.lineEdit_orders_rate.setEnabled(True)
+            ui.pushButton_orders_rate.setEnabled(True)
 
             red_icon = "./red_led_icon.png"
             ui.label_32.setPixmap(QtGui.QPixmap(red_icon))
@@ -1238,7 +1379,7 @@ def run_arbitrage(ui):
             if '13009' in str(c) or '13004' in str(c):
                 list_monitor_log.append('***** VERIFY CREDENTIALS - Type your Deribit API and Secret Keys *****')
             else:
-                list_monitor_log.append('***** Error - ' + str(c) + ' *****')
+                pass
 
             if p_ == 'No bid/ask offer' and '13009' not in str(c) and '13004' not in str(c):
                 msg5 = {
@@ -1448,6 +1589,7 @@ def run_arbitrage(ui):
                                   ' ')
                 time.sleep(5)
                 connect.cancel_all()
+                time.sleep(2)
             elif abs(instrument_position1) > abs(instrument_position2) and summary_instrument1['direction'] == 'sell':
                 connect.buy_limit(currency=instrument_name_1,
                                   amount=instrument_amount_usd_for_check_postions,
@@ -1466,6 +1608,7 @@ def run_arbitrage(ui):
                                   )
                 time.sleep(5)
                 connect.cancel_all()
+                time.sleep(2)
             elif abs(instrument_position2) > abs(instrument_position1) and summary_instrument2['direction'] == 'buy':
                 connect.sell_limit(currency=instrument_name_2,
                                    amount=instrument_amount_usd_for_check_postions,
@@ -1484,6 +1627,7 @@ def run_arbitrage(ui):
                                   ' ')
                 time.sleep(5)
                 connect.cancel_all()
+                time.sleep(2)
             elif abs(instrument_position2) > abs(instrument_position1) and summary_instrument2['direction'] == 'sell':
                 connect.buy_limit(currency=instrument_name_2,
                                   amount=instrument_amount_usd_for_check_postions,
@@ -1502,6 +1646,7 @@ def run_arbitrage(ui):
                                   ' ')
                 time.sleep(5)
                 connect.cancel_all()
+                time.sleep(2)
             else:
                 list_monitor_log.append(' ***** ERROR in Check Instruments - Error Code: 1432 ***** ')
                 connect.logwriter(' ***** ERROR in Check Instruments - Error Code: 1433 ***** ')
@@ -1578,6 +1723,7 @@ def run_arbitrage(ui):
                     pass
                 time.sleep(5)
                 connect.cancel_all()
+                time.sleep(2)
             else:
                 pass
 
@@ -1621,6 +1767,7 @@ def run_arbitrage(ui):
                     pass
                 time.sleep(5)
                 connect.cancel_all()
+                time.sleep(2)
             else:
                 pass
 
@@ -1740,6 +1887,7 @@ def run_arbitrage(ui):
                 pass
             time.sleep(5)
             connect.cancel_all()
+            time.sleep(2)
 
         else:
             list_monitor_log.append(' *** The instruments has NOT been checked *** ')
@@ -2521,7 +2669,6 @@ def run_arbitrage(ui):
                         instrument_name_1 + ' : ' + str(best_bid_ask_amount1) + 'USD (bid/ask amount). ')
                     list_monitor_log.append(
                         instrument_name_2 + ' : ' + str(best_bid_ask_amount2) + 'USD (bid/ask amount). ')
-                    time.sleep(3)
                 # there_are_bid_ask_offer - the end ********************************************************************
 
                 # stop_loss and stop_gain_conditions_trade - start *****************************************************
@@ -2658,6 +2805,7 @@ def run_arbitrage(ui):
                                     ' price: ' + str(instrument_price2) + '. ')
                                 time.sleep(5)
                                 connect.cancel_all()
+                                time.sleep(2)
                             else:
                                 connect.buy_limit(
                                     currency=instrument_name_1,
@@ -2691,6 +2839,7 @@ def run_arbitrage(ui):
                                     '. price: ' + str(instrument_price2) + '. ')
                                 time.sleep(5)
                                 connect.cancel_all()
+                                time.sleep(2)
                         else:
                             connect.close_position(instrument_name=instrument_name_1)
                             connect.close_position(instrument_name=instrument_name_2)
@@ -2704,6 +2853,7 @@ def run_arbitrage(ui):
                                 '. Order: close position ')
                             time.sleep(5)
                             connect.cancel_all()
+                            time.sleep(2)
                 else:
                     pass  # stop_loss_for_arbitrage_strategy is False
                     # stop loss close positions orders - the end *******************************************************
@@ -2769,6 +2919,7 @@ def run_arbitrage(ui):
                                 '. Price :' + str(best_bid_ask_price_for_stop_gain_dict2))
                             time.sleep(5)
                             connect.cancel_all()
+                            time.sleep(2)
                         elif summary_instrument1['direction'] == 'sell':
                             connect.buy_limit(
                                 currency=instrument_name_1,
@@ -2802,6 +2953,7 @@ def run_arbitrage(ui):
                                 '. Price :' + str(best_bid_ask_price_for_stop_gain_dict2))
                             time.sleep(5)
                             connect.cancel_all()
+                            time.sleep(2)
                         else:
                             list_monitor_log.append('***** ERROR IN STOP GAIN ORDERS - Error Code: 2684 ***')
                             connect.logwriter('***** ERROR IN STOP GAIN ORDERS - Error Code: 2685 ***')
@@ -2896,6 +3048,7 @@ def run_arbitrage(ui):
                             '. Price :' + str(best_bid_ask_price2))
                         time.sleep(5)
                         connect.cancel_all()
+                        time.sleep(2)
 
                     elif instrument_buy_or_sell1 == 'sell' and instrument_buy_or_sell2 == 'buy':
                         connect.sell_limit(
@@ -2930,6 +3083,7 @@ def run_arbitrage(ui):
                             ' Price :' + str(best_bid_ask_price2))
                         time.sleep(5)
                         connect.cancel_all()
+                        time.sleep(2)
                     else:
                         list_monitor_log.append(' ***** ERROR OPENING ORDERS SENT - Error Code: 2812 *** ')
                         connect.logwriter('***** ERROR OPENING ORDERS SENT - Error Code: 2813 ***')
@@ -2988,7 +3142,7 @@ def run_arbitrage(ui):
             except Exception as er:
                 list_monitor_log.append('***** ERROR: ' + str(er) + ' - Error Code: 2867 *****')
                 connect.logwriter('***** ERROR: ' + str(er) + ' - Error Code: 2868 *****')
-                time.sleep(40)
+                time.sleep(10)
                 pass
             finally:
                 pass
